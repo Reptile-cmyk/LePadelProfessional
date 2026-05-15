@@ -548,7 +548,7 @@ function renderCalendar(){
     const cell=document.createElement('div');
     cell.className='day-cell'+(isToday?' today':'')+(isWeekend?' weekend':'');
     let html=`<div class="day-num">${String(d).padStart(2,'0')}${isToday?'<span class="today-pip"></span>':''}</div><div class="day-people">`;
-    data.people.forEach(pid=>{const p=settings.people[pid];if(!p)return;const note=data.notes&&data.notes[pid]?data.notes[pid]:'';html+=`<div class="person-tag" style="background:${bgFor(p.color)};color:${p.color};"><span class="person-tag-dot" style="background:${p.color};"></span><span class="person-tag-name">${p.name}</span>${note?`<span class="person-tag-note">${note}</span>`:''}</div>`;});
+    data.people.forEach(pid=>{const p=settings.people[pid];if(!p)return;html+=`<div class="person-tag" style="background:${bgFor(p.color)};color:${p.color};"><span class="person-tag-dot" style="background:${p.color};"></span><span class="person-tag-name">${p.name}</span></div>`;});
     html+='</div>';cell.innerHTML=html;
     const hasNote=data.notes&&Object.keys(data.notes).length>0;
     if(hasNote){const ni=document.createElement('span');ni.className='note-indicator';ni.textContent='◆';ni.title=Object.entries(data.notes).map(([pid,n])=>`${settings.people[pid]?.name||pid}: ${n}`).join('\n');cell.appendChild(ni);}
