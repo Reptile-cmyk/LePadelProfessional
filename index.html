@@ -94,11 +94,31 @@
   .popup-note{width:100%;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:'Inter',sans-serif;font-size:0.85rem;color:var(--text);background:var(--surface);resize:none;outline:none;transition:border-color 0.15s;margin-bottom:18px;}
   .popup-note:focus{border-color:var(--accent);}
   .popup-note::placeholder{color:var(--text-muted);}
-  .person-note-wrap{overflow:hidden;max-height:0;transition:max-height 0.2s ease;padding:0 0 0 34px;}
-  .person-note-wrap.open{max-height:80px;padding-bottom:4px;}
+  .person-tag-name{flex-shrink:0;}
+  .person-tag-note{opacity:0.6;font-size:0.6rem;margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .popup-person-note-preview{font-size:0.75rem;opacity:0.45;font-style:italic;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-left:2px;}
+  .person-entry-wrap{margin-bottom:4px;}
+  .person-note-row{overflow:hidden;max-height:0;transition:max-height 0.2s ease;padding:0 0 0 34px;}
+  .person-note-row.open{max-height:60px;padding-bottom:4px;}
   .person-note-input{width:100%;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.78rem;padding:4px 2px;outline:none;transition:border-color 0.15s;}
   .person-note-input:focus{border-bottom-color:var(--accent);color:var(--text);}
   .person-note-input::placeholder{color:var(--text-muted);}
+
+  /* RANGE POPUP */
+  .range-popup{background:var(--bg3);border:1px solid var(--border-bright);border-radius:16px;padding:26px 26px 22px;width:340px;max-width:92vw;box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:translateY(12px) scale(0.98);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);}
+  .overlay.open .range-popup{transform:translateY(0) scale(1);}
+  .range-date-row{display:flex;gap:10px;margin-bottom:14px;}
+  .range-date-field{flex:1;display:flex;flex-direction:column;gap:5px;}
+  .range-date-label{font-size:0.68rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);}
+  .range-date-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;width:100%;transition:border-color 0.15s;}
+  .range-date-input:focus{border-color:var(--accent);}
+  .range-note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;margin-bottom:16px;transition:border-color 0.15s;}
+  .range-note-input:focus{border-color:var(--accent);}
+  .range-note-input::placeholder{color:var(--text-muted);}
+  .range-people{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+  .btn-add-range{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:8px 16px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:500;transition:all 0.15s;}
+  .btn-add-range:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
+  .range-saving{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);text-align:center;min-height:18px;margin-top:6px;}
   .popup-actions{display:flex;gap:8px;justify-content:flex-end;align-items:center;}
   .btn-close{padding:8px 16px;border-radius:7px;border:1px solid var(--border);background:var(--surface);font-family:'Inter',sans-serif;font-size:0.83rem;cursor:pointer;color:var(--text-dim);transition:all 0.15s;}
   .btn-close:hover{background:var(--surface2);color:var(--text);}
@@ -162,7 +182,7 @@
   .summary-name{font-size:0.82rem;color:var(--text-dim);flex:1;font-weight:500;}
   .summary-count{font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:600;color:var(--text);min-width:28px;text-align:right;}
   .summary-unit{font-size:0.66rem;color:var(--text-muted);margin-left:2px;}
-  .bottom-bar{display:flex;align-items:center;justify-content:center;padding:8px 28px 40px;}
+  .bottom-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 28px 40px;}
   .bottom-settings-btn{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:10px 22px;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.84rem;font-weight:500;transition:all 0.15s;}
   .bottom-settings-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
   .bottom-settings-btn svg{width:17px;height:17px;transition:transform 0.4s ease;}
@@ -224,6 +244,10 @@
 </main>
 
 <div class="bottom-bar">
+  <button class="btn-add-range" id="open-range">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="12" y1="14" x2="16" y2="14"/></svg>
+    Add range
+  </button>
   <button class="bottom-settings-btn" id="open-settings">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"/>
@@ -231,6 +255,32 @@
     </svg>
     <span>Settings</span>
   </button>
+</div>
+
+<!-- RANGE POPUP -->
+<div class="overlay" id="range-overlay">
+  <div class="range-popup">
+    <div class="popup-date-label">Add range entry</div>
+    <h3 style="margin-bottom:18px;">Who &amp; when?</h3>
+    <div class="range-date-row">
+      <div class="range-date-field">
+        <span class="range-date-label">From</span>
+        <input type="date" class="range-date-input" id="range-from">
+      </div>
+      <div class="range-date-field">
+        <span class="range-date-label">To</span>
+        <input type="date" class="range-date-input" id="range-to">
+      </div>
+    </div>
+    <div class="range-people" id="range-people"></div>
+    <div class="popup-note-label" style="margin-bottom:6px;">Note (same for all days)</div>
+    <input type="text" class="range-note-input" id="range-note" placeholder="e.g. Italy, Conference…">
+    <div class="popup-actions">
+      <button class="btn-close" id="range-cancel">Cancel</button>
+      <button class="btn-save" id="range-save">Save range</button>
+    </div>
+    <div class="range-saving" id="range-saving"></div>
+  </div>
 </div>
 
 <!-- DAY POPUP -->
@@ -498,7 +548,7 @@ function renderCalendar(){
     const cell=document.createElement('div');
     cell.className='day-cell'+(isToday?' today':'')+(isWeekend?' weekend':'');
     let html=`<div class="day-num">${String(d).padStart(2,'0')}${isToday?'<span class="today-pip"></span>':''}</div><div class="day-people">`;
-    data.people.forEach(pid=>{const p=settings.people[pid];if(!p)return;const n=(data.notes&&data.notes[pid])?` — ${data.notes[pid]}`:'';html+=`<div class="person-tag" style="background:${bgFor(p.color)};color:${p.color};" title="${p.name}${n}"><span class="person-tag-dot" style="background:${p.color};"></span>${p.name}${data.notes&&data.notes[pid]?'<span style="opacity:0.6;font-size:0.6rem;margin-left:3px;">◆</span>':''}</div>`;});
+    data.people.forEach(pid=>{const p=settings.people[pid];if(!p)return;const note=data.notes&&data.notes[pid]?data.notes[pid]:'';html+=`<div class="person-tag" style="background:${bgFor(p.color)};color:${p.color};"><span class="person-tag-dot" style="background:${p.color};"></span><span class="person-tag-name">${p.name}</span>${note?`<span class="person-tag-note">${note}</span>`:''}</div>`;});
     html+='</div>';cell.innerHTML=html;
     const hasNote=data.notes&&Object.keys(data.notes).length>0;
     if(hasNote){const ni=document.createElement('span');ni.className='note-indicator';ni.textContent='◆';ni.title=Object.entries(data.notes).map(([pid,n])=>`${settings.people[pid]?.name||pid}: ${n}`).join('\n');cell.appendChild(ni);}
@@ -531,22 +581,26 @@ function openPopup(d,key){
   settings.people.forEach((p,i)=>{
     const isSelected=popupSelected.has(i);
     const existingNote=(data.notes&&data.notes[i])||'';
-    const wrap=document.createElement('div');wrap.style.marginBottom='4px';
+    const wrap=document.createElement('div');wrap.className='person-entry-wrap';
     const row=document.createElement('div');
     row.className='popup-person-row'+(isSelected?' selected':'');
     row.style.setProperty('--person-color',p.color);row.style.setProperty('--person-bg',bgFor(p.color));
-    row.innerHTML=`<span class="popup-person-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color};"></span><span class="popup-person-name">${p.name}</span><span class="popup-check">✓</span>`;
-    const noteWrap=document.createElement('div');
-    noteWrap.className='person-note-wrap'+(isSelected?' open':'');
+    row.innerHTML=`<span class="popup-person-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color};"></span><span class="popup-person-name">${p.name}</span>${existingNote?`<span class="popup-person-note-preview">&nbsp;— ${existingNote}</span>`:''}<span class="popup-check">✓</span>`;
+    const noteRow=document.createElement('div');
+    noteRow.className='person-note-row'+(isSelected?' open':'');
     const noteInput=document.createElement('input');
     noteInput.type='text';noteInput.className='person-note-input';
     noteInput.placeholder=`Note for ${p.name}…`;noteInput.value=existingNote;noteInput.dataset.pid=i;
-    noteWrap.appendChild(noteInput);
+    noteRow.appendChild(noteInput);
     row.addEventListener('click',()=>{
-      if(popupSelected.has(i)){popupSelected.delete(i);row.classList.remove('selected');noteWrap.classList.remove('open');}
-      else{popupSelected.add(i);row.classList.add('selected');noteWrap.classList.add('open');setTimeout(()=>noteInput.focus(),210);}
+      if(popupSelected.has(i)){
+        popupSelected.delete(i);row.classList.remove('selected');noteRow.classList.remove('open');
+      } else {
+        popupSelected.add(i);row.classList.add('selected');noteRow.classList.add('open');
+        setTimeout(()=>noteInput.focus(),210);
+      }
     });
-    wrap.appendChild(row);wrap.appendChild(noteWrap);pc.appendChild(wrap);
+    wrap.appendChild(row);wrap.appendChild(noteRow);pc.appendChild(wrap);
   });
   document.getElementById('popup-overlay').classList.add('open');
 }
@@ -568,6 +622,88 @@ document.getElementById('prev-btn').addEventListener('click',()=>{if(--state.mon
 document.getElementById('next-btn').addEventListener('click',()=>{if(++state.month>11){state.month=0;state.year++;}renderCalendar();renderSummary();});
 document.getElementById('today-btn').addEventListener('click',()=>{state.year=today.getFullYear();state.month=today.getMonth();renderCalendar();renderSummary();});
 document.getElementById('sync-refresh-btn').addEventListener('click',()=>loadFromSheets(false));
+
+/* ── RANGE POPUP ── */
+const rangeOverlay=document.getElementById('range-overlay');
+let rangeSelected=new Set();
+
+function openRange(){
+  rangeSelected=new Set();
+  // Default from/to to current month start/end
+  const pad=n=>String(n).padStart(2,'0');
+  const base=`${state.year}-${pad(state.month+1)}`;
+  document.getElementById('range-from').value=`${base}-01`;
+  document.getElementById('range-to').value=`${base}-${pad(new Date(state.year,state.month+1,0).getDate())}`;
+  document.getElementById('range-note').value='';
+  document.getElementById('range-saving').textContent='';
+  // Render person selector
+  const rp=document.getElementById('range-people');rp.innerHTML='';
+  settings.people.forEach((p,i)=>{
+    const row=document.createElement('div');
+    row.className='popup-person-row';
+    row.style.setProperty('--person-color',p.color);row.style.setProperty('--person-bg',bgFor(p.color));
+    row.innerHTML=`<span class="popup-person-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color};"></span><span class="popup-person-name">${p.name}</span><span class="popup-check">✓</span>`;
+    row.addEventListener('click',()=>{
+      if(rangeSelected.has(i)){rangeSelected.delete(i);row.classList.remove('selected');}
+      else{rangeSelected.add(i);row.classList.add('selected');}
+    });
+    rp.appendChild(row);
+  });
+  rangeOverlay.classList.add('open');
+}
+function closeRange(){rangeOverlay.classList.remove('open');}
+document.getElementById('open-range').addEventListener('click',openRange);
+document.getElementById('range-cancel').addEventListener('click',closeRange);
+rangeOverlay.addEventListener('click',e=>{if(e.target.id==='range-overlay')closeRange();});
+
+document.getElementById('range-save').addEventListener('click',async()=>{
+  const fromVal=document.getElementById('range-from').value;
+  const toVal=document.getElementById('range-to').value;
+  const note=document.getElementById('range-note').value.trim();
+  const status=document.getElementById('range-saving');
+
+  if(!fromVal||!toVal){alert('Please set both a from and to date.');return;}
+  if(rangeSelected.size===0){alert('Please select at least one person.');return;}
+  if(fromVal>toVal){alert('From date must be before or equal to the to date.');return;}
+
+  // Build list of weekdays in range (skip weekends if showWeekends is off)
+  const days=[];
+  const cur=new Date(fromVal+'T12:00:00');
+  const end=new Date(toVal+'T12:00:00');
+  const pad=n=>String(n).padStart(2,'0');
+  while(cur<=end){
+    const dow=cur.getDay();
+    if(settings.showWeekends||(dow!==0&&dow!==6)){
+      days.push(`${cur.getFullYear()}-${pad(cur.getMonth()+1)}-${pad(cur.getDate())}`);
+    }
+    cur.setDate(cur.getDate()+1);
+  }
+
+  if(days.length===0){alert('No valid days in that range.');return;}
+
+  status.textContent=`Saving 0 / ${days.length} days…`;
+  document.getElementById('range-save').disabled=true;
+
+  const notes={};
+  rangeSelected.forEach(pid=>{if(note)notes[pid]=note;});
+
+  let saved=0;
+  for(const key of days){
+    // Merge with existing entries for that day
+    const existing=state.days[key]||{people:new Set(),notes:{}};
+    const merged=new Set([...existing.people,...rangeSelected]);
+    const mergedNotes=Object.assign({},existing.notes,notes);
+    await saveDay(key,merged,mergedNotes);
+    saved++;
+    status.textContent=`Saving ${saved} / ${days.length} days…`;
+  }
+
+  status.textContent=`✓ ${days.length} day${days.length!==1?'s':''} saved!`;
+  status.style.color='var(--accent2)';
+  renderCalendar();renderSummary();
+  document.getElementById('range-save').disabled=false;
+  setTimeout(closeRange,1200);
+});
 
 /* ── SETTINGS ── */
 const settingsOverlay=document.getElementById('settings-overlay');
