@@ -172,16 +172,18 @@
   .seg{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px;}
   .seg button{flex:1;padding:6px 10px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:500;transition:all 0.15s;}
   .seg button.active{background:var(--accent);color:#fff;}
-  .summary-section{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;}
-  .summary-card-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+  .summary-section{margin-top:20px;}
+  .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 20px;}
+  .summary-card-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
   .summary-card-title::before{content:'';display:block;width:3px;height:10px;border-radius:2px;background:var(--card-accent,var(--accent));}
-  .summary-rows{display:flex;flex-direction:column;gap:9px;}
+  .summary-rows{display:flex;flex-direction:column;gap:7px;}
   .summary-row{display:flex;align-items:center;gap:10px;}
   .summary-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .summary-name{font-size:0.82rem;color:var(--text-dim);flex:1;font-weight:500;}
-  .summary-count{font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:600;color:var(--text);min-width:28px;text-align:right;}
-  .summary-unit{font-size:0.66rem;color:var(--text-muted);margin-left:2px;}
+  .summary-name{font-size:0.82rem;color:var(--text);flex-shrink:0;font-weight:500;}
+  .summary-counts{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);margin-left:4px;}
+  .summary-counts .sep{margin:0 4px;opacity:0.3;}
+  .summary-count-val{color:var(--text);font-weight:600;}
+  .summary-unit{font-size:0.66rem;color:var(--text-muted);margin-left:1px;}
   .bottom-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 28px 40px;}
   .bottom-settings-btn{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:10px 22px;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.84rem;font-weight:500;transition:all 0.15s;}
   .bottom-settings-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
@@ -192,7 +194,7 @@
     .legend{padding:0 14px;padding-top:10px;padding-bottom:10px;}
     .month-bar{padding:12px 14px;}#sync-bar{padding:4px 14px;}
     .day-cell{min-height:70px;padding:5px 4px 4px;}.day-num{font-size:0.72rem;}
-    .person-tag{font-size:0.6rem;}.summary-section{grid-template-columns:1fr;}
+    .person-tag{font-size:0.6rem;}
   }
 </style>
 </head>
@@ -232,13 +234,9 @@
   <div class="weekday-header" id="weekday-header"></div>
   <div class="calendar-grid" id="calendar-grid"></div>
   <div class="summary-section">
-    <div class="summary-card" style="--card-accent:var(--accent)">
-      <div class="summary-card-title">This month</div>
-      <div class="summary-rows" id="summary-month"></div>
-    </div>
-    <div class="summary-card" style="--card-accent:var(--accent2)">
-      <div class="summary-card-title">Full year <span id="year-badge" style="color:var(--text-dim);margin-left:4px;"></span></div>
-      <div class="summary-rows" id="summary-year"></div>
+    <div class="summary-card" style="--card-accent:var(--accent);grid-column:1/-1;">
+      <div class="summary-card-title">Days away <span id="year-badge" style="color:var(--text-muted);margin-left:4px;font-size:0.6rem;"></span></div>
+      <div class="summary-rows" id="summary-combined"></div>
     </div>
   </div>
 </main>
@@ -563,9 +561,18 @@ function renderSummary(){
   const yp=`${state.year}-`;
   for(const[k,v]of Object.entries(state.days))
     if(k.startsWith(yp))v.people.forEach(pid=>{if(yc[pid]!==undefined){yc[pid]++;if(k.startsWith(mp))mc[pid]++;}});
-  const makeRows=counts=>settings.people.map((p,i)=>`<div class="summary-row"><span class="summary-dot" style="background:${p.color};box-shadow:0 0 5px ${p.color}55;"></span><span class="summary-name">${p.name}</span><span class="summary-count">${counts[i]}<span class="summary-unit">d</span></span></div>`).join('');
-  document.getElementById('summary-month').innerHTML=makeRows(mc);
-  document.getElementById('summary-year').innerHTML=makeRows(yc);
+  document.getElementById('year-badge').textContent=state.year;
+  const monthName=MONTHS[state.month].substring(0,3);
+  document.getElementById('summary-combined').innerHTML=settings.people.map((p,i)=>
+    `<div class="summary-row">
+      <span class="summary-dot" style="background:${p.color};box-shadow:0 0 5px ${p.color}55;"></span>
+      <span class="summary-name">${p.name}</span>
+      <span class="summary-counts">
+        ${monthName}: <span class="summary-count-val">${mc[i]}<span class="summary-unit">d</span></span>
+        <span class="sep">·</span>
+        Year: <span class="summary-count-val">${yc[i]}<span class="summary-unit">d</span></span>
+      </span>
+    </div>`).join('');
 }
 
 /* ── POPUP ── */
