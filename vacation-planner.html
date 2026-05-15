@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vacation & Unavailability Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d14;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --surface: #1a2236;
+    --surface2: #1f2940;
+    --border: rgba(99,130,200,0.12);
+    --border-bright: rgba(99,130,200,0.28);
+    --accent: #3d8ef0;
+    --accent2: #00d4aa;
+    --text: #e2e8f8;
+    --text-dim: #7a8aaa;
+    --text-muted: #3d4a66;
+    --danger: #f0607a;
+
+/* user-tunable, set via JS */
+--title-size: 1.05rem;
+--month-size: 0.9rem;
+--today-size: 0.66rem;
+--members-size: 0.82rem;
+
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+  font-family: ‘Inter’, sans-serif;
+  background: var(–bg);
+  color: var(–text);
+  min-height: 100vh;
+  background-image:
+  radial-gradient(ellipse 60% 40% at 85% 0%, rgba(61,142,240,0.07) 0%, transparent 60%),
+  radial-gradient(ellipse 40% 30% at 10% 100%, rgba(0,212,170,0.05) 0%, transparent 50%);
+  }
+
+/* HEADER */
+header {
+background: var(–bg2);
+border-bottom: 1px solid var(–border);
+padding: 0 36px;
+min-height: 68px;
+display: flex;
+align-items: center;
+gap: 14px;
+position: sticky;
+top: 0;
+z-index: 50;
+}
+header::after {
+content: ‘’;
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, var(–accent), var(–accent2), transparent);
+opacity: 0.5;
+}
+.logo-wrap {
+display: flex; align-items: center; justify-content: center;
+width: 40px; height: 40px;
+background: linear-gradient(135deg, rgba(61,142,240,0.18), rgba(0,212,170,0.08));
+border: 1px solid var(–border-bright);
+border-radius: 10px;
+flex-shrink: 0;
+overflow: hidden;
+}
+.logo-wrap svg { width: 24px; height: 24px; }
+.logo-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.logo-wrap.hidden { display: none; }
+.header-title { display: flex; flex-direction: column; gap: 1px; }
+.header-title h1 { font-size: var(–title-size); font-weight: 600; color: var(–text); letter-spacing: 0.01em; line-height: 1.2; }
+.month-bar {
+display: flex; align-items: center; justify-content: center; gap: 14px;
+padding: 16px 28px; background: var(–bg2);
+border-bottom: 1px solid var(–border);
+}
+.month-row { display: flex; align-items: center; gap: 10px; }
+.today-btn {
+width: auto !important;
+height: calc(var(–today-size) + 12px);
+padding: 0 calc(var(–today-size) + 8px);
+font-size: var(–today-size); font-family: ‘JetBrains Mono’, monospace;
+letter-spacing: 0.1em;
+}
+.nav-btn {
+background: var(–surface); border: 1px solid var(–border); color: var(–text-dim);
+width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 0.95rem;
+display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+}
+.nav-btn:hover { background: var(–surface2); border-color: var(–border-bright); color: var(–text); }
+#month-label {
+font-family: ‘JetBrains Mono’, monospace; color: var(–text); font-size: var(–month-size);
+font-weight: 500; min-width: 152px; text-align: center; letter-spacing: 0.02em;
+}
+.settings-btn {
+background: var(–surface); border: 1px solid var(–border); color: var(–text-dim);
+width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+margin-left: 4px;
+}
+.settings-btn:hover { background: var(–surface2); border-color: var(–border-bright); color: var(–accent); }
+.settings-btn svg { width: 16px; height: 16px; }
+
+/* BOTTOM SETTINGS BAR */
+.bottom-bar {
+display: flex; align-items: center; justify-content: center;
+padding: 8px 28px 40px;
+}
+.bottom-settings-btn {
+display: flex; align-items: center; gap: 9px;
+background: var(–surface); border: 1px solid var(–border);
+color: var(–text-dim); padding: 10px 22px; border-radius: 10px;
+cursor: pointer; font-family: ‘Inter’, sans-serif; font-size: 0.84rem;
+font-weight: 500; transition: all 0.15s;
+}
+.bottom-settings-btn:hover {
+background: var(–surface2); border-color: var(–border-bright);
+color: var(–accent);
+}
+.bottom-settings-btn svg {
+width: 17px; height: 17px; transition: transform 0.4s ease;
+}
+.bottom-settings-btn:hover svg { transform: rotate(90deg); }
+
+/* LEGEND */
+.legend {
+padding: 0 36px; min-height: 52px;
+display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+background: var(–bg3); border-bottom: 1px solid var(–border);
+}
+.legend-label { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(–text-muted); font-family: ‘JetBrains Mono’, monospace; margin-right: 4px; }
+.person-chip {
+display: flex; align-items: center; gap: 7px;
+background: var(–surface); border: 1px solid var(–border);
+border-radius: 6px; padding: 4px 12px 4px 8px; transition: all 0.15s;
+}
+.person-chip:hover { border-color: var(–border-bright); background: var(–surface2); }
+.person-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.person-name-input {
+background: none; border: none; color: var(–text);
+font-family: ‘Inter’, sans-serif; font-size: var(–members-size); font-weight: 500;
+width: calc(var(–members-size) * 7); cursor: pointer; outline: none;
+}
+.person-name-input:focus { border-bottom: 1px solid var(–accent); cursor: text; color: #fff; }
+
+/* CALENDAR */
+main { padding: 24px 28px 8px; }
+.weekday-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 3px; }
+.weekday-header div {
+text-align: center; font-size: 0.64rem; text-transform: uppercase;
+letter-spacing: 0.14em; color: var(–text-muted);
+font-family: ‘JetBrains Mono’, monospace; padding: 8px 0;
+}
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.day-cell {
+background: var(–surface); border: 1px solid var(–border);
+border-radius: 8px; min-height: 92px; padding: 8px 7px 6px;
+position: relative; cursor: pointer;
+transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.day-cell:hover { border-color: var(–border-bright); background: var(–surface2); box-shadow: 0 0 0 1px rgba(61,142,240,0.1), 0 4px 20px rgba(0,0,0,0.3); }
+.day-cell.empty { background: transparent; border-color: transparent; cursor: default; pointer-events: none; }
+.day-cell.today { border-color: var(–accent); box-shadow: 0 0 0 1px rgba(61,142,240,0.25), inset 0 0 20px rgba(61,142,240,0.04); }
+.day-cell.weekend { background: rgba(255,255,255,0.015); }
+.day-cell.weekend.hide-weekend-tint { background: var(–surface); }
+.day-num {
+font-family: ‘JetBrains Mono’, monospace; font-size: 0.8rem; font-weight: 500;
+color: var(–text-dim); line-height: 1; margin-bottom: 7px;
+display: flex; align-items: center; gap: 5px;
+}
+.day-cell.today .day-num { color: var(–accent); }
+.today-pip { width: 5px; height: 5px; border-radius: 50%; background: var(–accent); box-shadow: 0 0 6px var(–accent); }
+.day-people { display: flex; flex-direction: column; gap: 2px; }
+.person-tag {
+display: flex; align-items: center; gap: 4px; border-radius: 4px;
+padding: 2px 6px 2px 5px; font-size: 0.67rem; font-weight: 500;
+white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+border: 1px solid transparent; transition: opacity 0.15s;
+}
+.person-tag-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.note-indicator { position: absolute; top: 6px; right: 7px; font-size: 0.55rem; color: var(–accent2); line-height: 1; }
+
+/* OVERLAY (shared) */
+.overlay {
+position: fixed; inset: 0; background: rgba(5,8,18,0.72);
+z-index: 200; display: flex; align-items: center; justify-content: center;
+backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.overlay.open { opacity: 1; pointer-events: all; }
+
+/* DAY POPUP */
+.popup {
+background: var(–bg3); border: 1px solid var(–border-bright);
+border-radius: 16px; padding: 26px 26px 22px; width: 320px; max-width: 92vw;
+box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(61,142,240,0.08);
+transform: translateY(12px) scale(0.98);
+transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+.overlay.open .popup { transform: translateY(0) scale(1); }
+.popup-date-label { font-family: ‘JetBrains Mono’, monospace; font-size: 0.68rem; color: var(–accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.popup h3 { font-size: 1.15rem; font-weight: 600; color: var(–text); margin-bottom: 18px; }
+.popup-people { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.popup-person-row {
+display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+border-radius: 8px; cursor: pointer; border: 1px solid var(–border);
+background: var(–surface); transition: all 0.15s; user-select: none;
+}
+.popup-person-row:hover { border-color: var(–border-bright); background: var(–surface2); }
+.popup-person-row.selected { border-color: var(–person-color, #aaa); background: var(–person-bg); box-shadow: 0 0 0 1px var(–person-color); }
+.popup-person-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.popup-person-name { font-size: 0.88rem; font-weight: 500; flex: 1; color: var(–text); }
+.popup-check { font-size: 0.85rem; opacity: 0; transition: opacity 0.15s; color: var(–accent2); }
+.popup-person-row.selected .popup-check { opacity: 1; }
+.popup-note-label { font-size: 0.67rem; font-weight: 600; color: var(–text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; font-family: ‘JetBrains Mono’, monospace; }
+.popup-note {
+width: 100%; border: 1px solid var(–border); border-radius: 8px; padding: 8px 10px;
+font-family: ‘Inter’, sans-serif; font-size: 0.85rem; color: var(–text);
+background: var(–surface); resize: none; outline: none;
+transition: border-color 0.15s; margin-bottom: 18px;
+}
+.popup-note:focus { border-color: var(–accent); }
+.popup-note::placeholder { color: var(–text-muted); }
+.popup-actions { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+.btn-close {
+padding: 8px 16px; border-radius: 7px; border: 1px solid var(–border);
+background: var(–surface); font-family: ‘Inter’, sans-serif; font-size: 0.83rem;
+cursor: pointer; color: var(–text-dim); transition: all 0.15s;
+}
+.btn-close:hover { background: var(–surface2); color: var(–text); }
+.btn-save {
+padding: 8px 20px; border-radius: 7px; border: none;
+background: linear-gradient(135deg, var(–accent), #2a7ad8); color: #fff;
+font-family: ‘Inter’, sans-serif; font-size: 0.83rem; font-weight: 600;
+cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+box-shadow: 0 2px 12px rgba(61,142,240,0.3);
+}
+.btn-save:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-clear {
+padding: 8px 12px; border-radius: 7px; border: 1px solid rgba(240,96,122,0.3);
+background: rgba(240,96,122,0.08); font-family: ‘Inter’, sans-serif; font-size: 0.8rem;
+cursor: pointer; color: var(–danger); transition: all 0.15s; margin-right: auto;
+}
+.btn-clear:hover { background: rgba(240,96,122,0.16); }
+
+/* SETTINGS PANEL */
+.settings-panel {
+background: var(–bg3); border: 1px solid var(–border-bright);
+border-radius: 16px; width: 460px; max-width: 94vw; max-height: 88vh;
+overflow-y: auto;
+box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(61,142,240,0.08);
+transform: translateY(12px) scale(0.98);
+transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+.overlay.open .settings-panel { transform: translateY(0) scale(1); }
+.settings-head {
+display: flex; align-items: center; gap: 10px;
+padding: 20px 24px 16px; border-bottom: 1px solid var(–border);
+position: sticky; top: 0; background: var(–bg3); z-index: 2;
+}
+.settings-head h2 { font-size: 1.05rem; font-weight: 600; color: var(–text); flex: 1; }
+.settings-head .close-x {
+background: var(–surface); border: 1px solid var(–border); color: var(–text-dim);
+width: 28px; height: 28px; border-radius: 7px; cursor: pointer; font-size: 1rem;
+display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+}
+.settings-head .close-x:hover { background: var(–surface2); color: var(–text); }
+.settings-body { padding: 8px 24px 24px; }
+.settings-group { padding: 18px 0; border-bottom: 1px solid var(–border); }
+.settings-group:last-child { border-bottom: none; }
+.settings-group-title {
+font-family: ‘JetBrains Mono’, monospace; font-size: 0.65rem;
+text-transform: uppercase; letter-spacing: 0.12em; color: var(–accent);
+margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
+}
+.settings-group-title::before { content: ‘’; width: 3px; height: 10px; border-radius: 2px; background: var(–accent); }
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field-label { font-size: 0.74rem; color: var(–text-dim); font-weight: 500; margin-bottom: 6px; display: block; }
+.field-row { display: flex; align-items: center; gap: 10px; }
+.text-input {
+width: 100%; border: 1px solid var(–border); border-radius: 8px; padding: 8px 11px;
+font-family: ‘Inter’, sans-serif; font-size: 0.85rem; color: var(–text);
+background: var(–surface); outline: none; transition: border-color 0.15s;
+}
+.text-input:focus { border-color: var(–accent); }
+.slider-row { display: flex; align-items: center; gap: 12px; }
+.slider-row input[type=range] {
+flex: 1; -webkit-appearance: none; appearance: none; height: 4px;
+background: var(–surface2); border-radius: 2px; outline: none;
+}
+.slider-row input[type=range]::-webkit-slider-thumb {
+-webkit-appearance: none; appearance: none; width: 16px; height: 16px;
+border-radius: 50%; background: var(–accent); cursor: pointer;
+box-shadow: 0 0 8px rgba(61,142,240,0.5);
+}
+.slider-row input[type=range]::-moz-range-thumb {
+width: 16px; height: 16px; border-radius: 50%; background: var(–accent);
+cursor: pointer; border: none; box-shadow: 0 0 8px rgba(61,142,240,0.5);
+}
+.slider-val {
+font-family: ‘JetBrains Mono’, monospace; font-size: 0.78rem; color: var(–text);
+min-width: 46px; text-align: right;
+}
+.person-edit-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.person-edit-row:last-child { margin-bottom: 0; }
+.person-edit-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.person-color-input {
+width: 30px; height: 30px; padding: 0; border: 1px solid var(–border);
+border-radius: 7px; background: var(–surface); cursor: pointer; flex-shrink: 0;
+}
+.toggle {
+position: relative; width: 40px; height: 22px; flex-shrink: 0;
+background: var(–surface2); border-radius: 11px; cursor: pointer;
+transition: background 0.18s; border: 1px solid var(–border);
+}
+.toggle.on { background: var(–accent); border-color: var(–accent); }
+.toggle-knob {
+position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+background: #fff; border-radius: 50%; transition: transform 0.18s;
+}
+.toggle.on .toggle-knob { transform: translateX(18px); }
+.toggle-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.toggle-field .field-label { margin-bottom: 0; }
+.logo-preview-box {
+display: flex; align-items: center; gap: 12px; margin-top: 8px;
+}
+.logo-preview {
+width: 44px; height: 44px; border-radius: 10px;
+border: 1px solid var(–border-bright); overflow: hidden;
+display: flex; align-items: center; justify-content: center;
+background: linear-gradient(135deg, rgba(61,142,240,0.18), rgba(0,212,170,0.08));
+flex-shrink: 0;
+}
+.logo-preview svg { width: 26px; height: 26px; }
+.logo-preview img { width: 100%; height: 100%; object-fit: cover; }
+.btn-secondary {
+padding: 7px 13px; border-radius: 7px; border: 1px solid var(–border);
+background: var(–surface); font-family: ‘Inter’, sans-serif; font-size: 0.78rem;
+cursor: pointer; color: var(–text); transition: all 0.15s;
+}
+.btn-secondary:hover { background: var(–surface2); border-color: var(–border-bright); }
+.btn-ghost-danger {
+padding: 7px 13px; border-radius: 7px; border: 1px solid rgba(240,96,122,0.3);
+background: transparent; font-family: ‘Inter’, sans-serif; font-size: 0.78rem;
+cursor: pointer; color: var(–danger); transition: all 0.15s;
+}
+.btn-ghost-danger:hover { background: rgba(240,96,122,0.1); }
+.hint { font-size: 0.7rem; color: var(–text-muted); margin-top: 6px; line-height: 1.4; }
+.settings-footer {
+display: flex; gap: 8px; padding: 16px 24px;
+border-top: 1px solid var(–border); position: sticky; bottom: 0;
+background: var(–bg3);
+}
+.seg {
+display: flex; gap: 4px; background: var(–surface); border: 1px solid var(–border);
+border-radius: 8px; padding: 3px;
+}
+.seg button {
+flex: 1; padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer;
+background: transparent; color: var(–text-dim); font-family: ‘Inter’, sans-serif;
+font-size: 0.78rem; font-weight: 500; transition: all 0.15s;
+}
+.seg button.active { background: var(–accent); color: #fff; }
+
+/* SUMMARY */
+.summary-section { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.summary-card { background: var(–surface); border: 1px solid var(–border); border-radius: 10px; padding: 16px 20px; }
+.summary-card-title {
+font-family: ‘JetBrains Mono’, monospace; font-size: 0.65rem;
+text-transform: uppercase; letter-spacing: 0.12em; color: var(–text-muted);
+margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
+}
+.summary-card-title::before { content: ‘’; display: block; width: 3px; height: 10px; border-radius: 2px; background: var(–card-accent, var(–accent)); }
+.summary-rows { display: flex; flex-direction: column; gap: 9px; }
+.summary-row { display: flex; align-items: center; gap: 10px; }
+.summary-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.summary-name { font-size: 0.82rem; color: var(–text-dim); flex: 1; font-weight: 500; }
+.summary-count { font-family: ‘JetBrains Mono’, monospace; font-size: 0.9rem; font-weight: 600; color: var(–text); min-width: 28px; text-align: right; }
+.summary-unit { font-size: 0.66rem; color: var(–text-muted); margin-left: 2px; }
+
+@media (max-width: 640px) {
+main { padding: 14px 10px 6px; }
+header { padding: 0 14px; }
+.legend { padding: 0 14px; padding-top: 10px; padding-bottom: 10px; }
+.month-bar { padding: 12px 14px; }
+.day-cell { min-height: 70px; padding: 5px 4px 4px; }
+.day-num { font-size: 0.72rem; }
+.person-tag { font-size: 0.6rem; }
+.summary-section { grid-template-columns: 1fr; }
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap" id="logo-wrap">
+    <span id="logo-content"></span>
+  </div>
+  <div class="header-title">
+    <h1 id="app-title">Vacation &amp; Unavailability Tracker</h1>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="legend-label">Members</span>
+  <div id="legend-chips" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;"></div>
+</div>
+
+<div class="month-bar">
+  <div class="month-row">
+    <button class="nav-btn" id="prev-btn">&#8592;</button>
+    <div id="month-label"></div>
+    <button class="nav-btn" id="next-btn">&#8594;</button>
+  </div>
+  <button class="nav-btn today-btn" id="today-btn" title="Jump to today">TODAY</button>
+</div>
+
+<main>
+  <div class="weekday-header" id="weekday-header"></div>
+  <div class="calendar-grid" id="calendar-grid"></div>
+  <div class="summary-section">
+    <div class="summary-card" style="--card-accent:var(--accent)">
+      <div class="summary-card-title">This month</div>
+      <div class="summary-rows" id="summary-month"></div>
+    </div>
+    <div class="summary-card" style="--card-accent:var(--accent2)">
+      <div class="summary-card-title">Full year <span id="year-badge" style="color:var(--text-dim);margin-left:4px;"></span></div>
+      <div class="summary-rows" id="summary-year"></div>
+    </div>
+  </div>
+</main>
+
+<div class="bottom-bar">
+  <button class="bottom-settings-btn" id="open-settings" title="Open settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+    <span>Settings</span>
+  </button>
+</div>
+
+<!-- DAY POPUP -->
+
+<div class="overlay" id="popup-overlay">
+  <div class="popup">
+    <div class="popup-date-label" id="popup-date-label"></div>
+    <h3 id="popup-title"></h3>
+    <div class="popup-people" id="popup-people"></div>
+    <div class="popup-note-label">Note</div>
+    <textarea class="popup-note" id="popup-note" rows="2" placeholder="e.g. Conference in Berlin…"></textarea>
+    <div class="popup-actions">
+      <button class="btn-clear" id="btn-clear">Clear day</button>
+      <button class="btn-close" id="btn-cancel">Cancel</button>
+      <button class="btn-save" id="btn-save">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS PANEL -->
+
+<div class="overlay" id="settings-overlay">
+  <div class="settings-panel">
+    <div class="settings-head">
+      <h2>Settings</h2>
+      <button class="close-x" id="close-settings">&times;</button>
+    </div>
+    <div class="settings-body">
+
+  <!-- TITLE -->
+  <div class="settings-group">
+    <div class="settings-group-title">Title</div>
+    <div class="field">
+      <label class="field-label">Title text</label>
+      <input type="text" class="text-input" id="set-title" maxlength="60">
+    </div>
+    <div class="field">
+      <label class="field-label">Title font size</label>
+      <div class="slider-row">
+        <input type="range" id="set-title-size" min="0.8" max="1.8" step="0.05">
+        <span class="slider-val" id="title-size-val"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PEOPLE -->
+  <div class="settings-group">
+    <div class="settings-group-title">Members</div>
+    <div id="people-editor"></div>
+    <div class="field" style="margin-top:14px;">
+      <label class="field-label">Members text size</label>
+      <div class="slider-row">
+        <input type="range" id="set-members-size" min="0.6" max="1.2" step="0.05">
+        <span class="slider-val" id="members-size-val"></span>
+      </div>
+    </div>
+    <p class="hint">Names and colors apply everywhere — calendar tags, legend, and summaries.</p>
+  </div>
+
+  <!-- MONTH SELECTOR -->
+  <div class="settings-group">
+    <div class="settings-group-title">Month selector</div>
+    <div class="field">
+      <label class="field-label">Month label font size</label>
+      <div class="slider-row">
+        <input type="range" id="set-month-size" min="0.7" max="1.5" step="0.05">
+        <span class="slider-val" id="month-size-val"></span>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">"Today" button size</label>
+      <div class="slider-row">
+        <input type="range" id="set-today-size" min="0.5" max="1.1" step="0.05">
+        <span class="slider-val" id="today-size-val"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO -->
+  <div class="settings-group">
+    <div class="settings-group-title">Icon / Logo</div>
+    <div class="field toggle-field">
+      <label class="field-label">Show icon in header</label>
+      <div class="toggle" id="set-logo-toggle"><div class="toggle-knob"></div></div>
+    </div>
+    <div class="field">
+      <label class="field-label">Current icon</label>
+      <div class="logo-preview-box">
+        <div class="logo-preview" id="logo-preview"></div>
+        <button class="btn-secondary" id="upload-logo-btn">Upload image…</button>
+        <button class="btn-ghost-danger" id="reset-logo-btn">Reset to default</button>
+      </div>
+      <input type="file" id="logo-file-input" accept="image/*" style="display:none">
+      <p class="hint">Upload a PNG, JPG or SVG (kept on this device only). Default is the padel bat icon.</p>
+    </div>
+  </div>
+
+  <!-- CALENDAR PREFERENCES -->
+  <div class="settings-group">
+    <div class="settings-group-title">Calendar preferences</div>
+    <div class="field toggle-field">
+      <label class="field-label">Show weekends (Sat &amp; Sun)</label>
+      <div class="toggle" id="set-show-weekends-toggle"><div class="toggle-knob"></div></div>
+    </div>
+    <div class="field">
+      <label class="field-label">Week starts on</label>
+      <div class="seg" id="set-week-start">
+        <button data-val="1">Monday</button>
+        <button data-val="0">Sunday</button>
+      </div>
+    </div>
+    <div class="field toggle-field">
+      <label class="field-label">Highlight weekends</label>
+      <div class="toggle" id="set-weekend-toggle"><div class="toggle-knob"></div></div>
+    </div>
+  </div>
+
+  <!-- GOOGLE SHEETS SYNC -->
+  <div class="settings-group">
+    <div class="settings-group-title">Google Sheets sync</div>
+    <div class="field">
+      <label class="field-label">Apps Script deployment URL</label>
+      <input type="text" class="text-input" id="set-sheets-url" placeholder="https://script.google.com/macros/s/…/exec">
+      <p class="hint">Paste the URL from Apps Script → Deploy → Manage deployments. Leave blank to use local storage only.</p>
+    </div>
+    <div class="field">
+      <label class="field-label">Your name (written to audit log)</label>
+      <input type="text" class="text-input" id="set-changed-by" placeholder="e.g. Person 1" maxlength="40">
+    </div>
+    <div class="field-row" style="gap:8px;flex-wrap:wrap;">
+      <button class="btn-secondary" id="sheets-pull-btn">↓ Pull from Sheets</button>
+      <button class="btn-secondary" id="sheets-push-btn">↑ Push all to Sheets</button>
+    </div>
+    <div id="sync-status" style="margin-top:10px;font-size:0.75rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted);min-height:18px;"></div>
+  </div>
+
+  <!-- LOCAL DATA -->
+  <div class="settings-group">
+    <div class="settings-group-title">Local data</div>
+    <div class="field-row">
+      <button class="btn-secondary" id="export-btn">Export backup (.json)</button>
+      <button class="btn-secondary" id="import-btn">Import backup</button>
+    </div>
+    <input type="file" id="import-file-input" accept="application/json" style="display:none">
+    <div class="field-row" style="margin-top:10px;">
+      <button class="btn-ghost-danger" id="wipe-btn">Erase all entries</button>
+    </div>
+    <p class="hint">Data is always cached locally first. Google Sheets is synced on every save when a URL is configured.</p>
+  </div>
+
+</div>
+<div class="settings-footer">
+  <button class="btn-secondary" id="reset-all-btn">Reset all settings</button>
+  <button class="btn-save" id="done-settings" style="margin-left:auto;">Done</button>
+</div>
+
+  </div>
+</div>
+
+<script>
+/* ---------- DEFAULTS ---------- */
+const DEFAULT_PEOPLE = [
+  { defaultName:'Person 1', color:'#f0607a' },
+  { defaultName:'Person 2', color:'#3d8ef0' },
+  { defaultName:'Person 3', color:'#00d4aa' },
+  { defaultName:'Person 4', color:'#f0b840' },
+];
+const DEFAULT_LOGO_SVG = `<svg viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="16" y="6" width="56" height="62" rx="28" fill="none" stroke="#3d8ef0" stroke-width="6.5"/>
+  <circle cx="35" cy="24" r="4.5" fill="#3d8ef0" opacity="0.55"/>
+  <circle cx="50" cy="24" r="4.5" fill="#3d8ef0" opacity="0.55"/>
+  <circle cx="65" cy="24" r="4.5" fill="#3d8ef0" opacity="0.55"/>
+  <circle cx="35" cy="38" r="4.5" fill="#3d8ef0" opacity="0.55"/>
+  <circle cx="50" cy="38" r="4.5" fill="#00d4aa" opacity="0.8"/>
+  <circle cx="65" cy="38" r="4.5" fill="#3d8ef0" opacity="0.55"/>
+  <circle cx="35" cy="52" r="4.5" fill="#3d8ef0" opacity="0.55"/>
+  <circle cx="50" cy="52" r="4.5" fill="#3d8ef0" opacity="0.55"/>
+  <circle cx="65" cy="52" r="4.5" fill="#3d8ef0" opacity="0.55"/>
+  <rect x="40" y="66" width="14" height="36" rx="7" fill="#3d8ef0"/>
+  <line x1="47" y1="73" x2="47" y2="93" stroke="rgba(10,13,20,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+</svg>`;
+const DEFAULT_SETTINGS = {
+  title: 'Vacation & Unavailability Tracker',
+  titleSize: 1.05,
+  monthSize: 0.9,
+  todaySize: 0.66,
+  membersSize: 0.82,
+  showLogo: true,
+  customLogo: null,        // dataURL string or null
+  weekStart: 1,            // 1 = Monday, 0 = Sunday
+  showWeekends: false,
+  highlightWeekends: true,
+  people: DEFAULT_PEOPLE.map(p => ({ name: p.defaultName, color: p.color })),
+  sheetsUrl : '',
+  changedBy : '',
+};
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYNAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const WD_LABELS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const today = new Date();
+
+/* ---------- STATE ---------- */
+let settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+let state = { year: today.getFullYear(), month: today.getMonth(), days: {} };
+
+function bgFor(color) {
+  // hex -> rgba 0.12
+  const h = color.replace('#','');
+  const r = parseInt(h.substring(0,2),16), g = parseInt(h.substring(2,4),16), b = parseInt(h.substring(4,6),16);
+  return rgba(${r},${g},${b},0.12);
+}
+
+/* ---------- PERSISTENCE ---------- */
+
+// ── Local storage ──────────────────────────────────────────
+function loadLocal() {
+  try {
+    const s = localStorage.getItem('vac-tracker-settings');
+    if (s) settings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), JSON.parse(s));
+  } catch(e) {}
+  try {
+    const d = localStorage.getItem('vac-tracker-days');
+    if (d) {
+      const parsed = JSON.parse(d);
+      for (const [k, v] of Object.entries(parsed))
+        state.days[k] = { people: new Set(v.people || []), note: v.note || '' };
+    }
+  } catch(e) {}
+}
+function saveSettingsLocal() {
+  try { localStorage.setItem('vac-tracker-settings', JSON.stringify(settings)); } catch(e) {}
+}
+function saveDaysLocal() {
+  const out = {};
+  for (const [k, v] of Object.entries(state.days))
+    out[k] = { people: [...v.people], note: v.note };
+  try { localStorage.setItem('vac-tracker-days', JSON.stringify(out)); } catch(e) {}
+}
+
+// ── Google Sheets API ──────────────────────────────────────
+function sheetsUrl() { return (settings.sheetsUrl || '').trim(); }
+function changedBy()  { return (settings.changedBy  || '').trim(); }
+
+function setSyncStatus(msg, ok) {
+  const el = document.getElementById('sync-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = ok === false ? 'var(--danger)' : ok === true ? 'var(--accent2)' : 'var(--text-muted)';
+}
+
+async function sheetsGet(params) {
+  const url   = sheetsUrl();
+  if (!url) throw new Error('No Sheets URL configured');
+  const query = new URLSearchParams({ ...params });
+  const res   = await fetch(${url}?${query});
+  const json  = await res.json();
+  if (!json.ok) throw new Error(json.error || 'Sheets error');
+  return json;
+}
+
+async function sheetsPost(body) {
+  const url = sheetsUrl();
+  if (!url) throw new Error('No Sheets URL configured');
+  const res  = await fetch(url, {
+    method : 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body   : JSON.stringify(body),
+  });
+  const json = await res.json();
+  if (!json.ok) throw new Error(json.error || 'Sheets error');
+  return json;
+}
+
+// Pull everything from Sheets and overwrite local state
+async function pullFromSheets() {
+  setSyncStatus('Pulling from Sheets…');
+  const data = await sheetsGet({ action: 'all' });
+
+  // settings (merge, don't overwrite sheetsUrl/changedBy)
+  const preserved = { sheetsUrl: settings.sheetsUrl, changedBy: settings.changedBy };
+  settings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), data.settings, preserved);
+
+  // members
+  if (data.members && data.members.length) {
+    settings.people = data.members.map(m => ({ name: m.name, color: m.color }));
+  }
+
+  // entries
+  state.days = {};
+  if (data.entries) {
+    for (const [k, v] of Object.entries(data.entries))
+      state.days[k] = { people: new Set(v.people || []), note: v.note || '' };
+  }
+
+  saveSettingsLocal(); saveDaysLocal();
+  applySettings(); renderWeekdayHeader(); renderLegend(); renderCalendar(); renderSummary();
+  if (document.getElementById('settings-overlay').classList.contains('open')) syncSettingsForm();
+  setSyncStatus('✓ Pulled ' + Object.keys(state.days).length + ' days from Sheets', true);
+}
+
+// Push everything local → Sheets
+async function pushAllToSheets() {
+  setSyncStatus('Pushing to Sheets…');
+
+  // settings (exclude sheetsUrl/changedBy — not stored in sheet)
+  const { sheetsUrl: _u, changedBy: _c, people: _p, ...settingsToSave } = settings;
+  await sheetsPost({ action: 'saveSettings', data: settingsToSave });
+
+  // members
+  await sheetsPost({
+    action  : 'saveMembers',
+    members : settings.people.map((p, i) => ({ id: i, name: p.name, color: p.color })),
+  });
+
+  // entries — push each day individually
+  const days = Object.entries(state.days);
+  for (const [date, v] of days) {
+    await sheetsPost({
+      action   : 'saveDay',
+      date,
+      people   : [...v.people],
+      note     : v.note || '',
+      changedBy: changedBy(),
+    });
+  }
+
+  setSyncStatus(✓ Pushed ${days.length} days to Sheets, true);
+}
+
+// Save a single day (local + Sheets if configured)
+async function saveDay(key, people, note) {
+  if (people.size === 0 && !note) {
+    delete state.days[key];
+  } else {
+    state.days[key] = { people: new Set(people), note };
+  }
+  saveDaysLocal();
+
+  if (!sheetsUrl()) return;
+  try {
+    if (people.size === 0 && !note) {
+      await sheetsPost({ action: 'clearDay', date: key, changedBy: changedBy() });
+    } else {
+      await sheetsPost({ action: 'saveDay', date: key, people: [...people], note, changedBy: changedBy() });
+    }
+    setSyncStatus('✓ Synced ' + key, true);
+  } catch(err) {
+    setSyncStatus('⚠ Local saved, Sheets failed: ' + err.message, false);
+  }
+}
+
+// Save settings (local + Sheets if configured)
+async function saveSettings(sheetsPartial) {
+  saveSettingsLocal();
+  if (!sheetsUrl() || !sheetsPartial) return;
+  try {
+    await sheetsPost({ action: 'saveSettings', data: sheetsPartial });
+  } catch(err) {
+    setSyncStatus('⚠ Settings saved locally, Sheets failed: ' + err.message, false);
+  }
+}
+
+// Save members (local + Sheets if configured)
+async function saveMembers() {
+  saveSettingsLocal();
+  if (!sheetsUrl()) return;
+  try {
+    await sheetsPost({
+      action  : 'saveMembers',
+      members : settings.people.map((p, i) => ({ id: i, name: p.name, color: p.color })),
+    });
+    setSyncStatus('✓ Members synced', true);
+  } catch(err) {
+    setSyncStatus('⚠ Members saved locally, Sheets failed: ' + err.message, false);
+  }
+}
+
+function loadAll() { loadLocal(); }
+
+function dateKey(y, m, d) {
+  return ${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')};
+}
+
+/* ---------- APPLY SETTINGS TO DOM ---------- */
+function applySettings() {
+  document.documentElement.style.setProperty('--title-size', settings.titleSize + 'rem');
+  document.documentElement.style.setProperty('--month-size', settings.monthSize + 'rem');
+  document.documentElement.style.setProperty('--today-size', settings.todaySize + 'rem');
+  document.documentElement.style.setProperty('--members-size', settings.membersSize + 'rem');
+  document.getElementById('app-title').textContent = settings.title;
+  document.title = settings.title;
+  // logo
+  const wrap = document.getElementById('logo-wrap');
+  const content = document.getElementById('logo-content');
+  wrap.classList.toggle('hidden', !settings.showLogo);
+  if (settings.customLogo) content.innerHTML = <img src="${settings.customLogo}" alt="logo">;
+  else content.innerHTML = DEFAULT_LOGO_SVG;
+}
+
+/* ---------- WEEKDAY HEADER ---------- */
+function visibleWeekdayOrder() {
+  // returns array of day-of-week indices (0=Sun..6=Sat) in display order,
+  // respecting weekStart and showWeekends
+  const order = [];
+  for (let i = 0; i < 7; i++) {
+    const idx = (settings.weekStart + i) % 7;
+    if (!settings.showWeekends && (idx === 0 || idx === 6)) continue;
+    order.push(idx);
+  }
+  return order;
+}
+
+function renderWeekdayHeader() {
+  const wh = document.getElementById('weekday-header');
+  const order = visibleWeekdayOrder();
+  const cols = order.length;
+  wh.style.gridTemplateColumns = repeat(${cols}, 1fr);
+  document.getElementById('calendar-grid').style.gridTemplateColumns = repeat(${cols}, 1fr);
+  wh.innerHTML = '';
+  order.forEach(idx => {
+    const div = document.createElement('div');
+    div.textContent = WD_LABELS[idx];
+    wh.appendChild(div);
+  });
+}
+
+/* ---------- LEGEND ---------- */
+function renderLegend() {
+  const c = document.getElementById('legend-chips');
+  c.innerHTML = '';
+  settings.people.forEach((p, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'person-chip';
+    chip.innerHTML = `<span class="person-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color};"></span>
+      <input class="person-name-input" value="${p.name}" maxlength="16" title="Click to rename"/>`;
+    chip.querySelector('input').addEventListener('change', e => {
+      settings.people[i].name = e.target.value.trim() || DEFAULT_PEOPLE[i].defaultName;
+      saveMembers(); renderLegend(); renderCalendar(); renderSummary(); renderPeopleEditor();
+    });
+    c.appendChild(chip);
+  });
+}
+
+/* ---------- CALENDAR ---------- */
+function renderCalendar() {
+  const grid = document.getElementById('calendar-grid');
+  grid.innerHTML = '';
+  document.getElementById('month-label').textContent = ${MONTHS[state.month]} ${state.year};
+  document.getElementById('year-badge').textContent = state.year;
+
+  const order = visibleWeekdayOrder();              // visible dow indices, in display order
+  const colOf = {};                                 // dow -> column position
+  order.forEach((dow, i) => { colOf[dow] = i; });
+
+  const firstDow = new Date(state.year, state.month, 1).getDay();
+  const daysInMonth = new Date(state.year, state.month + 1, 0).getDate();
+
+  // leading empty cells: position of the 1st of the month within the visible row.
+  // If the 1st falls on a hidden weekend day, no leading cells are needed (it just
+  // won't render until the first visible weekday).
+  const firstColPos = (colOf[firstDow] !== undefined) ? colOf[firstDow] : 0;
+  for (let i = 0; i < firstColPos; i++) {
+    const e = document.createElement('div'); e.className = 'day-cell empty'; grid.appendChild(e);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dow = new Date(state.year, state.month, d).getDay();
+    const isWeekend = dow === 0 || dow === 6;
+    if (isWeekend && !settings.showWeekends) continue;   // skip hidden weekend days
+
+    const key = dateKey(state.year, state.month, d);
+    const data = state.days[key] || { people: new Set(), note: '' };
+    const isToday = d === today.getDate() && state.month === today.getMonth() && state.year === today.getFullYear();
+    const cell = document.createElement('div');
+    cell.className = 'day-cell'
+      + (isToday ? ' today' : '')
+      + (isWeekend ? ' weekend' : '')
+      + (isWeekend && !settings.highlightWeekends ? ' hide-weekend-tint' : '');
+    let html = <div class="day-num">${String(d).padStart(2,'0')}${isToday ? '<span class="today-pip"></span>':''}</div><div class="day-people">;
+    data.people.forEach(pid => {
+      const p = settings.people[pid];
+      if (!p) return;
+      html += `<div class="person-tag" style="background:${bgFor(p.color)};color:${p.color};">
+        <span class="person-tag-dot" style="background:${p.color};"></span>${p.name}</div>`;
+    });
+    html += '</div>';
+    cell.innerHTML = html;
+    if (data.note) {
+      const ni = document.createElement('span');
+      ni.className = 'note-indicator'; ni.textContent = '◆'; ni.title = data.note;
+      cell.appendChild(ni);
+    }
+    cell.addEventListener('click', () => openPopup(d, key));
+    grid.appendChild(cell);
+  }
+}
+
+/* ---------- SUMMARY ---------- */
+function renderSummary() {
+  const mc = settings.people.map(() => 0), yc = settings.people.map(() => 0);
+  const mp = ${state.year}-${String(state.month+1).padStart(2,'0')}-;
+  const yp = ${state.year}-;
+  for (const [k, v] of Object.entries(state.days)) {
+    if (k.startsWith(yp)) v.people.forEach(pid => { if(yc[pid]!==undefined){ yc[pid]++; if (k.startsWith(mp)) mc[pid]++; } });
+  }
+  const makeRows = (counts) => settings.people.map((p, i) =>
+    `<div class="summary-row">
+      <span class="summary-dot" style="background:${p.color};box-shadow:0 0 5px ${p.color}55;"></span>
+      <span class="summary-name">${p.name}</span>
+      <span class="summary-count">${counts[i]}<span class="summary-unit">d</span></span>
+    </div>`).join('');
+  document.getElementById('summary-month').innerHTML = makeRows(mc);
+  document.getElementById('summary-year').innerHTML = makeRows(yc);
+}
+
+/* ---------- DAY POPUP ---------- */
+let currentKey = null, popupSelected = new Set();
+function openPopup(d, key) {
+  currentKey = key;
+  const data = state.days[key] || { people: new Set(), note: '' };
+  popupSelected = new Set(data.people);
+  const dateObj = new Date(state.year, state.month, d);
+  document.getElementById('popup-date-label').textContent = ${MONTHS[state.month]} ${state.year};
+  document.getElementById('popup-title').textContent = ${DAYNAMES[dateObj.getDay()]}, ${d} ${MONTHS[state.month]};
+  document.getElementById('popup-note').value = data.note || '';
+  const pc = document.getElementById('popup-people');
+  pc.innerHTML = '';
+  settings.people.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.className = 'popup-person-row' + (popupSelected.has(i) ? ' selected' : '');
+    row.style.setProperty('--person-color', p.color);
+    row.style.setProperty('--person-bg', bgFor(p.color));
+    row.innerHTML = `<span class="popup-person-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color};"></span>
+      <span class="popup-person-name">${p.name}</span><span class="popup-check">✓</span>`;
+    row.addEventListener('click', () => {
+      if (popupSelected.has(i)) popupSelected.delete(i); else popupSelected.add(i);
+      row.classList.toggle('selected', popupSelected.has(i));
+    });
+    pc.appendChild(row);
+  });
+  document.getElementById('popup-overlay').classList.add('open');
+}
+function closePopup() {
+  document.getElementById('popup-overlay').classList.remove('open');
+  currentKey = null;
+}
+document.getElementById('btn-cancel').addEventListener('click', closePopup);
+document.getElementById('popup-overlay').addEventListener('click', e => { if (e.target.id === 'popup-overlay') closePopup(); });
+document.getElementById('btn-clear').addEventListener('click', async () => {
+  if (currentKey) { await saveDay(currentKey, new Set(), ''); renderCalendar(); renderSummary(); closePopup(); }
+});
+document.getElementById('btn-save').addEventListener('click', async () => {
+  const note = document.getElementById('popup-note').value.trim();
+  await saveDay(currentKey, popupSelected, note);
+  renderCalendar(); renderSummary(); closePopup();
+});
+
+/* ---------- NAVIGATION ---------- */
+document.getElementById('prev-btn').addEventListener('click', () => {
+  if (--state.month < 0) { state.month = 11; state.year--; }
+  renderCalendar(); renderSummary();
+});
+document.getElementById('next-btn').addEventListener('click', () => {
+  if (++state.month > 11) { state.month = 0; state.year++; }
+  renderCalendar(); renderSummary();
+});
+document.getElementById('today-btn').addEventListener('click', () => {
+  state.year = today.getFullYear(); state.month = today.getMonth();
+  renderCalendar(); renderSummary();
+});
+
+/* ---------- SETTINGS PANEL ---------- */
+const settingsOverlay = document.getElementById('settings-overlay');
+function openSettings() {
+  syncSettingsForm();
+  settingsOverlay.classList.add('open');
+}
+function closeSettings() { settingsOverlay.classList.remove('open'); }
+document.getElementById('open-settings').addEventListener('click', openSettings);
+document.getElementById('close-settings').addEventListener('click', closeSettings);
+document.getElementById('done-settings').addEventListener('click', closeSettings);
+settingsOverlay.addEventListener('click', e => { if (e.target.id === 'settings-overlay') closeSettings(); });
+
+function renderPeopleEditor() {
+  const ed = document.getElementById('people-editor');
+  ed.innerHTML = '';
+  settings.people.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.className = 'person-edit-row';
+    row.innerHTML = `
+      <span class="person-edit-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color};"></span>
+      <input type="text" class="text-input" value="${p.name}" maxlength="16" data-pi="${i}">
+      <input type="color" class="person-color-input" value="${p.color}" data-pci="${i}" title="Pick color">
+    `;
+    row.querySelector('[data-pi]').addEventListener('input', e => {
+      settings.people[i].name = e.target.value || DEFAULT_PEOPLE[i].defaultName;
+      saveMembers(); renderLegend(); renderCalendar(); renderSummary();
+    });
+    row.querySelector('[data-pci]').addEventListener('input', e => {
+      settings.people[i].color = e.target.value;
+      row.querySelector('.person-edit-dot').style.background = e.target.value;
+      row.querySelector('.person-edit-dot').style.boxShadow = 0 0 6px ${e.target.value};
+      saveMembers(); renderLegend(); renderCalendar(); renderSummary();
+    });
+    ed.appendChild(row);
+  });
+}
+
+function setToggle(el, on) { el.classList.toggle('on', on); }
+
+function syncSettingsForm() {
+  // title
+  document.getElementById('set-title').value = settings.title;
+  document.getElementById('set-title-size').value = settings.titleSize;
+  document.getElementById('title-size-val').textContent = settings.titleSize.toFixed(2) + 'rem';
+  // month size
+  document.getElementById('set-month-size').value = settings.monthSize;
+  document.getElementById('month-size-val').textContent = settings.monthSize.toFixed(2) + 'rem';
+  document.getElementById('set-today-size').value = settings.todaySize;
+  document.getElementById('today-size-val').textContent = settings.todaySize.toFixed(2) + 'rem';
+  document.getElementById('set-members-size').value = settings.membersSize;
+  document.getElementById('members-size-val').textContent = settings.membersSize.toFixed(2) + 'rem';
+  // people
+  renderPeopleEditor();
+  // logo
+  setToggle(document.getElementById('set-logo-toggle'), settings.showLogo);
+  updateLogoPreview();
+  // calendar prefs
+  document.querySelectorAll('#set-week-start button').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.val) === settings.weekStart);
+  });
+  setToggle(document.getElementById('set-show-weekends-toggle'), settings.showWeekends);
+  setToggle(document.getElementById('set-weekend-toggle'), settings.highlightWeekends);
+  // sheets
+  document.getElementById('set-sheets-url').value = settings.sheetsUrl || '';
+  document.getElementById('set-changed-by').value = settings.changedBy || '';
+  document.getElementById('sync-status').textContent = '';
+}
+
+function updateLogoPreview() {
+  const prev = document.getElementById('logo-preview');
+  if (settings.customLogo) prev.innerHTML = <img src="${settings.customLogo}" alt="logo">;
+  else prev.innerHTML = DEFAULT_LOGO_SVG;
+}
+
+/* title */
+document.getElementById('set-title').addEventListener('input', e => {
+  settings.title = e.target.value || 'Untitled';
+  saveSettings({ title: settings.title }); applySettings();
+});
+document.getElementById('set-title-size').addEventListener('input', e => {
+  settings.titleSize = parseFloat(e.target.value);
+  document.getElementById('title-size-val').textContent = settings.titleSize.toFixed(2) + 'rem';
+  saveSettings({ titleSize: settings.titleSize }); applySettings();
+});
+/* month size */
+document.getElementById('set-month-size').addEventListener('input', e => {
+  settings.monthSize = parseFloat(e.target.value);
+  document.getElementById('month-size-val').textContent = settings.monthSize.toFixed(2) + 'rem';
+  saveSettings({ monthSize: settings.monthSize }); applySettings();
+});
+/* today button size */
+document.getElementById('set-today-size').addEventListener('input', e => {
+  settings.todaySize = parseFloat(e.target.value);
+  document.getElementById('today-size-val').textContent = settings.todaySize.toFixed(2) + 'rem';
+  saveSettings({ todaySize: settings.todaySize }); applySettings();
+});
+/* members text size */
+document.getElementById('set-members-size').addEventListener('input', e => {
+  settings.membersSize = parseFloat(e.target.value);
+  document.getElementById('members-size-val').textContent = settings.membersSize.toFixed(2) + 'rem';
+  saveSettings({ membersSize: settings.membersSize }); applySettings();
+});
+/* logo toggle */
+document.getElementById('set-logo-toggle').addEventListener('click', () => {
+  settings.showLogo = !settings.showLogo;
+  setToggle(document.getElementById('set-logo-toggle'), settings.showLogo);
+  saveSettings({ showLogo: settings.showLogo }); applySettings();
+});
+/* logo upload */
+document.getElementById('upload-logo-btn').addEventListener('click', () => {
+  document.getElementById('logo-file-input').click();
+});
+document.getElementById('logo-file-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 500 * 1024) { alert('Please use an image under 500 KB.'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    settings.customLogo = ev.target.result;
+    saveSettings({ customLogo: settings.customLogo }); applySettings(); updateLogoPreview();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+document.getElementById('reset-logo-btn').addEventListener('click', () => {
+  settings.customLogo = null;
+  saveSettings({ customLogo: '' }); applySettings(); updateLogoPreview();
+});
+/* show weekends toggle */
+document.getElementById('set-show-weekends-toggle').addEventListener('click', () => {
+  settings.showWeekends = !settings.showWeekends;
+  setToggle(document.getElementById('set-show-weekends-toggle'), settings.showWeekends);
+  saveSettings({ showWeekends: settings.showWeekends }); renderWeekdayHeader(); renderCalendar();
+});
+/* week start */
+document.querySelectorAll('#set-week-start button').forEach(b => {
+  b.addEventListener('click', () => {
+    settings.weekStart = parseInt(b.dataset.val);
+    document.querySelectorAll('#set-week-start button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    saveSettings({ weekStart: settings.weekStart }); renderWeekdayHeader(); renderCalendar();
+  });
+});
+/* weekend highlight toggle */
+document.getElementById('set-weekend-toggle').addEventListener('click', () => {
+  settings.highlightWeekends = !settings.highlightWeekends;
+  setToggle(document.getElementById('set-weekend-toggle'), settings.highlightWeekends);
+  saveSettings({ highlightWeekends: settings.highlightWeekends }); renderCalendar();
+});
+
+/* ---------- GOOGLE SHEETS SYNC CONTROLS ---------- */
+document.getElementById('set-sheets-url').addEventListener('change', e => {
+  settings.sheetsUrl = e.target.value.trim();
+  saveSettingsLocal();
+});
+document.getElementById('set-changed-by').addEventListener('change', e => {
+  settings.changedBy = e.target.value.trim();
+  saveSettingsLocal();
+});
+document.getElementById('sheets-pull-btn').addEventListener('click', async () => {
+  try { await pullFromSheets(); }
+  catch(err) { setSyncStatus('✗ Pull failed: ' + err.message, false); }
+});
+document.getElementById('sheets-push-btn').addEventListener('click', async () => {
+  try { await pushAllToSheets(); }
+  catch(err) { setSyncStatus('✗ Push failed: ' + err.message, false); }
+});
+
+/* ---------- LOCAL DATA: EXPORT / IMPORT / WIPE ---------- */
+document.getElementById('export-btn').addEventListener('click', () => {
+  const daysOut = {};
+  for (const [k, v] of Object.entries(state.days)) daysOut[k] = { people: [...v.people], note: v.note };
+  const blob = new Blob([JSON.stringify({ settings, days: daysOut }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = vacation-tracker-backup-${new Date().toISOString().slice(0,10)}.json;
+  a.click();
+});
+document.getElementById('import-btn').addEventListener('click', () => {
+  document.getElementById('import-file-input').click();
+});
+document.getElementById('import-file-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      if (parsed.settings) settings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), parsed.settings);
+      state.days = {};
+      if (parsed.days) for (const [k, v] of Object.entries(parsed.days))
+        state.days[k] = { people: new Set(v.people || []), note: v.note || '' };
+      saveSettingsLocal(); saveDaysLocal();
+      applySettings(); renderWeekdayHeader(); renderLegend(); renderCalendar(); renderSummary(); syncSettingsForm();
+      alert('Backup imported successfully.');
+    } catch(err) { alert('Could not read that file — make sure it is a valid backup.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+document.getElementById('wipe-btn').addEventListener('click', async () => {
+  if (!confirm('Erase ALL calendar entries? Settings will be kept. This cannot be undone.')) return;
+  state.days = {};
+  saveDaysLocal(); renderCalendar(); renderSummary();
+  if (sheetsUrl()) {
+    try {
+      await sheetsPost({ action: 'wipeEntries', changedBy: changedBy() });
+      setSyncStatus('✓ All entries wiped from Sheets too', true);
+    } catch(err) {
+      setSyncStatus('⚠ Local wiped, Sheets failed: ' + err.message, false);
+    }
+  }
+});
+document.getElementById('reset-all-btn').addEventListener('click', () => {
+  if (!confirm('Reset all settings to defaults? Your calendar entries will be kept.')) return;
+  const preserved = { sheetsUrl: settings.sheetsUrl, changedBy: settings.changedBy };
+  settings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), preserved);
+  saveSettingsLocal();
+  applySettings(); renderWeekdayHeader(); renderLegend(); renderCalendar(); renderSummary(); syncSettingsForm();
+});
+
+/* keyboard: Esc closes panels */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closePopup(); closeSettings(); }
+});
+
+/* ---------- INIT ---------- */
+loadAll();
+applySettings();
+renderWeekdayHeader();
+renderLegend();
+renderCalendar();
+renderSummary();
+</script>
+
+</body>
+</html>
