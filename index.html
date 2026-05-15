@@ -94,12 +94,9 @@
   .popup-note{width:100%;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:'Inter',sans-serif;font-size:0.85rem;color:var(--text);background:var(--surface);resize:none;outline:none;transition:border-color 0.15s;margin-bottom:18px;}
   .popup-note:focus{border-color:var(--accent);}
   .popup-note::placeholder{color:var(--text-muted);}
-  .person-tag-name{flex-shrink:0;}
-  .person-tag-note{opacity:0.6;font-size:0.6rem;margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .person-entry-wrap{margin-bottom:6px;}
-  .person-note-row{padding:3px 14px 0 36px;}
-  .person-note-row.dimmed .person-note-input{opacity:0.35;}
-  .person-note-input{width:100%;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.78rem;padding:4px 2px;outline:none;transition:border-color 0.15s,opacity 0.15s;}
+  .person-note-wrap{overflow:hidden;max-height:0;transition:max-height 0.2s ease;padding:0 0 0 34px;}
+  .person-note-wrap.open{max-height:80px;padding-bottom:4px;}
+  .person-note-input{width:100%;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.78rem;padding:4px 2px;outline:none;transition:border-color 0.15s;}
   .person-note-input:focus{border-bottom-color:var(--accent);color:var(--text);}
   .person-note-input::placeholder{color:var(--text-muted);}
   .popup-actions{display:flex;gap:8px;justify-content:flex-end;align-items:center;}
@@ -501,7 +498,7 @@ function renderCalendar(){
     const cell=document.createElement('div');
     cell.className='day-cell'+(isToday?' today':'')+(isWeekend?' weekend':'');
     let html=`<div class="day-num">${String(d).padStart(2,'0')}${isToday?'<span class="today-pip"></span>':''}</div><div class="day-people">`;
-    data.people.forEach(pid=>{const p=settings.people[pid];if(!p)return;const note=data.notes&&data.notes[pid]?data.notes[pid]:'';html+=`<div class="person-tag" style="background:${bgFor(p.color)};color:${p.color};"><span class="person-tag-dot" style="background:${p.color};"></span><span class="person-tag-name">${p.name}</span>${note?`<span class="person-tag-note">${note}</span>`:''}</div>`;});
+    data.people.forEach(pid=>{const p=settings.people[pid];if(!p)return;const n=(data.notes&&data.notes[pid])?` — ${data.notes[pid]}`:'';html+=`<div class="person-tag" style="background:${bgFor(p.color)};color:${p.color};" title="${p.name}${n}"><span class="person-tag-dot" style="background:${p.color};"></span>${p.name}${data.notes&&data.notes[pid]?'<span style="opacity:0.6;font-size:0.6rem;margin-left:3px;">◆</span>':''}</div>`;});
     html+='</div>';cell.innerHTML=html;
     const hasNote=data.notes&&Object.keys(data.notes).length>0;
     if(hasNote){const ni=document.createElement('span');ni.className='note-indicator';ni.textContent='◆';ni.title=Object.entries(data.notes).map(([pid,n])=>`${settings.people[pid]?.name||pid}: ${n}`).join('\n');cell.appendChild(ni);}
@@ -534,37 +531,22 @@ function openPopup(d,key){
   settings.people.forEach((p,i)=>{
     const isSelected=popupSelected.has(i);
     const existingNote=(data.notes&&data.notes[i])||'';
-    const wrap=document.createElement('div');wrap.className='person-entry-wrap';
-
-    // Person row
+    const wrap=document.createElement('div');wrap.style.marginBottom='4px';
     const row=document.createElement('div');
     row.className='popup-person-row'+(isSelected?' selected':'');
     row.style.setProperty('--person-color',p.color);row.style.setProperty('--person-bg',bgFor(p.color));
     row.innerHTML=`<span class="popup-person-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color};"></span><span class="popup-person-name">${p.name}</span><span class="popup-check">✓</span>`;
-
-    // Note input — always visible, dimmed when person not selected
-    const noteRow=document.createElement('div');
-    noteRow.className='person-note-row'+(isSelected?'':' dimmed');
+    const noteWrap=document.createElement('div');
+    noteWrap.className='person-note-wrap'+(isSelected?' open':'');
     const noteInput=document.createElement('input');
     noteInput.type='text';noteInput.className='person-note-input';
     noteInput.placeholder=`Note for ${p.name}…`;noteInput.value=existingNote;noteInput.dataset.pid=i;
-    // Clicking the note row selects the person too
-    noteInput.addEventListener('focus',()=>{
-      if(!popupSelected.has(i)){
-        popupSelected.add(i);row.classList.add('selected');noteRow.classList.remove('dimmed');
-      }
-    });
-    noteRow.appendChild(noteInput);
-
+    noteWrap.appendChild(noteInput);
     row.addEventListener('click',()=>{
-      if(popupSelected.has(i)){
-        popupSelected.delete(i);row.classList.remove('selected');noteRow.classList.add('dimmed');
-      } else {
-        popupSelected.add(i);row.classList.add('selected');noteRow.classList.remove('dimmed');
-      }
+      if(popupSelected.has(i)){popupSelected.delete(i);row.classList.remove('selected');noteWrap.classList.remove('open');}
+      else{popupSelected.add(i);row.classList.add('selected');noteWrap.classList.add('open');setTimeout(()=>noteInput.focus(),210);}
     });
-
-    wrap.appendChild(row);wrap.appendChild(noteRow);pc.appendChild(wrap);
+    wrap.appendChild(row);wrap.appendChild(noteWrap);pc.appendChild(wrap);
   });
   document.getElementById('popup-overlay').classList.add('open');
 }
