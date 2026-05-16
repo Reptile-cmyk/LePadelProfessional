@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vacation & Unavailability Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0a0d14;--bg2:#0f1520;--bg3:#141c2e;--surface:#1a2236;--surface2:#1f2940;
@@ -12,9 +12,10 @@
     --accent:#3d8ef0;--accent2:#00d4aa;--text:#e2e8f8;--text-dim:#7a8aaa;
     --text-muted:#3d4a66;--danger:#f0607a;
     --title-size:1.05rem;--month-size:0.9rem;--today-size:0.66rem;--members-size:0.82rem;
+    --tag-size:0.67rem;--summary-size:0.82rem;--ui-font:'Inter',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  body{font-family:var(--ui-font);background:var(--bg);color:var(--text);min-height:100vh;
     background-image:radial-gradient(ellipse 60% 40% at 85% 0%,rgba(61,142,240,0.07) 0%,transparent 60%),
     radial-gradient(ellipse 40% 30% at 10% 100%,rgba(0,212,170,0.05) 0%,transparent 50%);}
 
@@ -61,7 +62,7 @@
   /* ── MONTH BAR ── */
   .month-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:var(--bg2);border-bottom:1px solid var(--border);}
   .month-row{display:flex;align-items:center;gap:10px;}
-  .today-btn{width:auto!important;font-size:var(--today-size);font-family:'JetBrains Mono',monospace;letter-spacing:0.1em;padding:6px 14px;}
+  .today-btn{width:auto!important;font-size:var(--today-size)!important;font-family:'JetBrains Mono',monospace;letter-spacing:0.1em;padding:0.4em 1.1em;line-height:2;}
   .month-bar-left{display:flex;align-items:center;}
   .month-bar-center{display:flex;align-items:center;}
   .month-bar-right{display:flex;align-items:center;}
@@ -88,23 +89,23 @@
   .day-cell.today .day-num{color:var(--accent);}
   .today-pip{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);}
   .day-people{display:flex;flex-direction:column;gap:2px;}
-  .person-tag{display:flex;align-items:center;gap:4px;border-radius:4px;padding:2px 6px 2px 5px;font-size:0.67rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .person-tag{display:flex;align-items:center;gap:4px;border-radius:4px;padding:2px 6px 2px 5px;font-size:var(--tag-size);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .person-tag-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
   .note-indicator{position:absolute;top:6px;right:7px;font-size:0.55rem;color:var(--accent2);}
 
   /* ── SUMMARY ── */
   .summary-section{margin-top:20px;}
-  .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 20px;}
-  .summary-card-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+  .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 24px;}
+  .summary-card-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;}
   .summary-card-title::before{content:'';display:block;width:3px;height:10px;border-radius:2px;background:var(--card-accent,var(--accent));}
-  .summary-rows{display:flex;flex-direction:column;gap:7px;}
-  .summary-row{display:flex;align-items:center;gap:10px;}
-  .summary-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .summary-name{font-size:0.82rem;color:var(--text);flex-shrink:0;font-weight:500;}
-  .summary-counts{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);margin-left:4px;}
-  .summary-counts .sep{margin:0 4px;opacity:0.3;}
-  .summary-count-val{color:var(--text);font-weight:600;}
-  .summary-unit{font-size:0.66rem;color:var(--text-muted);margin-left:1px;}
+  .summary-rows{display:flex;flex-direction:column;gap:10px;}
+  .summary-row{display:flex;align-items:center;gap:12px;}
+  .summary-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .summary-name{font-size:var(--summary-size);color:var(--text);flex-shrink:0;font-weight:600;min-width:80px;}
+  .summary-counts{font-family:'JetBrains Mono',monospace;font-size:var(--summary-size);color:var(--text-dim);margin-left:4px;}
+  .summary-counts .sep{margin:0 6px;opacity:0.3;}
+  .summary-count-val{color:var(--text);font-weight:700;}
+  .summary-unit{font-size:calc(var(--summary-size) * 0.85);color:var(--text-muted);margin-left:1px;}
 
   /* ── BOTTOM BAR ── */
   .bottom-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 28px 40px;}
@@ -203,7 +204,10 @@
   .seg button{flex:1;padding:6px 10px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:500;transition:all 0.15s;}
   .seg button.active{background:var(--accent);color:#fff;}
 
-  /* Weekday three-state controls */
+  .font-picker{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+  .font-option{padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:0.8rem;cursor:pointer;transition:all 0.15s;}
+  .font-option:hover{border-color:var(--border-bright);background:var(--surface2);}
+  .font-option.active{border-color:var(--accent);color:var(--accent);background:rgba(61,142,240,0.08);}
   .weekday-checks{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
   .wd-row{display:flex;align-items:center;gap:10px;}
   .wd-name{font-size:0.78rem;color:var(--text-dim);font-weight:500;width:72px;flex-shrink:0;}
@@ -361,16 +365,30 @@
       </div>
 
       <div class="settings-group">
+        <div class="settings-group-title">Font</div>
+        <div class="field">
+          <label class="field-label">Interface font</label>
+          <div class="font-picker" id="font-picker"></div>
+        </div>
+      </div>
+
+      <div class="settings-group">
         <div class="settings-group-title">Members</div>
         <div id="people-editor"></div>
-        <div class="field" style="margin-top:14px;"><label class="field-label">Members text size</label><div class="slider-row"><input type="range" id="set-members-size" min="0.6" max="1.2" step="0.05"><span class="slider-val" id="members-size-val"></span></div></div>
+        <div class="field" style="margin-top:14px;"><label class="field-label">Members bar text size</label><div class="slider-row"><input type="range" id="set-members-size" min="0.6" max="1.2" step="0.05"><span class="slider-val" id="members-size-val"></span></div></div>
+        <div class="field"><label class="field-label">Calendar entry tag size</label><div class="slider-row"><input type="range" id="set-tag-size" min="0.5" max="1.1" step="0.05"><span class="slider-val" id="tag-size-val"></span></div></div>
         <p class="hint">Names and colors apply everywhere — calendar, legend and summary.</p>
       </div>
 
       <div class="settings-group">
         <div class="settings-group-title">Month selector</div>
         <div class="field"><label class="field-label">Month label font size</label><div class="slider-row"><input type="range" id="set-month-size" min="0.7" max="1.5" step="0.05"><span class="slider-val" id="month-size-val"></span></div></div>
-        <div class="field"><label class="field-label">"Today" button size</label><div class="slider-row"><input type="range" id="set-today-size" min="0.5" max="1.1" step="0.05"><span class="slider-val" id="today-size-val"></span></div></div>
+        <div class="field"><label class="field-label">"Today" button size</label><div class="slider-row"><input type="range" id="set-today-size" min="0.5" max="1.3" step="0.05"><span class="slider-val" id="today-size-val"></span></div></div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Days away summary</div>
+        <div class="field"><label class="field-label">Summary text size</label><div class="slider-row"><input type="range" id="set-summary-size" min="0.65" max="1.4" step="0.05"><span class="slider-val" id="summary-size-val"></span></div></div>
       </div>
 
       <div class="settings-group">
@@ -442,6 +460,7 @@ const DEFAULT_LOGO_SVG = `<svg viewBox="0 0 100 110" fill="none" xmlns="http://w
 let settings = {
   title:'Vacation & Unavailability Tracker',
   titleSize:1.05, monthSize:0.9, todaySize:0.66, membersSize:0.82,
+  tagSize:0.67, summarySize:0.82, uiFont:'Inter',
   showLogo:true, customLogo:null,
   weekStart:1, showWeekends:false, highlightWeekends:true,
   weekdayModes:{0:'normal',1:'normal',2:'normal',3:'normal',4:'normal',5:'normal',6:'normal'},
@@ -537,7 +556,8 @@ function stateToJson(){
     settings:{
       title:settings.title, titleSize:settings.titleSize,
       monthSize:settings.monthSize, todaySize:settings.todaySize,
-      membersSize:settings.membersSize, showLogo:settings.showLogo,
+      membersSize:settings.membersSize, tagSize:settings.tagSize,
+      summarySize:settings.summarySize, uiFont:settings.uiFont, showLogo:settings.showLogo,
       weekStart:settings.weekStart, showWeekends:settings.showWeekends,
       highlightWeekends:settings.highlightWeekends,
       weekdayModes:settings.weekdayModes,
@@ -555,6 +575,9 @@ function jsonToState(data){
     if(s.monthSize)       settings.monthSize=Number(s.monthSize);
     if(s.todaySize)       settings.todaySize=Number(s.todaySize);
     if(s.membersSize)     settings.membersSize=Number(s.membersSize);
+    if(s.tagSize)         settings.tagSize=Number(s.tagSize);
+    if(s.summarySize)     settings.summarySize=Number(s.summarySize);
+    if(s.uiFont)          settings.uiFont=s.uiFont;
     if(s.showLogo!==undefined)         settings.showLogo=s.showLogo;
     if(s.weekStart!==undefined)        settings.weekStart=Number(s.weekStart);
     if(s.showWeekends!==undefined)     settings.showWeekends=s.showWeekends;
@@ -636,10 +659,14 @@ async function saveDay(key,people,notes){
 function dateKey(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
 
 function applySettings(){
-  document.documentElement.style.setProperty('--title-size',settings.titleSize+'rem');
-  document.documentElement.style.setProperty('--month-size',settings.monthSize+'rem');
-  document.documentElement.style.setProperty('--today-size',settings.todaySize+'rem');
-  document.documentElement.style.setProperty('--members-size',settings.membersSize+'rem');
+  const r=document.documentElement;
+  r.style.setProperty('--title-size',settings.titleSize+'rem');
+  r.style.setProperty('--month-size',settings.monthSize+'rem');
+  r.style.setProperty('--today-size',settings.todaySize+'rem');
+  r.style.setProperty('--members-size',settings.membersSize+'rem');
+  r.style.setProperty('--tag-size',settings.tagSize+'rem');
+  r.style.setProperty('--summary-size',settings.summarySize+'rem');
+  r.style.setProperty('--ui-font',`'${settings.uiFont}',sans-serif`);
   document.getElementById('app-title').textContent=settings.title;
   document.title=settings.title;
   const wrap=document.getElementById('logo-wrap');
@@ -654,8 +681,9 @@ function visibleWeekdayOrder(){
     const idx=(settings.weekStart+i)%7;
     const isWeekend=idx===0||idx===6;
     const mode=settings.weekdayModes[idx]||'normal';
-    if(mode==='hide')continue;
-    if(isWeekend&&!settings.showWeekends)continue;
+    if(mode==='hide') continue;
+    // For weekends: show if showWeekends is on OR if mode is explicitly dim (user set it)
+    if(isWeekend && !settings.showWeekends && mode==='normal') continue;
     o.push(idx);
   }
   return o;
@@ -689,9 +717,9 @@ function renderCalendar(){
   for(let d=1;d<=daysInMonth;d++){
     const dow=new Date(state.year,state.month,d).getDay();
     const isWeekend=dow===0||dow===6;
-    if(isWeekend&&!settings.showWeekends)continue;
     const mode=settings.weekdayModes[dow]||'normal';
-    if(mode==='hide')continue;
+    if(mode==='hide') continue;
+    if(isWeekend && !settings.showWeekends && mode==='normal') continue;
     const isDimmed=mode==='dim';
     const key=dateKey(state.year,state.month,d);
     const data=state.days[key]||{people:new Set(),notes:{}};
@@ -933,6 +961,26 @@ function renderPeopleEditor(){
   });
 }
 
+const FONTS = ['Inter','Roboto','Poppins','Nunito','DM Sans','Outfit','Raleway'];
+
+function buildFontPicker(){
+  const container=document.getElementById('font-picker');
+  container.innerHTML='';
+  FONTS.forEach(f=>{
+    const btn=document.createElement('button');
+    btn.textContent=f;
+    btn.className='font-option'+(settings.uiFont===f?' active':'');
+    btn.style.fontFamily=`'${f}',sans-serif`;
+    btn.addEventListener('click',async()=>{
+      settings.uiFont=f;
+      container.querySelectorAll('.font-option').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      applySettings();await persistAll();
+    });
+    container.appendChild(btn);
+  });
+}
+
 function setToggle(el,on){el.classList.toggle('on',on);}
 
 function syncSettingsForm(){
@@ -945,7 +993,12 @@ function syncSettingsForm(){
   document.getElementById('today-size-val').textContent=settings.todaySize.toFixed(2)+'rem';
   document.getElementById('set-members-size').value=settings.membersSize;
   document.getElementById('members-size-val').textContent=settings.membersSize.toFixed(2)+'rem';
+  document.getElementById('set-tag-size').value=settings.tagSize;
+  document.getElementById('tag-size-val').textContent=settings.tagSize.toFixed(2)+'rem';
+  document.getElementById('set-summary-size').value=settings.summarySize;
+  document.getElementById('summary-size-val').textContent=settings.summarySize.toFixed(2)+'rem';
   renderPeopleEditor();
+  buildFontPicker();
   setToggle(document.getElementById('set-logo-toggle'),settings.showLogo);
   updateLogoPreview();
   document.querySelectorAll('#set-week-start button').forEach(b=>{
@@ -967,6 +1020,8 @@ document.getElementById('set-title-size').addEventListener('input',async e=>{set
 document.getElementById('set-month-size').addEventListener('input',async e=>{settings.monthSize=parseFloat(e.target.value);document.getElementById('month-size-val').textContent=settings.monthSize.toFixed(2)+'rem';applySettings();await persistAll();});
 document.getElementById('set-today-size').addEventListener('input',async e=>{settings.todaySize=parseFloat(e.target.value);document.getElementById('today-size-val').textContent=settings.todaySize.toFixed(2)+'rem';applySettings();await persistAll();});
 document.getElementById('set-members-size').addEventListener('input',async e=>{settings.membersSize=parseFloat(e.target.value);document.getElementById('members-size-val').textContent=settings.membersSize.toFixed(2)+'rem';applySettings();await persistAll();});
+document.getElementById('set-tag-size').addEventListener('input',async e=>{settings.tagSize=parseFloat(e.target.value);document.getElementById('tag-size-val').textContent=settings.tagSize.toFixed(2)+'rem';applySettings();await persistAll();});
+document.getElementById('set-summary-size').addEventListener('input',async e=>{settings.summarySize=parseFloat(e.target.value);document.getElementById('summary-size-val').textContent=settings.summarySize.toFixed(2)+'rem';applySettings();await persistAll();});
 document.getElementById('set-logo-toggle').addEventListener('click',async()=>{settings.showLogo=!settings.showLogo;setToggle(document.getElementById('set-logo-toggle'),settings.showLogo);applySettings();await persistAll();});
 document.getElementById('upload-logo-btn').addEventListener('click',()=>document.getElementById('logo-file-input').click());
 document.getElementById('logo-file-input').addEventListener('change',e=>{
@@ -999,6 +1054,7 @@ document.getElementById('wipe-btn').addEventListener('click',async()=>{
 document.getElementById('reset-all-btn').addEventListener('click',async()=>{
   if(!confirm('Reset all display settings to defaults?'))return;
   Object.assign(settings,{titleSize:1.05,monthSize:0.9,todaySize:0.66,membersSize:0.82,
+    tagSize:0.67,summarySize:0.82,uiFont:'Inter',
     showLogo:true,showWeekends:false,highlightWeekends:true,weekStart:1,
     weekdayModes:{0:'normal',1:'normal',2:'normal',3:'normal',4:'normal',5:'normal',6:'normal'},customLogo:null});
   applySettings();renderWeekdayHeader();renderLegend();renderCalendar();renderSummary();
