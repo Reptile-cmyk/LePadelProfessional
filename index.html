@@ -101,42 +101,38 @@
   /* ── SUMMARY ── */
   .summary-section{margin-top:20px;}
   .summary-card{
-    background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%);
-    border:1px solid var(--border);border-radius:14px;padding:20px 24px;
+    background:linear-gradient(160deg,rgba(15,21,32,0.95) 0%,rgba(10,13,20,0.98) 100%);
+    border:1px solid rgba(61,142,240,0.2);border-radius:16px;padding:24px 28px 28px;
     position:relative;overflow:hidden;
   }
   .summary-card::before{
     content:'';position:absolute;top:0;left:0;right:0;height:1px;
-    background:linear-gradient(90deg,transparent,rgba(61,142,240,0.4),rgba(0,212,170,0.3),transparent);
+    background:linear-gradient(90deg,transparent,rgba(61,142,240,0.5),rgba(0,212,170,0.4),transparent);
   }
   .summary-card-title{
     font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;
-    letter-spacing:0.16em;color:var(--text-muted);margin-bottom:16px;
+    letter-spacing:0.18em;color:var(--text-muted);margin-bottom:20px;
     display:flex;align-items:center;justify-content:center;gap:8px;
   }
   .summary-card-title::before{content:'';display:block;width:3px;height:8px;border-radius:2px;background:var(--accent);}
-  #year-badge{color:var(--accent);opacity:0.7;letter-spacing:0.16em;}
+  #year-badge{color:var(--accent);letter-spacing:0.18em;}
 
-  /* Responsive body — side by side on wide, stacked on narrow */
-  .summary-body{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;}
-  .summary-rows{display:flex;flex-direction:column;gap:8px;flex:1;min-width:180px;}
-  .pie-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
-  #pie-canvas{display:block;filter:drop-shadow(0 2px 12px rgba(0,0,0,0.5));}
-
-  /* Stack pie below rows on narrow screens */
-  @media(max-width:520px){
-    .summary-body{flex-direction:column;gap:20px;align-items:center;}
-    .summary-rows{min-width:unset;width:100%;}
-    .pie-col{width:100%;align-items:center;}
-  }
-  .summary-row{display:flex;align-items:center;gap:10px;}
-  .summary-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-  .summary-name{font-size:var(--summary-size);color:var(--text);font-weight:600;-webkit-font-smoothing:antialiased;white-space:nowrap;min-width:72px;}
-  .summary-divider{width:1px;height:14px;background:var(--border-bright);flex-shrink:0;margin:0 2px;}
-  .summary-stat{display:flex;align-items:baseline;gap:3px;}
-  .summary-stat-label{font-family:'JetBrains Mono',monospace;font-size:calc(var(--summary-size) * 0.82);color:var(--text-muted);letter-spacing:0.04em;}
+  /* Always stacked — rows then separator then pie */
+  .summary-body{display:flex;flex-direction:column;align-items:stretch;}
+  .summary-rows{display:flex;flex-direction:column;gap:14px;margin-bottom:0;}
+  .summary-row{display:flex;align-items:center;gap:0;}
+  .summary-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-right:12px;}
+  .summary-name{font-size:var(--summary-size);color:var(--text);font-weight:600;-webkit-font-smoothing:antialiased;white-space:nowrap;min-width:80px;margin-right:8px;}
+  .summary-divider{width:1px;height:18px;background:rgba(99,130,200,0.25);flex-shrink:0;margin:0 14px;}
+  .summary-stat{display:inline-flex;align-items:baseline;gap:3px;margin-right:20px;}
+  .summary-stat:last-child{margin-right:0;}
+  .summary-stat-label{font-family:'JetBrains Mono',monospace;font-size:calc(var(--summary-size) * 0.82);color:var(--text-muted);letter-spacing:0.04em;margin-right:4px;}
   .summary-stat-val{font-family:'JetBrains Mono',monospace;font-size:var(--summary-size);color:var(--text);font-weight:700;-webkit-font-smoothing:antialiased;}
-  .summary-stat-unit{font-size:calc(var(--summary-size) * 0.75);color:var(--text-muted);}
+
+  /* Pie section */
+  .pie-separator{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(61,142,240,0.25),rgba(0,212,170,0.2),transparent);margin:24px 0;}
+  .pie-col{display:flex;flex-direction:column;align-items:center;}
+  #pie-canvas{display:block;}
 
   /* ── BOTTOM BAR ── */
   .bottom-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 28px 40px;}
@@ -157,6 +153,9 @@
   .popup{width:320px;}
   .range-popup{width:360px;}
   .overlay.open .popup,.overlay.open .range-popup{transform:translateY(0) scale(1);}
+  @media(max-width:480px){
+    .popup,.range-popup{padding:20px 16px 18px;border-radius:12px;}
+  }
   .popup-date-label{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;}
   .popup h3{font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:18px;}
   .popup-people{display:flex;flex-direction:column;gap:4px;margin-bottom:20px;}
@@ -183,8 +182,12 @@
   .btn-clear:hover{background:rgba(240,96,122,0.16);}
 
   /* RANGE */
-  .range-date-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-  .range-date-field{flex:1;min-width:120px;display:flex;flex-direction:column;gap:5px;}
+  .range-date-row{display:flex;gap:10px;margin-bottom:14px;}
+  .range-date-field{flex:1;display:flex;flex-direction:column;gap:5px;}
+  @media(max-width:480px){
+    .range-date-row{flex-direction:column;}
+    .range-date-field{width:100%;}
+  }
   .range-date-label{font-size:0.68rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);}
   .range-date-input,.range-note-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;width:100%;transition:border-color 0.15s;}
   .range-date-input:focus,.range-note-input:focus{border-color:var(--accent);}
@@ -343,12 +346,13 @@
     <div class="weekday-header" id="weekday-header"></div>
     <div class="calendar-grid" id="calendar-grid"></div>
     <div class="summary-section">
-      <div class="summary-card" style="--card-accent:var(--accent)">
+      <div class="summary-card">
         <div class="summary-card-title">Days away <span id="year-badge"></span></div>
         <div class="summary-body">
           <div class="summary-rows" id="summary-combined"></div>
+          <div class="pie-separator"></div>
           <div class="pie-col">
-            <canvas id="pie-canvas" width="180" height="180"></canvas>
+            <canvas id="pie-canvas" width="260" height="260"></canvas>
           </div>
         </div>
       </div>
@@ -838,73 +842,98 @@ function renderCalendar(){
 function drawPie(counts){
   const canvas=document.getElementById('pie-canvas');
   if(!canvas)return;
-  const ctx=canvas.getContext('2d');
   const dpr=window.devicePixelRatio||1;
-  const SIZE=180;
+  const SIZE=220;
   canvas.width=SIZE*dpr;canvas.height=SIZE*dpr;
   canvas.style.width=SIZE+'px';canvas.style.height=SIZE+'px';
+  ctx=canvas.getContext('2d');
   ctx.scale(dpr,dpr);
-  const cx=SIZE/2,cy=SIZE/2,r=SIZE/2-8;
+  const cx=SIZE/2,cy=SIZE/2,r=SIZE/2-30;
   ctx.clearRect(0,0,SIZE,SIZE);
 
-  const raw=counts.map(c=>c);
+  const raw=counts.slice();
   const total=raw.reduce((a,b)=>a+b,0);
+
+  // Decorative outer rings
+  [r+18,r+26].forEach((ri,idx)=>{
+    ctx.beginPath();ctx.arc(cx,cy,ri,0,Math.PI*2);
+    ctx.strokeStyle=idx===0?'rgba(61,142,240,0.18)':'rgba(61,142,240,0.07)';
+    ctx.lineWidth=idx===0?1.5:1;ctx.stroke();
+  });
 
   if(total===0){
     ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
-    ctx.strokeStyle='rgba(99,130,200,0.12)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
+    ctx.strokeStyle='rgba(61,142,240,0.15)';ctx.lineWidth=2;ctx.setLineDash([5,4]);
     ctx.stroke();ctx.setLineDash([]);
     ctx.font='500 11px Inter,sans-serif';ctx.fillStyle='rgba(120,138,170,0.4)';
     ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('No data',cx,cy);
     return;
   }
 
-  // Enforce minimum slice angle — 0.55 rad (~31°) ensures label always fits inside
-  const MIN_SWEEP=0.55;
-  const adjusted=raw.map(c=>c>0?Math.max(c/total*Math.PI*2,MIN_SWEEP):0);
-  const adjTotal=adjusted.reduce((a,b)=>a+b,0);
-  const sweeps=adjusted.map(a=>a/adjTotal*Math.PI*2);
+  // Enforce minimum slice angle
+  const MIN=0.55;
+  const adj=raw.map(c=>c>0?Math.max((c/total)*Math.PI*2,MIN):0);
+  const adjTot=adj.reduce((a,b)=>a+b,0);
+  const sweeps=adj.map(a=>a>0?(a/adjTot)*Math.PI*2:0);
 
-  // Draw slices
   let angle=-Math.PI/2;
   const slices=[];
   sweeps.forEach((sweep,i)=>{
-    if(raw[i]===0)return;
+    if(sweep===0)return;
     const p=settings.people[i];
-    // Gradient from bright center to slightly darker edge
     const mid=angle+sweep/2;
-    const g=ctx.createRadialGradient(cx+Math.cos(mid)*r*0.3,cy+Math.sin(mid)*r*0.3,0,cx,cy,r);
-    g.addColorStop(0,p.color+'ff');
-    g.addColorStop(1,p.color+'bb');
+
+    // Outer glow halo per slice
+    ctx.save();
     ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,angle,angle+sweep);
-    ctx.closePath();
+    ctx.arc(cx,cy,r+2,angle,angle+sweep);ctx.closePath();
+    ctx.shadowColor=p.color;ctx.shadowBlur=18;
+    ctx.fillStyle=p.color+'44';ctx.fill();
+    ctx.restore();
+
+    // Main slice with radial gradient bright→dark
+    const g=ctx.createRadialGradient(
+      cx+Math.cos(mid)*r*0.25,cy+Math.sin(mid)*r*0.25,0,cx,cy,r);
+    g.addColorStop(0,p.color+'ff');
+    g.addColorStop(0.7,p.color+'dd');
+    g.addColorStop(1,p.color+'88');
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,angle,angle+sweep);ctx.closePath();
     ctx.fillStyle=g;ctx.fill();
-    // Dark crisp separator
-    ctx.strokeStyle='rgba(8,11,20,0.95)';ctx.lineWidth=2;ctx.stroke();
-    slices.push({angle,sweep,count:raw[i],color:p.color});
+
+    // Bright neon edge on outer arc
+    ctx.beginPath();ctx.arc(cx,cy,r,angle,angle+sweep);
+    ctx.strokeStyle=p.color;ctx.lineWidth=2.5;
+    ctx.shadowColor=p.color;ctx.shadowBlur=10;ctx.stroke();ctx.shadowBlur=0;
+
+    // Dark sharp separator lines
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(angle)*r,cy+Math.sin(angle)*r);
+    ctx.strokeStyle='rgba(5,8,18,0.95)';ctx.lineWidth=2.5;ctx.shadowBlur=0;ctx.stroke();
+
+    slices.push({angle,sweep,count:raw[i],pct:Math.round((raw[i]/total)*100),color:p.color});
     angle+=sweep;
   });
 
-  // Outer accent ring
-  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
-  ctx.strokeStyle='rgba(61,142,240,0.15)';ctx.lineWidth=1.5;ctx.stroke();
-
-  // Labels — monospace, small, inside every slice
-  slices.forEach(({angle,sweep,count})=>{
+  // Labels — count (large) + pct (small colored) inside each slice
+  ctx.shadowBlur=0;
+  slices.forEach(({angle,sweep,count,pct,color})=>{
     const mid=angle+sweep/2;
     const lx=cx+Math.cos(mid)*r*0.62;
     const ly=cy+Math.sin(mid)*r*0.62;
-    // Dark backing pill
-    ctx.font=`700 11px 'JetBrains Mono',monospace`;
-    const tw=ctx.measureText(String(count)).width;
-    const pw=tw+10,ph=17;
-    ctx.fillStyle='rgba(6,9,18,0.55)';
-    ctx.beginPath();ctx.roundRect(lx-pw/2,ly-ph/2,pw,ph,4);ctx.fill();
-    // Number
-    ctx.fillStyle='rgba(255,255,255,0.97)';
+
+    // Large number
+    ctx.font=`700 ${sweep>0.8?18:14}px Inter,sans-serif`;
     ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(String(count),lx,ly);
+    ctx.fillStyle='#ffffff';
+    ctx.shadowColor='rgba(0,0,0,0.7)';ctx.shadowBlur=6;
+    ctx.fillText(String(count),lx,ly-5);
+
+    // Small percentage in the slice's color
+    ctx.font=`600 9px 'JetBrains Mono',monospace`;
+    ctx.fillStyle=color+'ee';
+    ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=4;
+    ctx.fillText(pct+'%',lx,ly+9);
+    ctx.shadowBlur=0;
   });
 }
 
@@ -915,15 +944,13 @@ function renderSummary(){
   for(const[k,v]of Object.entries(state.days))
     if(k.startsWith(yp)) v.people.forEach(pid=>{if(yc[pid]!==undefined){yc[pid]++;if(k.startsWith(mp))mc[pid]++;}});
   document.getElementById('year-badge').textContent=state.year;
-  const monthName=MONTHS[state.month].substring(0,3);
   document.getElementById('summary-combined').innerHTML=settings.people.map((p,i)=>
     `<div class="summary-row">
-      <span class="summary-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color}66;"></span>
+      <span class="summary-dot" style="background:${p.color};box-shadow:0 0 7px ${p.color}99;"></span>
       <span class="summary-name">${p.name}</span>
       <span class="summary-divider"></span>
-      <span class="summary-stat"><span class="summary-stat-label">${monthName}&nbsp;</span><span class="summary-stat-val">${mc[i]}</span><span class="summary-stat-unit">d</span></span>
-      <span style="margin:0 8px;color:var(--text-muted);opacity:0.3;">·</span>
-      <span class="summary-stat"><span class="summary-stat-label">Year&nbsp;</span><span class="summary-stat-val">${yc[i]}</span><span class="summary-stat-unit">d</span></span>
+      <span class="summary-stat"><span class="summary-stat-label">May:</span><span class="summary-stat-val">${mc[i]}</span></span>
+      <span class="summary-stat"><span class="summary-stat-label">Year:</span><span class="summary-stat-val">${yc[i]}</span></span>
     </div>`).join('');
   drawPie(yc);
 }
