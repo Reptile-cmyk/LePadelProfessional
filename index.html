@@ -92,6 +92,16 @@
   .person-tag{display:flex;align-items:center;gap:4px;border-radius:4px;padding:2px 6px 2px 5px;font-size:var(--tag-size);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
   .person-tag-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
   .note-indicator{position:absolute;top:6px;right:7px;font-size:0.55rem;color:var(--accent2);}
+ 
+ /* Force crisp rendering on the month label and calendar tags */
+  .weekday-header div,
+  .person-tag,
+  .day-num {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: none;
+  font-smoothing: none;
+}
 
   /* ── SUMMARY ── */
   .summary-section{margin-top:20px;}
