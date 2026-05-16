@@ -11,8 +11,8 @@
     --border:rgba(99,130,200,0.12);--border-bright:rgba(99,130,200,0.28);
     --accent:#3d8ef0;--accent2:#00d4aa;--text:#e2e8f8;--text-dim:#7a8aaa;
     --text-muted:#3d4a66;--danger:#f0607a;
-    --title-size:1.05rem;--month-size:0.9rem;--today-size:0.66rem;--members-size:0.82rem;
-    --tag-size:0.67rem;--summary-size:0.82rem;--ui-font:'Inter',sans-serif;
+    --title-size:17px;--month-size:15px;--today-size:11px;--members-size:13px;
+    --tag-size:11px;--summary-size:13px;--ui-font:'Inter',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:var(--ui-font);background:var(--bg);color:var(--text);min-height:100vh;
@@ -92,27 +92,6 @@
   .person-tag{display:flex;align-items:center;gap:4px;border-radius:4px;padding:2px 6px 2px 5px;font-size:var(--tag-size);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
   .person-tag-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
   .note-indicator{position:absolute;top:6px;right:7px;font-size:0.55rem;color:var(--accent2);}
- 
- /* Force crisp rendering on the month label and calendar tags */
-  .weekday-header div,
-  .person-tag,
-  .day-num {
-  text-rendering: optimizeSpeed;
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: none;
-  font-smoothing: none;
-}
-
-/* Make the tiny header text bold to force sharper rendering */
-.weekday-header div {
-  font-weight: 700; 
-  letter-spacing: 0.16em; /* Slightly more spacing helps bold, tiny text stay readable */
-}
-
-/* Give the person tags a stronger weight to combat the blur */
-.person-tag {
-  font-weight: 600; 
-}
 
   /* ── SUMMARY ── */
   .summary-section{margin-top:20px;}
@@ -382,7 +361,7 @@
       <div class="settings-group">
         <div class="settings-group-title">Title</div>
         <div class="field"><label class="field-label">Title text</label><input type="text" class="text-input" id="set-title" maxlength="60"></div>
-        <div class="field"><label class="field-label">Title font size</label><div class="slider-row"><input type="range" id="set-title-size" min="0.8" max="1.8" step="0.05"><span class="slider-val" id="title-size-val"></span></div></div>
+        <div class="field"><label class="field-label">Title font size</label><div class="slider-row"><input type="range" id="set-title-size" min="12" max="28" step="1"><span class="slider-val" id="title-size-val"></span></div></div>
       </div>
 
       <div class="settings-group">
@@ -396,20 +375,20 @@
       <div class="settings-group">
         <div class="settings-group-title">Members</div>
         <div id="people-editor"></div>
-        <div class="field" style="margin-top:14px;"><label class="field-label">Members bar text size</label><div class="slider-row"><input type="range" id="set-members-size" min="0.6" max="1.2" step="0.05"><span class="slider-val" id="members-size-val"></span></div></div>
-        <div class="field"><label class="field-label">Calendar entry tag size</label><div class="slider-row"><input type="range" id="set-tag-size" min="0.5" max="1.1" step="0.05"><span class="slider-val" id="tag-size-val"></span></div></div>
+        <div class="field" style="margin-top:14px;"><label class="field-label">Members bar text size</label><div class="slider-row"><input type="range" id="set-members-size" min="9" max="20" step="1"><span class="slider-val" id="members-size-val"></span></div></div>
+        <div class="field"><label class="field-label">Calendar entry tag size</label><div class="slider-row"><input type="range" id="set-tag-size" min="9" max="18" step="1"><span class="slider-val" id="tag-size-val"></span></div></div>
         <p class="hint">Names and colors apply everywhere — calendar, legend and summary.</p>
       </div>
 
       <div class="settings-group">
         <div class="settings-group-title">Month selector</div>
-        <div class="field"><label class="field-label">Month label font size</label><div class="slider-row"><input type="range" id="set-month-size" min="0.7" max="1.5" step="0.05"><span class="slider-val" id="month-size-val"></span></div></div>
-        <div class="field"><label class="field-label">"Today" button size</label><div class="slider-row"><input type="range" id="set-today-size" min="0.5" max="1.3" step="0.05"><span class="slider-val" id="today-size-val"></span></div></div>
+        <div class="field"><label class="field-label">Month label font size</label><div class="slider-row"><input type="range" id="set-month-size" min="11" max="24" step="1"><span class="slider-val" id="month-size-val"></span></div></div>
+        <div class="field"><label class="field-label">"Today" button size</label><div class="slider-row"><input type="range" id="set-today-size" min="9" max="20" step="1"><span class="slider-val" id="today-size-val"></span></div></div>
       </div>
 
       <div class="settings-group">
         <div class="settings-group-title">Days away summary</div>
-        <div class="field"><label class="field-label">Summary text size</label><div class="slider-row"><input type="range" id="set-summary-size" min="0.65" max="1.4" step="0.05"><span class="slider-val" id="summary-size-val"></span></div></div>
+        <div class="field"><label class="field-label">Summary text size</label><div class="slider-row"><input type="range" id="set-summary-size" min="10" max="22" step="1"><span class="slider-val" id="summary-size-val"></span></div></div>
       </div>
 
       <div class="settings-group">
@@ -480,8 +459,8 @@ const DEFAULT_LOGO_SVG = `<svg viewBox="0 0 100 110" fill="none" xmlns="http://w
 
 let settings = {
   title:'Vacation & Unavailability Tracker',
-  titleSize:1.05, monthSize:0.9, todaySize:0.66, membersSize:0.82,
-  tagSize:0.67, summarySize:0.82, uiFont:'Inter',
+  titleSize:17, monthSize:15, todaySize:11, membersSize:13,
+  tagSize:11, summarySize:13, uiFont:'Inter',
   showLogo:true, customLogo:null,
   weekStart:1, showWeekends:false, highlightWeekends:true,
   weekdayModes:{0:'normal',1:'normal',2:'normal',3:'normal',4:'normal',5:'normal',6:'normal'},
@@ -592,12 +571,14 @@ function jsonToState(data){
   if(data.settings){
     const s=data.settings;
     if(s.title)           settings.title=s.title;
-    if(s.titleSize)       settings.titleSize=Number(s.titleSize);
-    if(s.monthSize)       settings.monthSize=Number(s.monthSize);
-    if(s.todaySize)       settings.todaySize=Number(s.todaySize);
-    if(s.membersSize)     settings.membersSize=Number(s.membersSize);
-    if(s.tagSize)         settings.tagSize=Number(s.tagSize);
-    if(s.summarySize)     settings.summarySize=Number(s.summarySize);
+    // Convert to px integer — migrate old rem values (< 5) by multiplying by 16
+    function toPx(v,def){const n=Number(v);if(!n)return def;return n<5?Math.round(n*16):Math.round(n);}
+    if(s.titleSize)   settings.titleSize=toPx(s.titleSize,17);
+    if(s.monthSize)   settings.monthSize=toPx(s.monthSize,15);
+    if(s.todaySize)   settings.todaySize=toPx(s.todaySize,11);
+    if(s.membersSize) settings.membersSize=toPx(s.membersSize,13);
+    if(s.tagSize)     settings.tagSize=toPx(s.tagSize,11);
+    if(s.summarySize) settings.summarySize=toPx(s.summarySize,13);
     if(s.uiFont)          settings.uiFont=s.uiFont;
     if(s.showLogo!==undefined)         settings.showLogo=s.showLogo;
     if(s.weekStart!==undefined)        settings.weekStart=Number(s.weekStart);
@@ -681,12 +662,12 @@ function dateKey(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).
 
 function applySettings(){
   const r=document.documentElement;
-  r.style.setProperty('--title-size',settings.titleSize+'rem');
-  r.style.setProperty('--month-size',settings.monthSize+'rem');
-  r.style.setProperty('--today-size',settings.todaySize+'rem');
-  r.style.setProperty('--members-size',settings.membersSize+'rem');
-  r.style.setProperty('--tag-size',settings.tagSize+'rem');
-  r.style.setProperty('--summary-size',settings.summarySize+'rem');
+  r.style.setProperty('--title-size',settings.titleSize+'px');
+  r.style.setProperty('--month-size',settings.monthSize+'px');
+  r.style.setProperty('--today-size',settings.todaySize+'px');
+  r.style.setProperty('--members-size',settings.membersSize+'px');
+  r.style.setProperty('--tag-size',settings.tagSize+'px');
+  r.style.setProperty('--summary-size',settings.summarySize+'px');
   r.style.setProperty('--ui-font',`'${settings.uiFont}',sans-serif`);
   document.getElementById('app-title').textContent=settings.title;
   document.title=settings.title;
@@ -1007,17 +988,17 @@ function setToggle(el,on){el.classList.toggle('on',on);}
 function syncSettingsForm(){
   document.getElementById('set-title').value=settings.title;
   document.getElementById('set-title-size').value=settings.titleSize;
-  document.getElementById('title-size-val').textContent=settings.titleSize.toFixed(2)+'rem';
+  document.getElementById('title-size-val').textContent=settings.titleSize+'px';
   document.getElementById('set-month-size').value=settings.monthSize;
-  document.getElementById('month-size-val').textContent=settings.monthSize.toFixed(2)+'rem';
+  document.getElementById('month-size-val').textContent=settings.monthSize+'px';
   document.getElementById('set-today-size').value=settings.todaySize;
-  document.getElementById('today-size-val').textContent=settings.todaySize.toFixed(2)+'rem';
+  document.getElementById('today-size-val').textContent=settings.todaySize+'px';
   document.getElementById('set-members-size').value=settings.membersSize;
-  document.getElementById('members-size-val').textContent=settings.membersSize.toFixed(2)+'rem';
+  document.getElementById('members-size-val').textContent=settings.membersSize+'px';
   document.getElementById('set-tag-size').value=settings.tagSize;
-  document.getElementById('tag-size-val').textContent=settings.tagSize.toFixed(2)+'rem';
+  document.getElementById('tag-size-val').textContent=settings.tagSize+'px';
   document.getElementById('set-summary-size').value=settings.summarySize;
-  document.getElementById('summary-size-val').textContent=settings.summarySize.toFixed(2)+'rem';
+  document.getElementById('summary-size-val').textContent=settings.summarySize+'px';
   renderPeopleEditor();
   buildFontPicker();
   setToggle(document.getElementById('set-logo-toggle'),settings.showLogo);
@@ -1037,12 +1018,12 @@ function updateLogoPreview(){
 
 // Settings listeners
 document.getElementById('set-title').addEventListener('input',async e=>{settings.title=e.target.value||'Untitled';applySettings();await persistAll();});
-document.getElementById('set-title-size').addEventListener('input',async e=>{settings.titleSize=parseFloat(e.target.value);document.getElementById('title-size-val').textContent=settings.titleSize.toFixed(2)+'rem';applySettings();await persistAll();});
-document.getElementById('set-month-size').addEventListener('input',async e=>{settings.monthSize=parseFloat(e.target.value);document.getElementById('month-size-val').textContent=settings.monthSize.toFixed(2)+'rem';applySettings();await persistAll();});
-document.getElementById('set-today-size').addEventListener('input',async e=>{settings.todaySize=parseFloat(e.target.value);document.getElementById('today-size-val').textContent=settings.todaySize.toFixed(2)+'rem';applySettings();await persistAll();});
-document.getElementById('set-members-size').addEventListener('input',async e=>{settings.membersSize=parseFloat(e.target.value);document.getElementById('members-size-val').textContent=settings.membersSize.toFixed(2)+'rem';applySettings();await persistAll();});
-document.getElementById('set-tag-size').addEventListener('input',async e=>{settings.tagSize=parseFloat(e.target.value);document.getElementById('tag-size-val').textContent=settings.tagSize.toFixed(2)+'rem';applySettings();await persistAll();});
-document.getElementById('set-summary-size').addEventListener('input',async e=>{settings.summarySize=parseFloat(e.target.value);document.getElementById('summary-size-val').textContent=settings.summarySize.toFixed(2)+'rem';applySettings();await persistAll();});
+document.getElementById('set-title-size').addEventListener('input',async e=>{settings.titleSize=parseInt(e.target.value);document.getElementById('title-size-val').textContent=settings.titleSize+'px';applySettings();await persistAll();});
+document.getElementById('set-month-size').addEventListener('input',async e=>{settings.monthSize=parseInt(e.target.value);document.getElementById('month-size-val').textContent=settings.monthSize+'px';applySettings();await persistAll();});
+document.getElementById('set-today-size').addEventListener('input',async e=>{settings.todaySize=parseInt(e.target.value);document.getElementById('today-size-val').textContent=settings.todaySize+'px';applySettings();await persistAll();});
+document.getElementById('set-members-size').addEventListener('input',async e=>{settings.membersSize=parseInt(e.target.value);document.getElementById('members-size-val').textContent=settings.membersSize+'px';applySettings();await persistAll();});
+document.getElementById('set-tag-size').addEventListener('input',async e=>{settings.tagSize=parseInt(e.target.value);document.getElementById('tag-size-val').textContent=settings.tagSize+'px';applySettings();await persistAll();});
+document.getElementById('set-summary-size').addEventListener('input',async e=>{settings.summarySize=parseInt(e.target.value);document.getElementById('summary-size-val').textContent=settings.summarySize+'px';applySettings();await persistAll();});
 document.getElementById('set-logo-toggle').addEventListener('click',async()=>{settings.showLogo=!settings.showLogo;setToggle(document.getElementById('set-logo-toggle'),settings.showLogo);applySettings();await persistAll();});
 document.getElementById('upload-logo-btn').addEventListener('click',()=>document.getElementById('logo-file-input').click());
 document.getElementById('logo-file-input').addEventListener('change',e=>{
@@ -1074,8 +1055,8 @@ document.getElementById('wipe-btn').addEventListener('click',async()=>{
 });
 document.getElementById('reset-all-btn').addEventListener('click',async()=>{
   if(!confirm('Reset all display settings to defaults?'))return;
-  Object.assign(settings,{titleSize:1.05,monthSize:0.9,todaySize:0.66,membersSize:0.82,
-    tagSize:0.67,summarySize:0.82,uiFont:'Inter',
+  Object.assign(settings,{titleSize:17,monthSize:15,todaySize:11,membersSize:13,
+    tagSize:11,summarySize:13,uiFont:'Inter',
     showLogo:true,showWeekends:false,highlightWeekends:true,weekStart:1,
     weekdayModes:{0:'normal',1:'normal',2:'normal',3:'normal',4:'normal',5:'normal',6:'normal'},customLogo:null});
   applySettings();renderWeekdayHeader();renderLegend();renderCalendar();renderSummary();
