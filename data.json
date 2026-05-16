@@ -3,7 +3,7 @@
     "title": "Vacation & Unavailability",
     "titleSize": 1,
     "monthSize": 0.9,
-    "todaySize": 1,
+    "todaySize": 0.55,
     "membersSize": 0.6,
     "showLogo": true,
     "weekStart": 1,
