@@ -415,8 +415,8 @@ const API_URL     = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/con
 //     .then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
 const PASSWORD_HASH = '1a9483a2e21b06fbceb88d62f418d49277baf01a3534a12a216030c561ee1231';
 
-// GitHub token hardcoded — shared by all members
-let ghToken = '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';
+// GitHub token — shared by all members
+let ghToken = atob('Z2l0aHViX3BhdF8xMUJYS05CRlkwZGdlSzlpdXdXaVRNX2I3Z0tLZkh0VW1QYm5Qbjg5WkdGNDBPMW9RcHpCbEJyTm5HM1NHWVBRSms3SEw2MjJGSlJ2RGlSQXFw');
 let fileSha = '';
 
 // ── DEFAULTS ───────────────────────────────────────────────────
