@@ -12,7 +12,7 @@
     --accent:#3d8ef0;--accent2:#00d4aa;--text:#e2e8f8;--text-dim:#7a8aaa;
     --text-muted:#3d4a66;--danger:#f0607a;
     --title-size:17px;--month-size:15px;--today-size:11px;--members-size:13px;
-    --tag-size:11px;--summary-size:13px;--ui-font:'Inter',sans-serif;
+    --tag-size:11px;--summary-size:13px;--ui-font:'Inter',sans-serif;--ui-scale:1;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:var(--ui-font);background:var(--bg);color:var(--text);min-height:100vh;
@@ -44,7 +44,7 @@
   .retry-btn:hover{background:var(--accent);color:#fff;}
 
   /* ── HEADER ── */
-  #app-shell{display:none;}
+  #app-shell{display:none;zoom:var(--ui-scale);}
   header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 36px;min-height:68px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;}
   header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);opacity:0.5;}
   .logo-wrap{display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:linear-gradient(135deg,rgba(61,142,240,0.18),rgba(0,212,170,0.08));border:1px solid var(--border-bright);border-radius:10px;flex-shrink:0;overflow:hidden;}
@@ -153,9 +153,9 @@
   /* ── OVERLAYS ── */
   .overlay{position:fixed;inset:0;background:rgba(5,8,18,0.72);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity 0.2s;}
   .overlay.open{opacity:1;pointer-events:all;}
-  .popup,.range-popup{background:var(--bg3);border:1px solid var(--border-bright);border-radius:16px;padding:26px 26px 22px;max-width:92vw;box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:translateY(12px) scale(0.98);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);}
+  .popup,.range-popup{background:var(--bg3);border:1px solid var(--border-bright);border-radius:16px;padding:26px 26px 22px;max-width:96vw;box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:translateY(12px) scale(0.98);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);}
   .popup{width:320px;}
-  .range-popup{width:340px;}
+  .range-popup{width:360px;}
   .overlay.open .popup,.overlay.open .range-popup{transform:translateY(0) scale(1);}
   .popup-date-label{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;}
   .popup h3{font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:18px;}
@@ -183,8 +183,8 @@
   .btn-clear:hover{background:rgba(240,96,122,0.16);}
 
   /* RANGE */
-  .range-date-row{display:flex;gap:10px;margin-bottom:14px;}
-  .range-date-field{flex:1;display:flex;flex-direction:column;gap:5px;}
+  .range-date-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+  .range-date-field{flex:1;min-width:120px;display:flex;flex-direction:column;gap:5px;}
   .range-date-label{font-size:0.68rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);}
   .range-date-input,.range-note-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;width:100%;transition:border-color 0.15s;}
   .range-date-input:focus,.range-note-input:focus{border-color:var(--accent);}
@@ -452,6 +452,11 @@
           <label class="field-label">Interface font</label>
           <div class="font-picker" id="font-picker"></div>
         </div>
+        <div class="field" style="margin-top:14px;">
+          <label class="field-label">UI Scale (zoom)</label>
+          <div class="slider-row"><input type="range" id="set-ui-scale" min="0.7" max="1.4" step="0.05"><span class="slider-val" id="ui-scale-val"></span></div>
+          <p class="hint" style="margin-top:4px;">Scales the whole interface. Useful for larger screens or accessibility.</p>
+        </div>
       </div>
 
       <div class="settings-group">
@@ -542,7 +547,7 @@ const DEFAULT_LOGO_SVG = `<svg viewBox="0 0 100 110" fill="none" xmlns="http://w
 let settings = {
   title:'Vacation & Unavailability Tracker',
   titleSize:17, monthSize:15, todaySize:11, membersSize:13,
-  tagSize:11, summarySize:13, uiFont:'Inter',
+  tagSize:11, summarySize:13, uiFont:'Inter', uiScale:1.0,
   showLogo:true, customLogo:null,
   weekStart:1, showWeekends:false, highlightWeekends:true,
   weekdayModes:{0:'normal',1:'normal',2:'normal',3:'normal',4:'normal',5:'normal',6:'normal'},
@@ -639,7 +644,7 @@ function stateToJson(){
       title:settings.title, titleSize:settings.titleSize,
       monthSize:settings.monthSize, todaySize:settings.todaySize,
       membersSize:settings.membersSize, tagSize:settings.tagSize,
-      summarySize:settings.summarySize, uiFont:settings.uiFont, showLogo:settings.showLogo,
+      summarySize:settings.summarySize, uiFont:settings.uiFont, uiScale:settings.uiScale, showLogo:settings.showLogo,
       weekStart:settings.weekStart, showWeekends:settings.showWeekends,
       highlightWeekends:settings.highlightWeekends,
       weekdayModes:settings.weekdayModes,
@@ -662,6 +667,7 @@ function jsonToState(data){
     if(s.tagSize)     settings.tagSize=toPx(s.tagSize,11);
     if(s.summarySize) settings.summarySize=toPx(s.summarySize,13);
     if(s.uiFont)          settings.uiFont=s.uiFont;
+    if(s.uiScale)         settings.uiScale=Number(s.uiScale)||1.0;
     if(s.showLogo!==undefined)         settings.showLogo=s.showLogo;
     if(s.weekStart!==undefined)        settings.weekStart=Number(s.weekStart);
     if(s.showWeekends!==undefined)     settings.showWeekends=s.showWeekends;
@@ -751,6 +757,7 @@ function applySettings(){
   r.style.setProperty('--tag-size',settings.tagSize+'px');
   r.style.setProperty('--summary-size',settings.summarySize+'px');
   r.style.setProperty('--ui-font',`'${settings.uiFont}',sans-serif`);
+  r.style.setProperty('--ui-scale',settings.uiScale);
   document.getElementById('app-title').textContent=settings.title;
   document.title=settings.title;
   const wrap=document.getElementById('logo-wrap');
@@ -1249,6 +1256,8 @@ function syncSettingsForm(){
   document.getElementById('summary-size-val').textContent=settings.summarySize+'px';
   renderPeopleEditor();
   buildFontPicker();
+  document.getElementById('set-ui-scale').value=settings.uiScale;
+  document.getElementById('ui-scale-val').textContent=Math.round(settings.uiScale*100)+'%';
   setToggle(document.getElementById('set-logo-toggle'),settings.showLogo);
   updateLogoPreview();
   document.querySelectorAll('#set-week-start button').forEach(b=>{
@@ -1272,6 +1281,7 @@ document.getElementById('set-today-size').addEventListener('input',async e=>{set
 document.getElementById('set-members-size').addEventListener('input',async e=>{settings.membersSize=parseInt(e.target.value);document.getElementById('members-size-val').textContent=settings.membersSize+'px';applySettings();await persistAll();});
 document.getElementById('set-tag-size').addEventListener('input',async e=>{settings.tagSize=parseInt(e.target.value);document.getElementById('tag-size-val').textContent=settings.tagSize+'px';applySettings();await persistAll();});
 document.getElementById('set-summary-size').addEventListener('input',async e=>{settings.summarySize=parseInt(e.target.value);document.getElementById('summary-size-val').textContent=settings.summarySize+'px';applySettings();await persistAll();});
+document.getElementById('set-ui-scale').addEventListener('input',async e=>{settings.uiScale=parseFloat(e.target.value);document.getElementById('ui-scale-val').textContent=Math.round(settings.uiScale*100)+'%';applySettings();await persistAll();});
 document.getElementById('set-logo-toggle').addEventListener('click',async()=>{settings.showLogo=!settings.showLogo;setToggle(document.getElementById('set-logo-toggle'),settings.showLogo);applySettings();await persistAll();});
 document.getElementById('upload-logo-btn').addEventListener('click',()=>document.getElementById('logo-file-input').click());
 document.getElementById('logo-file-input').addEventListener('change',e=>{
@@ -1304,7 +1314,7 @@ document.getElementById('wipe-btn').addEventListener('click',async()=>{
 document.getElementById('reset-all-btn').addEventListener('click',async()=>{
   if(!confirm('Reset all display settings to defaults?'))return;
   Object.assign(settings,{titleSize:17,monthSize:15,todaySize:11,membersSize:13,
-    tagSize:11,summarySize:13,uiFont:'Inter',
+    tagSize:11,summarySize:13,uiFont:'Inter',uiScale:1.0,
     showLogo:true,showWeekends:false,highlightWeekends:true,weekStart:1,
     weekdayModes:{0:'normal',1:'normal',2:'normal',3:'normal',4:'normal',5:'normal',6:'normal'},customLogo:null});
   applySettings();renderWeekdayHeader();renderLegend();renderCalendar();renderSummary();
