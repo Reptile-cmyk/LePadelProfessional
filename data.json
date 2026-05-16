@@ -1,12 +1,12 @@
 {
   "settings": {
     "title": "Vacation & Unavailability",
-    "titleSize": 1.4,
-    "monthSize": 1.15,
-    "todaySize": 0.9,
-    "membersSize": 0.85,
-    "tagSize": 0.95,
-    "summarySize": 0.82,
+    "titleSize": 22,
+    "monthSize": 18,
+    "todaySize": 14,
+    "membersSize": 13,
+    "tagSize": 15,
+    "summarySize": 13,
     "uiFont": "Inter",
     "showLogo": true,
     "weekStart": 1,
