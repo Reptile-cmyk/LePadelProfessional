@@ -10,7 +10,7 @@
     "showWeekends": false,
     "highlightWeekends": false,
     "weekdayModes": {
-      "0": "normal",
+      "0": "dim",
       "1": "normal",
       "2": "normal",
       "3": "normal",
