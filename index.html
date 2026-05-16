@@ -198,12 +198,16 @@
   .seg button{flex:1;padding:6px 10px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:500;transition:all 0.15s;}
   .seg button.active{background:var(--accent);color:#fff;}
 
-  /* Weekday highlight checkboxes */
-  .weekday-checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
-  .wd-check{display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);transition:all 0.15s;font-size:0.78rem;color:var(--text-dim);user-select:none;}
-  .wd-check:hover{border-color:var(--border-bright);background:var(--surface2);}
-  .wd-check.dimmed{opacity:0.5;background:rgba(0,0,0,0.1);}
-  .wd-check input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;}
+  /* Weekday three-state controls */
+  .weekday-checks{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+  .wd-row{display:flex;align-items:center;gap:10px;}
+  .wd-name{font-size:0.78rem;color:var(--text-dim);font-weight:500;width:72px;flex-shrink:0;}
+  .wd-seg{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:3px;}
+  .wd-seg button{flex:1;padding:4px 10px;border-radius:5px;border:none;cursor:pointer;background:transparent;color:var(--text-muted);font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:500;transition:all 0.15s;white-space:nowrap;}
+  .wd-seg button:hover{color:var(--text-dim);}
+  .wd-seg button.active-normal{background:var(--accent);color:#fff;}
+  .wd-seg button.active-dim{background:var(--surface2);color:var(--text-dim);border:1px solid var(--border-bright);}
+  .wd-seg button.active-hide{background:var(--danger);color:#fff;opacity:0.8;}
 
   @media(max-width:640px){
     main{padding:14px 10px 6px;}header{padding:0 14px;}
@@ -376,12 +380,12 @@
       </div>
 
       <div class="settings-group">
-        <div class="settings-group-title">Highlight weekdays</div>
+        <div class="settings-group-title">Weekday display</div>
         <div class="field">
-          <label class="field-label">Uncheck a day to dim it on the calendar</label>
+          <label class="field-label">Set each weekday to Normal, Dim or Hide</label>
           <div class="weekday-checks" id="weekday-checks"></div>
         </div>
-        <p class="hint">Useful for recurring events — e.g. uncheck Thursday if someone has football every week.</p>
+        <p class="hint">Dim — day is visible but faded. Hide — day is removed from the calendar grid entirely. Useful for recurring events like football every Thursday.</p>
       </div>
 
       <div class="settings-group">
@@ -429,8 +433,8 @@ let settings = {
   titleSize:1.05, monthSize:0.9, todaySize:0.66, membersSize:0.82,
   showLogo:true, customLogo:null,
   weekStart:1, showWeekends:false, highlightWeekends:true,
-  // Which weekdays (0=Sun…6=Sat) are highlighted. By default Mon–Fri highlighted.
-  highlightedWeekdays:[1,2,3,4,5],
+  // weekdayModes: { dow: 'normal'|'dim'|'hide' } — Mon–Fri only (1–5)
+  weekdayModes:{1:'normal',2:'normal',3:'normal',4:'normal',5:'normal'},
   people: DEFAULT_PEOPLE.map(p=>({name:p.defaultName,color:p.color})),
 };
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -526,7 +530,7 @@ function stateToJson(){
       membersSize:settings.membersSize, showLogo:settings.showLogo,
       weekStart:settings.weekStart, showWeekends:settings.showWeekends,
       highlightWeekends:settings.highlightWeekends,
-      highlightedWeekdays:settings.highlightedWeekdays,
+      weekdayModes:settings.weekdayModes,
     },
     members: settings.people.map((p,i)=>({id:i,name:p.name,color:p.color})),
     days,
@@ -545,7 +549,13 @@ function jsonToState(data){
     if(s.weekStart!==undefined)        settings.weekStart=Number(s.weekStart);
     if(s.showWeekends!==undefined)     settings.showWeekends=s.showWeekends;
     if(s.highlightWeekends!==undefined) settings.highlightWeekends=s.highlightWeekends;
-    if(Array.isArray(s.highlightedWeekdays)) settings.highlightedWeekdays=s.highlightedWeekdays;
+    if(s.weekdayModes&&typeof s.weekdayModes==='object') settings.weekdayModes=s.weekdayModes;
+    // Migrate from old highlightedWeekdays format
+    else if(Array.isArray(s.highlightedWeekdays)){
+      const modes={1:'dim',2:'dim',3:'dim',4:'dim',5:'dim'};
+      s.highlightedWeekdays.forEach(d=>{if(modes[d]!==undefined)modes[d]='normal';});
+      settings.weekdayModes=modes;
+    }
   }
   if(data.members&&data.members.length)
     settings.people=data.members.map(m=>({name:m.name,color:m.color}));
@@ -633,6 +643,7 @@ function visibleWeekdayOrder(){
   for(let i=0;i<7;i++){
     const idx=(settings.weekStart+i)%7;
     if(!settings.showWeekends&&(idx===0||idx===6))continue;
+    if(settings.weekdayModes[idx]==='hide')continue;
     o.push(idx);
   }
   return o;
@@ -647,8 +658,7 @@ function renderWeekdayHeader(){
   order.forEach(idx=>{
     const div=document.createElement('div');
     div.textContent=WD_NAMES[idx];
-    // dim weekday label too if unhighlighted
-    if(!settings.highlightedWeekdays.includes(idx)) div.style.opacity='0.3';
+    if(settings.weekdayModes[idx]==='dim') div.style.opacity='0.3';
     wh.appendChild(div);
   });
 }
@@ -668,7 +678,9 @@ function renderCalendar(){
     const dow=new Date(state.year,state.month,d).getDay();
     const isWeekend=dow===0||dow===6;
     if(isWeekend&&!settings.showWeekends)continue;
-    const isDimmed=!settings.highlightedWeekdays.includes(dow);
+    const mode=settings.weekdayModes[dow]||'normal';
+    if(mode==='hide')continue;
+    const isDimmed=mode==='dim';
     const key=dateKey(state.year,state.month,d);
     const data=state.days[key]||{people:new Set(),notes:{}};
     const isToday=d===today.getDate()&&state.month===today.getMonth()&&state.year===today.getFullYear();
@@ -715,37 +727,38 @@ function renderSummary(){
 function buildWeekdayChecks(){
   const container=document.getElementById('weekday-checks');
   container.innerHTML='';
-  // Only show weekdays Mon–Fri (1–5) — weekends have their own toggle
   [1,2,3,4,5].forEach(dow=>{
-    const label=document.createElement('label');
-    label.className='wd-check'+(settings.highlightedWeekdays.includes(dow)?'':' dimmed');
-    label.innerHTML=`<input type="checkbox" ${settings.highlightedWeekdays.includes(dow)?'checked':''}> ${DAYNAMES[dow]}`;
-    const cb=label.querySelector('input');
-    cb.addEventListener('change',async()=>{
-      if(cb.checked){
-        if(!settings.highlightedWeekdays.includes(dow)) settings.highlightedWeekdays.push(dow);
-        label.classList.remove('dimmed');
-      }else{
-        settings.highlightedWeekdays=settings.highlightedWeekdays.filter(d=>d!==dow);
-        label.classList.add('dimmed');
-      }
-      renderWeekdayHeader(); renderCalendar();
-      await persistAll();
+    const mode=settings.weekdayModes[dow]||'normal';
+    const row=document.createElement('div');row.className='wd-row';
+    const label=document.createElement('span');label.className='wd-name';label.textContent=DAYNAMES[dow];
+    const seg=document.createElement('div');seg.className='wd-seg';
+    ['normal','dim','hide'].forEach(m=>{
+      const btn=document.createElement('button');
+      btn.textContent=m==='normal'?'Normal':m==='dim'?'Dim':'Hide';
+      if(mode===m) btn.className=`active-${m}`;
+      btn.addEventListener('click',async()=>{
+        settings.weekdayModes[dow]=m;
+        // Update button styles in this row
+        seg.querySelectorAll('button').forEach(b=>b.className='');
+        btn.className=`active-${m}`;
+        renderWeekdayHeader();renderCalendar();
+        await persistAll();
+      });
+      seg.appendChild(btn);
     });
-    container.appendChild(label);
+    row.appendChild(label);row.appendChild(seg);container.appendChild(row);
   });
 }
 
 function updateWeekdayChecks(){
-  // Sync checkboxes after a data load
+  const rows=document.querySelectorAll('.wd-row');
   [1,2,3,4,5].forEach((dow,i)=>{
-    const labels=document.querySelectorAll('.wd-check');
-    if(labels[i]){
-      const cb=labels[i].querySelector('input');
-      const on=settings.highlightedWeekdays.includes(dow);
-      cb.checked=on;
-      labels[i].classList.toggle('dimmed',!on);
-    }
+    if(!rows[i])return;
+    const mode=settings.weekdayModes[dow]||'normal';
+    rows[i].querySelectorAll('button').forEach((btn,bi)=>{
+      const m=['normal','dim','hide'][bi];
+      btn.className=mode===m?`active-${m}`:'';
+    });
   });
 }
 
@@ -966,7 +979,7 @@ document.getElementById('reset-all-btn').addEventListener('click',async()=>{
   if(!confirm('Reset all display settings to defaults?'))return;
   Object.assign(settings,{titleSize:1.05,monthSize:0.9,todaySize:0.66,membersSize:0.82,
     showLogo:true,showWeekends:false,highlightWeekends:true,weekStart:1,
-    highlightedWeekdays:[1,2,3,4,5],customLogo:null});
+    weekdayModes:{1:'normal',2:'normal',3:'normal',4:'normal',5:'normal'},customLogo:null});
   applySettings();renderWeekdayHeader();renderLegend();renderCalendar();renderSummary();
   syncSettingsForm();buildWeekdayChecks();await persistAll();
 });
