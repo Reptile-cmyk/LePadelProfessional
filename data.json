@@ -6,7 +6,7 @@
     "todaySize": 0.55,
     "membersSize": 0.95,
     "tagSize": 0.67,
-    "summarySize": 1,
+    "summarySize": 0.95,
     "uiFont": "Inter",
     "showLogo": true,
     "weekStart": 1,
