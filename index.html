@@ -60,12 +60,12 @@
   #sync-refresh-btn:hover{border-color:var(--border-bright);color:var(--accent);}
 
   /* ── MONTH BAR ── */
-  .month-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .month-bar{display:flex;align-items:center;padding:12px 28px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;}
+  .month-bar-left{display:flex;align-items:center;gap:8px;flex:1;}
+  .month-bar-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;}
+  .month-bar-right{display:flex;align-items:center;justify-content:flex-end;flex:1;}
   .month-row{display:flex;align-items:center;gap:10px;}
   .today-btn{width:auto!important;font-size:var(--today-size)!important;font-family:var(--ui-font);font-weight:600;letter-spacing:0.01em;padding:0.4em 1.1em;line-height:2;-webkit-font-smoothing:antialiased;}
-  .month-bar-left{display:flex;align-items:center;}
-  .month-bar-center{display:flex;align-items:center;}
-  .month-bar-right{display:flex;align-items:center;}
   .nav-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.95rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
   .nav-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--text);}
   #month-label{font-family:var(--ui-font);color:var(--text);font-size:var(--month-size);font-weight:600;min-width:152px;text-align:center;-webkit-font-smoothing:antialiased;}
@@ -283,7 +283,7 @@
   </div>
 
   <div class="month-bar">
-    <div class="month-bar-left" style="display:flex;gap:8px;align-items:center;">
+    <div class="month-bar-left">
       <button class="btn-add-range" id="open-range">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Add range
