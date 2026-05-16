@@ -179,12 +179,13 @@
   /* RANGE */
   .range-date-row{display:flex;gap:10px;margin-bottom:14px;width:100%;}
   .range-date-field{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;}
-  .range-date-label{font-size:0.68rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);}
+  .range-date-label{font-size:0.68rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);display:block;margin-bottom:6px;}
+  .range-field-block{display:flex;flex-direction:column;width:100%;margin-bottom:8px;}
   .range-date-input,.range-note-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--ui-font);font-size:0.85rem;outline:none;width:100%;min-width:0;box-sizing:border-box;transition:border-color 0.15s;}
   .range-date-input:focus,.range-note-input:focus{border-color:var(--accent);}
   .range-note-input{margin-bottom:16px;}
   .range-note-input::placeholder{color:var(--text-muted);}
-  .range-people{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .range-people{display:flex;flex-direction:column;gap:6px;margin-top:6px;margin-bottom:14px;}
   .popup-note-label{font-size:0.67rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;font-family:'JetBrains Mono',monospace;}
   .range-saving{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);text-align:center;min-height:18px;margin-top:6px;}
 
@@ -354,9 +355,13 @@
   <div class="range-popup">
     <div class="popup-date-label">Add range entry</div>
     <h3 style="margin-bottom:18px;">Who &amp; when?</h3>
-    <div class="range-date-row">
-      <div class="range-date-field"><span class="range-date-label">From</span><input type="date" class="range-date-input" id="range-from"></div>
-      <div class="range-date-field"><span class="range-date-label">To</span><input type="date" class="range-date-input" id="range-to"></div>
+    <div class="range-field-block">
+      <span class="range-date-label">From</span>
+      <input type="date" class="range-date-input" id="range-from">
+    </div>
+    <div class="range-field-block">
+      <span class="range-date-label">To</span>
+      <input type="date" class="range-date-input" id="range-to">
     </div>
     <div class="range-people" id="range-people"></div>
     <div class="popup-note-label">Note (same for all days)</div>
@@ -374,21 +379,19 @@
   <div class="range-popup">
     <div class="popup-date-label">Add recurring entry</div>
     <h3 style="margin-bottom:18px;">Which day, how often?</h3>
-    <div class="range-date-row">
-      <div class="range-date-field">
-        <span class="range-date-label">Starting from</span>
-        <input type="date" class="range-date-input" id="rec-start">
-      </div>
-      <div class="range-date-field">
-        <span class="range-date-label">Occurrences</span>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <input type="number" class="range-date-input" id="rec-count" min="1" max="52" value="4" style="width:70px;">
-          <span style="font-size:0.78rem;color:var(--text-dim);">times</span>
-        </div>
+    <div class="range-field-block">
+      <span class="range-date-label">Starting from</span>
+      <input type="date" class="range-date-input" id="rec-start">
+    </div>
+    <div class="range-field-block">
+      <span class="range-date-label">Occurrences</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input type="number" class="range-date-input" id="rec-count" min="1" max="52" value="4" style="width:80px;flex-shrink:0;">
+        <span style="font-size:0.82rem;color:var(--text-dim);">times</span>
       </div>
     </div>
-    <div class="field" style="margin-bottom:14px;">
-      <span class="range-date-label" style="display:block;margin-bottom:8px;">Day of week</span>
+    <div class="range-field-block">
+      <span class="range-date-label">Day of week</span>
       <div class="rec-day-picker" id="rec-day-picker"></div>
     </div>
     <div class="range-people" id="rec-people"></div>
