@@ -415,8 +415,8 @@ const API_URL     = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/con
 //     .then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
 const PASSWORD_HASH = '1a9483a2e21b06fbceb88d62f418d49277baf01a3534a12a216030c561ee1231';
 
-// GitHub token stored only in memory — set via Settings panel
-let ghToken = '';
+// GitHub token hardcoded — shared by all members
+let ghToken = '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';
 let fileSha = '';
 
 // ── DEFAULTS ───────────────────────────────────────────────────
@@ -481,7 +481,6 @@ if(sessionStorage.getItem('pw_ok')==='1'){
 function startApp(){
   document.getElementById('app-shell').style.display='block';
   // Restore token from session if available
-  ghToken = sessionStorage.getItem('gh_token')||'';
   buildWeekdayChecks();
   loadData(true);
 }
@@ -510,7 +509,7 @@ async function fetchSha(){
 }
 
 async function ghWrite(data){
-  if(!ghToken) throw new Error('No GitHub token set — add it in Settings');
+  if(!ghToken) throw new Error('GitHub token missing — contact admin');
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
   const body = {message:'Update data.json', content, branch:BRANCH};
   if(fileSha) body.sha = fileSha;
@@ -601,7 +600,7 @@ async function persistAll(){
   saving=true; saveQueued=false;
   setSyncStatus('Saving…','');
   try{
-    if(!ghToken) throw new Error('No GitHub token — add it in Settings → GitHub token');
+    if(!ghToken) throw new Error('GitHub token missing — contact admin');
     if(!fileSha) await fetchSha();
     await ghWrite(stateToJson());
     const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
