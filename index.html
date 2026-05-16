@@ -401,12 +401,7 @@
 
 <script>
 // ── CONFIG ─────────────────────────────────────────────────────
-const REPO_OWNER  = 'Reptile-cmyk';
-const REPO_NAME   = 'LePadelProfessional';
-const DATA_FILE   = 'data.json';
-const BRANCH      = 'main';
-const RAW_URL     = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${DATA_FILE}`;
-const API_URL     = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`;
+const WORKER_URL   = 'https://lepadel-proxy.carsten-houborg.workers.dev';
 
 // Password is hashed with SHA-256 so it's never stored as plain text
 // Change this to the SHA-256 hash of your chosen password.
@@ -416,7 +411,6 @@ const API_URL     = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/con
 const PASSWORD_HASH = '1a9483a2e21b06fbceb88d62f418d49277baf01a3534a12a216030c561ee1231';
 
 // GitHub token — shared by all members
-let ghToken = atob('Z2l0aHViX3BhdF8xMUJYS05CRlkwRUhqOEN1Umxkbk1WX1hEcjZsUGxra2FvejdDSkM3QmtMQW55anhrcEZISnFVNW0xdWJaMGVqb29RSkJENzZYVXN5c2h0YkVJ');
 let fileSha = '';
 
 // ── DEFAULTS ───────────────────────────────────────────────────
@@ -492,35 +486,32 @@ function setSyncStatus(msg,s){
   el.className=s==='ok'?'ok':s==='err'?'err':'';
 }
 
-// ── GITHUB API ─────────────────────────────────────────────────
+// ── WORKER PROXY API ───────────────────────────────────────────
 async function ghRead(){
-  const res = await fetch(RAW_URL+'?t='+Date.now());
+  const res = await fetch(WORKER_URL+'?t='+Date.now());
   if(res.status===404) return null;
-  if(!res.ok) throw new Error(`GitHub read failed: ${res.status}`);
+  if(!res.ok) throw new Error(`Read failed: ${res.status}`);
   return await res.json();
 }
 
 async function fetchSha(){
-  const headers = ghToken ? {'Authorization':'token '+ghToken} : {};
-  const res = await fetch(API_URL,{headers});
-  if(!res.ok) return;
-  const j = await res.json();
-  fileSha = j.sha||'';
+  try{
+    const res = await fetch(WORKER_URL+'/sha');
+    if(!res.ok) return;
+    const j = await res.json();
+    fileSha = j.sha||'';
+  }catch(e){}
 }
 
 async function ghWrite(data){
-  if(!ghToken) throw new Error('GitHub token missing — contact admin');
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
-  const body = {message:'Update data.json', content, branch:BRANCH};
-  if(fileSha) body.sha = fileSha;
-  const res = await fetch(API_URL,{
+  const res = await fetch(WORKER_URL,{
     method:'PUT',
-    headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},
-    body:JSON.stringify(body),
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({data, sha:fileSha}),
   });
   const j = await res.json();
-  if(!res.ok) throw new Error(j.message||'GitHub write failed');
-  fileSha = j.content.sha;
+  if(!res.ok) throw new Error(j.error||'Write failed');
+  fileSha = j.sha;
 }
 
 // ── STATE ↔ JSON ───────────────────────────────────────────────
@@ -573,8 +564,11 @@ async function loadData(showLoading=true){
   }
   setSyncStatus('Loading…','');
   try{
-    const [data] = await Promise.all([ghRead(), fetchSha()]);
-    if(data) jsonToState(data);
+    const data = await ghRead();
+    if(data){
+      if(data.__sha){fileSha=data.__sha;delete data.__sha;}
+      jsonToState(data);
+    }
     applySettings(); renderWeekdayHeader(); renderLegend(); renderCalendar(); renderSummary();
     updateWeekdayChecks();
     const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
@@ -600,7 +594,6 @@ async function persistAll(){
   saving=true; saveQueued=false;
   setSyncStatus('Saving…','');
   try{
-    if(!ghToken) throw new Error('GitHub token missing — contact admin');
     if(!fileSha) await fetchSha();
     await ghWrite(stateToJson());
     const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
