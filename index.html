@@ -207,15 +207,14 @@
   .seg button.active{background:var(--accent);color:#fff;}
 
   /* PIE CHART */
-  .summary-body{display:flex;align-items:center;gap:24px;}
-  .pie-wrap{position:relative;flex-shrink:0;width:130px;height:130px;}
-  #pie-canvas{display:block;}
-  .pie-center-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center;}
-  .pie-center-total{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--text);-webkit-font-smoothing:antialiased;}
-  .pie-center-sub{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;}
-  .pie-toggle{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px;}
-  .pie-toggle-btn{padding:3px 10px;border-radius:4px;border:none;cursor:pointer;background:transparent;color:var(--text-muted);font-family:var(--ui-font);font-size:0.7rem;font-weight:600;transition:all 0.15s;}
-  .pie-toggle-btn.active{background:var(--accent);color:#fff;}
+  .summary-body{display:flex;align-items:center;gap:28px;}
+  .summary-rows{flex:1;display:flex;flex-direction:column;gap:10px;}
+  .pie-col{display:flex;flex-direction:column;align-items:center;gap:12px;flex-shrink:0;}
+  .pie-wrap{position:relative;width:180px;height:180px;}
+  #pie-canvas{display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4));}
+  .pie-toggle{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px;}
+  .pie-toggle-btn{padding:5px 18px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text-muted);font-family:var(--ui-font);font-size:0.78rem;font-weight:600;transition:all 0.15s;-webkit-font-smoothing:antialiased;}
+  .pie-toggle-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(61,142,240,0.35);}
   .rec-day-btn{padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--ui-font);font-size:0.78rem;font-weight:500;cursor:pointer;transition:all 0.15s;}
   .rec-day-btn:hover{border-color:var(--border-bright);background:var(--surface2);}
   .rec-day-btn.active{border-color:var(--accent);background:rgba(61,142,240,0.12);color:var(--accent);font-weight:600;}
@@ -319,19 +318,18 @@
     <div class="calendar-grid" id="calendar-grid"></div>
     <div class="summary-section">
       <div class="summary-card" style="--card-accent:var(--accent)">
-        <div class="summary-card-title" style="justify-content:space-between;">
-          <span>Days away <span id="year-badge" style="color:var(--text-muted);margin-left:4px;font-size:0.6rem;"></span></span>
-          <div class="pie-toggle">
-            <button class="pie-toggle-btn active" id="pie-month-btn">Month</button>
-            <button class="pie-toggle-btn" id="pie-year-btn">Year</button>
-          </div>
-        </div>
+        <div class="summary-card-title">Days away <span id="year-badge" style="color:var(--text-muted);margin-left:4px;font-size:0.6rem;"></span></div>
         <div class="summary-body">
-          <div class="pie-wrap">
-            <canvas id="pie-canvas" width="130" height="130"></canvas>
-            <div class="pie-center-label" id="pie-center-label"></div>
-          </div>
           <div class="summary-rows" id="summary-combined"></div>
+          <div class="pie-col">
+            <div class="pie-wrap">
+              <canvas id="pie-canvas" width="180" height="180"></canvas>
+            </div>
+            <div class="pie-toggle">
+              <button class="pie-toggle-btn active" id="pie-month-btn">Month</button>
+              <button class="pie-toggle-btn" id="pie-year-btn">Year</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -816,45 +814,56 @@ function drawPie(counts){
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  const cx=W/2,cy=H/2,r=W/2-6;
+  const cx=W/2,cy=H/2,r=W/2-4;
   ctx.clearRect(0,0,W,H);
 
   const total=counts.reduce((a,b)=>a+b,0);
-  const label=document.getElementById('pie-center-label');
 
   if(total===0){
-    // Empty state — draw a dashed circle
     ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
-    ctx.strokeStyle='rgba(99,130,200,0.2)';ctx.lineWidth=12;ctx.setLineDash([6,4]);
+    ctx.strokeStyle='rgba(99,130,200,0.15)';ctx.lineWidth=2;ctx.setLineDash([6,4]);
     ctx.stroke();ctx.setLineDash([]);
-    label.innerHTML=`<span class="pie-center-total" style="font-size:14px;color:var(--text-muted)">—</span><span class="pie-center-sub">${pieMode==='month'?'this month':'this year'}</span>`;
+    ctx.fillStyle='rgba(99,130,200,0.1)';ctx.fill();
+    ctx.font='bold 13px Inter,sans-serif';ctx.fillStyle='rgba(120,138,170,0.6)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('No data',cx,cy);
     return;
   }
 
+  // Draw slices
   let angle=-Math.PI/2;
+  const slices=[];
   counts.forEach((c,i)=>{
     if(c===0)return;
-    const slice=(c/total)*Math.PI*2;
+    const sweep=(c/total)*Math.PI*2;
     const p=settings.people[i];
-    ctx.beginPath();
-    ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,angle,angle+slice);
-    ctx.closePath();
-    ctx.fillStyle=p.color;
-    ctx.fill();
-    // Small gap between slices
+    // Draw slice
     ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,angle,angle+slice);
+    ctx.arc(cx,cy,r,angle,angle+sweep);
     ctx.closePath();
-    ctx.strokeStyle='rgba(10,13,20,0.6)';ctx.lineWidth=2;ctx.stroke();
-    angle+=slice;
+    ctx.fillStyle=p.color;ctx.fill();
+    // Subtle dark border between slices
+    ctx.strokeStyle='rgba(10,13,20,0.7)';ctx.lineWidth=2;ctx.stroke();
+    slices.push({angle,sweep,count:c,color:p.color});
+    angle+=sweep;
   });
 
-  // Donut hole
-  ctx.beginPath();ctx.arc(cx,cy,r*0.52,0,Math.PI*2);
-  ctx.fillStyle='#1a2236';ctx.fill();
-
-  label.innerHTML=`<span class="pie-center-total">${total}</span><span class="pie-center-sub">${pieMode==='month'?'this month':'this year'}</span>`;
+  // Draw numbers inside each slice
+  slices.forEach(({angle,sweep,count})=>{
+    if(count===0)return;
+    const midAngle=angle+sweep/2;
+    // Position label at 60% of radius from center
+    const lx=cx+Math.cos(midAngle)*r*0.62;
+    const ly=cy+Math.sin(midAngle)*r*0.62;
+    const fontSize=sweep>0.5?Math.min(28,Math.max(14,r*0.28)):Math.max(12,r*0.18);
+    ctx.font=`bold ${fontSize}px Inter,sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    // White text with dark shadow for legibility
+    ctx.shadowColor='rgba(0,0,0,0.5)';ctx.shadowBlur=4;
+    ctx.fillStyle='#ffffff';
+    ctx.fillText(count,lx,ly);
+    ctx.shadowBlur=0;
+  });
 }
 
 function renderSummary(){
