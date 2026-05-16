@@ -8,7 +8,7 @@
     "tagSize": 9,
     "summarySize": 10,
     "uiFont": "Inter",
-    "uiScale": 0.85,
+    "uiScale": 1,
     "showLogo": true,
     "weekStart": 1,
     "showWeekends": false,
