@@ -7,7 +7,7 @@
     "membersSize": 0.95,
     "tagSize": 0.9,
     "summarySize": 0.9,
-    "uiFont": "Roboto",
+    "uiFont": "Poppins",
     "showLogo": true,
     "weekStart": 1,
     "showWeekends": false,
