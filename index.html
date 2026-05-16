@@ -97,18 +97,38 @@
 
   /* ── SUMMARY ── */
   .summary-section{margin-top:20px;}
-  .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 24px;}
-  .summary-card-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;}
-  .summary-card-title::before{content:'';display:block;width:3px;height:10px;border-radius:2px;background:var(--card-accent,var(--accent));}
-  #year-badge{color:var(--text-muted);letter-spacing:0.12em;}
-  .summary-rows{display:flex;flex-direction:column;gap:10px;}
-  .summary-row{display:flex;align-items:center;gap:12px;}
-  .summary-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-  .summary-name{font-size:var(--summary-size);color:var(--text);flex-shrink:0;font-weight:600;min-width:80px;-webkit-font-smoothing:antialiased;}
-  .summary-counts{font-family:'JetBrains Mono',monospace;font-size:var(--summary-size);color:var(--text-dim);margin-left:4px;-webkit-font-smoothing:antialiased;}
-  .summary-counts .sep{margin:0 6px;opacity:0.3;}
-  .summary-count-val{color:var(--text);font-weight:700;}
-  .summary-unit{font-size:calc(var(--summary-size) * 0.85);color:var(--text-muted);margin-left:1px;}
+  .summary-card{
+    background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%);
+    border:1px solid var(--border);border-radius:14px;padding:20px 24px;
+    position:relative;overflow:hidden;
+  }
+  .summary-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(61,142,240,0.4),rgba(0,212,170,0.3),transparent);
+  }
+  .summary-card-title{
+    font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;
+    letter-spacing:0.16em;color:var(--text-muted);margin-bottom:16px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .summary-card-title::before{content:'';display:block;width:3px;height:8px;border-radius:2px;background:var(--accent);}
+  #year-badge{color:var(--accent);opacity:0.7;letter-spacing:0.16em;}
+
+  /* Responsive body — side by side on wide, stacked on narrow */
+  .summary-body{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;}
+  .summary-rows{display:flex;flex-direction:column;gap:8px;flex:1;min-width:200px;}
+  .summary-row{display:flex;align-items:center;gap:10px;}
+  .summary-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .summary-name{font-size:var(--summary-size);color:var(--text);font-weight:600;-webkit-font-smoothing:antialiased;white-space:nowrap;min-width:72px;}
+  .summary-divider{width:1px;height:14px;background:var(--border-bright);flex-shrink:0;margin:0 2px;}
+  .summary-stat{display:flex;align-items:baseline;gap:3px;}
+  .summary-stat-label{font-family:'JetBrains Mono',monospace;font-size:calc(var(--summary-size) * 0.82);color:var(--text-muted);letter-spacing:0.04em;}
+  .summary-stat-val{font-family:'JetBrains Mono',monospace;font-size:var(--summary-size);color:var(--text);font-weight:700;-webkit-font-smoothing:antialiased;}
+  .summary-stat-unit{font-size:calc(var(--summary-size) * 0.75);color:var(--text-muted);}
+
+  /* Pie col — stacks below rows when screen is narrow */
+  .pie-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+  #pie-canvas{display:block;filter:drop-shadow(0 2px 12px rgba(0,0,0,0.5));}
 
   /* ── BOTTOM BAR ── */
   .bottom-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 28px 40px;}
@@ -207,11 +227,6 @@
   .seg button{flex:1;padding:6px 10px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:500;transition:all 0.15s;}
   .seg button.active{background:var(--accent);color:#fff;}
 
-  /* PIE CHART */
-  .summary-body{display:flex;align-items:center;justify-content:center;gap:40px;}
-  .summary-rows{display:flex;flex-direction:column;gap:10px;}
-  .pie-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
-  #pie-canvas{display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4));}
   .rec-day-btn{padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--ui-font);font-size:0.78rem;font-weight:500;cursor:pointer;transition:all 0.15s;}
   .rec-day-btn:hover{border-color:var(--border-bright);background:var(--surface2);}
   .rec-day-btn.active{border-color:var(--accent);background:rgba(61,142,240,0.12);color:var(--accent);font-weight:600;}
@@ -234,6 +249,11 @@
     .month-bar{padding:10px 14px;}#sync-bar{padding:4px 14px;}
     .day-cell{min-height:70px;padding:5px 4px 4px;}.day-num{font-size:0.72rem;}
     .person-tag{font-size:0.6rem;}
+    .summary-card{padding:16px 14px;}
+    .summary-body{flex-direction:column;gap:16px;align-items:stretch;}
+    .summary-rows{min-width:unset;width:100%;}
+    .summary-row{justify-content:flex-start;}
+    .pie-col{align-self:center;}
   }
 </style>
 </head>
@@ -802,71 +822,72 @@ function drawPie(counts){
   const canvas=document.getElementById('pie-canvas');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height;
-  const cx=W/2,cy=H/2,r=W/2-18; // leave room for outside labels
-  ctx.clearRect(0,0,W,H);
+  const dpr=window.devicePixelRatio||1;
+  const SIZE=180;
+  canvas.width=SIZE*dpr;canvas.height=SIZE*dpr;
+  canvas.style.width=SIZE+'px';canvas.style.height=SIZE+'px';
+  ctx.scale(dpr,dpr);
+  const cx=SIZE/2,cy=SIZE/2,r=SIZE/2-8;
+  ctx.clearRect(0,0,SIZE,SIZE);
 
-  const total=counts.reduce((a,b)=>a+b,0);
+  const raw=counts.map(c=>c);
+  const total=raw.reduce((a,b)=>a+b,0);
 
   if(total===0){
     ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
-    ctx.strokeStyle='rgba(99,130,200,0.15)';ctx.lineWidth=2;ctx.setLineDash([6,4]);
+    ctx.strokeStyle='rgba(99,130,200,0.12)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
     ctx.stroke();ctx.setLineDash([]);
-    ctx.font='bold 12px Inter,sans-serif';ctx.fillStyle='rgba(120,138,170,0.5)';
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('No data',cx,cy);
+    ctx.font='500 11px Inter,sans-serif';ctx.fillStyle='rgba(120,138,170,0.4)';
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('No data',cx,cy);
     return;
   }
 
-  // First pass: draw all slices
+  // Enforce minimum slice angle — 0.55 rad (~31°) ensures label always fits inside
+  const MIN_SWEEP=0.55;
+  const adjusted=raw.map(c=>c>0?Math.max(c/total*Math.PI*2,MIN_SWEEP):0);
+  const adjTotal=adjusted.reduce((a,b)=>a+b,0);
+  const sweeps=adjusted.map(a=>a/adjTotal*Math.PI*2);
+
+  // Draw slices
   let angle=-Math.PI/2;
   const slices=[];
-  counts.forEach((c,i)=>{
-    if(c===0)return;
-    const sweep=(c/total)*Math.PI*2;
+  sweeps.forEach((sweep,i)=>{
+    if(raw[i]===0)return;
     const p=settings.people[i];
+    // Gradient from bright center to slightly darker edge
+    const mid=angle+sweep/2;
+    const g=ctx.createRadialGradient(cx+Math.cos(mid)*r*0.3,cy+Math.sin(mid)*r*0.3,0,cx,cy,r);
+    g.addColorStop(0,p.color+'ff');
+    g.addColorStop(1,p.color+'bb');
     ctx.beginPath();ctx.moveTo(cx,cy);
     ctx.arc(cx,cy,r,angle,angle+sweep);
     ctx.closePath();
-    ctx.fillStyle=p.color;ctx.fill();
-    ctx.strokeStyle='rgba(10,13,20,0.8)';ctx.lineWidth=2;ctx.stroke();
-    slices.push({angle,sweep,count:c,color:p.color});
+    ctx.fillStyle=g;ctx.fill();
+    // Dark crisp separator
+    ctx.strokeStyle='rgba(8,11,20,0.95)';ctx.lineWidth=2;ctx.stroke();
+    slices.push({angle,sweep,count:raw[i],color:p.color});
     angle+=sweep;
   });
 
-  // Second pass: draw labels
-  // Use a fixed readable font size for ALL slices
-  const FONT_SIZE=18;
-  ctx.font=`bold ${FONT_SIZE}px Inter,sans-serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
+  // Outer accent ring
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle='rgba(61,142,240,0.15)';ctx.lineWidth=1.5;ctx.stroke();
 
+  // Labels — monospace, small, inside every slice
   slices.forEach(({angle,sweep,count})=>{
-    const midAngle=angle+sweep/2;
-    const isSmall=sweep<0.45; // less than ~26 degrees
-
-    if(isSmall){
-      // Draw label outside with a leader line
-      const innerX=cx+Math.cos(midAngle)*(r*0.75);
-      const innerY=cy+Math.sin(midAngle)*(r*0.75);
-      const outerX=cx+Math.cos(midAngle)*(r+10);
-      const outerY=cy+Math.sin(midAngle)*(r+10);
-      // Leader line
-      ctx.beginPath();ctx.moveTo(innerX,innerY);ctx.lineTo(outerX,outerY);
-      ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=1.5;ctx.stroke();
-      // Label outside
-      ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=6;
-      ctx.fillStyle='#ffffff';
-      ctx.fillText(count,outerX+(Math.cos(midAngle)>0?10:-10),outerY);
-      ctx.shadowBlur=0;
-    } else {
-      // Label inside slice
-      const lx=cx+Math.cos(midAngle)*r*0.6;
-      const ly=cy+Math.sin(midAngle)*r*0.6;
-      ctx.shadowColor='rgba(0,0,0,0.6)';ctx.shadowBlur=6;
-      ctx.fillStyle='#ffffff';
-      ctx.fillText(count,lx,ly);
-      ctx.shadowBlur=0;
-    }
+    const mid=angle+sweep/2;
+    const lx=cx+Math.cos(mid)*r*0.62;
+    const ly=cy+Math.sin(mid)*r*0.62;
+    // Dark backing pill
+    ctx.font=`700 11px 'JetBrains Mono',monospace`;
+    const tw=ctx.measureText(String(count)).width;
+    const pw=tw+10,ph=17;
+    ctx.fillStyle='rgba(6,9,18,0.55)';
+    ctx.beginPath();ctx.roundRect(lx-pw/2,ly-ph/2,pw,ph,4);ctx.fill();
+    // Number
+    ctx.fillStyle='rgba(255,255,255,0.97)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(String(count),lx,ly);
   });
 }
 
@@ -880,13 +901,12 @@ function renderSummary(){
   const monthName=MONTHS[state.month].substring(0,3);
   document.getElementById('summary-combined').innerHTML=settings.people.map((p,i)=>
     `<div class="summary-row">
-      <span class="summary-dot" style="background:${p.color};box-shadow:0 0 5px ${p.color}55;"></span>
+      <span class="summary-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color}66;"></span>
       <span class="summary-name">${p.name}</span>
-      <span class="summary-counts">
-        ${monthName}: <span class="summary-count-val">${mc[i]}<span class="summary-unit">d</span></span>
-        <span class="sep">·</span>
-        Year: <span class="summary-count-val">${yc[i]}<span class="summary-unit">d</span></span>
-      </span>
+      <span class="summary-divider"></span>
+      <span class="summary-stat"><span class="summary-stat-label">${monthName}&nbsp;</span><span class="summary-stat-val">${mc[i]}</span><span class="summary-stat-unit">d</span></span>
+      <span style="margin:0 8px;color:var(--text-muted);opacity:0.3;">·</span>
+      <span class="summary-stat"><span class="summary-stat-label">Year&nbsp;</span><span class="summary-stat-val">${yc[i]}</span><span class="summary-stat-unit">d</span></span>
     </div>`).join('');
   drawPie(yc);
 }
