@@ -3,17 +3,19 @@
     "title": "Vacation & Unavailability",
     "titleSize": 1,
     "monthSize": 0.9,
-    "todaySize": 0.5,
+    "todaySize": 0.65,
     "membersSize": 0.6,
     "showLogo": true,
     "weekStart": 1,
     "showWeekends": false,
     "highlightWeekends": false,
-    "highlightedWeekdays": [
-      1,
-      2,
-      3
-    ]
+    "weekdayModes": {
+      "1": "normal",
+      "2": "normal",
+      "3": "normal",
+      "4": "dim",
+      "5": "dim"
+    }
   },
   "members": [
     {
