@@ -73,7 +73,8 @@
   .header-icon-btn:active{transform:scale(0.92);}
 
   /* ── SYNC BAR with animated scanner ── */
-  #sync-bar{display:flex;align-items:center;gap:8px;padding:5px 20px;background:#060810;border-bottom:1px solid rgba(61,142,240,0.08);min-height:32px;position:relative;overflow:hidden;}
+  #sync-bar{display:flex;align-items:center;gap:8px;padding:5px 20px;background:linear-gradient(90deg,#0d1628,#0a1220,#0d1628);border-top:1px solid rgba(61,142,240,0.18);border-bottom:1px solid rgba(61,142,240,0.12);min-height:32px;position:relative;overflow:hidden;}
+  #sync-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(61,142,240,0.04),transparent);pointer-events:none;}
   .sync-bar-scanner{position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,212,170,0.2),rgba(0,212,170,0.4),rgba(0,212,170,0.2),transparent);animation:scanner 3s linear 1 forwards;pointer-events:none;}
   @keyframes scanner{0%{left:-60%}100%{left:120%}}
   #sync-bar::before{content:'';position:absolute;top:0;left:-200%;width:80%;height:1.5px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);animation:scanline 3s linear 1 forwards;pointer-events:none;}
