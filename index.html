@@ -89,8 +89,10 @@
   .day-cell.today .day-num{color:var(--accent);}
   .today-pip{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);}
   .day-people{display:flex;flex-direction:column;gap:2px;}
-  .person-tag{display:flex;align-items:center;gap:5px;padding:1px 0;font-size:var(--tag-size);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-font-smoothing:antialiased;}
+  .person-tag{display:flex;align-items:center;gap:5px;padding:1px 0;font-size:var(--tag-size);font-weight:600;-webkit-font-smoothing:antialiased;min-width:0;overflow:hidden;}
   .person-tag-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .person-tag-text{display:flex;align-items:baseline;gap:0;min-width:0;overflow:hidden;}
+  .person-tag-note{color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0;}
   .note-indicator{position:absolute;top:6px;right:7px;font-size:0.55rem;color:var(--accent2);}
 
   /* ── SUMMARY ── */
@@ -731,7 +733,8 @@ function renderCalendar(){
     let html=`<div class="day-num">${String(d).padStart(2,'0')}${isToday?'<span class="today-pip"></span>':''}</div><div class="day-people">`;
     data.people.forEach(pid=>{
       const p=settings.people[pid];if(!p)return;
-      html+=`<div class="person-tag"><span class="person-tag-dot" style="background:${p.color};box-shadow:0 0 4px ${p.color}88;"></span><span style="color:var(--text)">${p.name}</span></div>`;
+      const note=data.notes&&data.notes[pid]?data.notes[pid]:'';
+      html+=`<div class="person-tag"><span class="person-tag-dot" style="background:${p.color};box-shadow:0 0 4px ${p.color}88;"></span><span class="person-tag-text"><span style="color:var(--text);flex-shrink:0;">${p.name}</span>${note?`<span class="person-tag-note"> — ${note}</span>`:''}</span></div>`;
     });
     html+='</div>';cell.innerHTML=html;
     const hasNote=data.notes&&Object.keys(data.notes).length>0;
