@@ -53,16 +53,20 @@
   .header-title h1{font-size:var(--title-size);font-weight:600;color:var(--text);letter-spacing:0.01em;}
 
   /* ── SYNC BAR ── */
-  #sync-bar{display:flex;align-items:center;gap:6px;padding:4px 36px;background:var(--bg3);border-bottom:1px solid var(--border);min-height:32px;}
-  #sync-msg{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);margin-right:auto;}
+  .bottom-bar{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 28px 36px;flex-wrap:wrap;}
+  .bottom-settings-btn{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:8px 16px;border-radius:8px;cursor:pointer;font-family:var(--ui-font);font-size:0.8rem;font-weight:500;transition:all 0.15s;}
+  .bottom-settings-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
+  .bottom-settings-btn svg{width:15px;height:15px;transition:transform 0.4s ease;}
+  .bottom-settings-btn:hover svg{transform:rotate(90deg);}
+  .bottom-refresh-btn{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:8px 14px;border-radius:8px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.04em;transition:all 0.15s;}
+  .bottom-refresh-btn:hover{border-color:var(--border-bright);color:var(--accent);}
+  #sync-msg{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);}
   #sync-msg.ok{color:var(--accent2);}#sync-msg.err{color:var(--danger);}
-  #sync-refresh-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:2px 10px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;transition:all 0.15s;letter-spacing:0.05em;flex-shrink:0;}
-  #sync-refresh-btn:hover{border-color:var(--border-bright);color:var(--accent);}
 
   /* ── MONTH BAR ── */
-  .month-bar{display:flex;align-items:center;padding:10px 28px;background:var(--bg2);border-bottom:1px solid var(--border);}
-  .month-bar-center{flex:1;display:flex;align-items:center;justify-content:center;}
-  .month-bar-right{display:flex;align-items:center;flex-shrink:0;}
+  .month-bar{display:flex;align-items:center;padding:10px 28px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;}
+  .month-bar-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;}
+  .month-bar-right{margin-left:auto;display:flex;align-items:center;}
   .month-row{display:flex;align-items:center;gap:10px;}
   .today-btn{width:auto!important;font-size:var(--today-size)!important;font-family:var(--ui-font);font-weight:600;letter-spacing:0.01em;padding:0.4em 1.1em;line-height:2;-webkit-font-smoothing:antialiased;}
   .nav-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.95rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
@@ -115,7 +119,16 @@
 
   /* Responsive body — side by side on wide, stacked on narrow */
   .summary-body{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;}
-  .summary-rows{display:flex;flex-direction:column;gap:8px;flex:1;min-width:200px;}
+  .summary-rows{display:flex;flex-direction:column;gap:8px;flex:1;min-width:180px;}
+  .pie-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+  #pie-canvas{display:block;filter:drop-shadow(0 2px 12px rgba(0,0,0,0.5));}
+
+  /* Stack pie below rows on narrow screens */
+  @media(max-width:520px){
+    .summary-body{flex-direction:column;gap:20px;align-items:center;}
+    .summary-rows{min-width:unset;width:100%;}
+    .pie-col{width:100%;align-items:center;}
+  }
   .summary-row{display:flex;align-items:center;gap:10px;}
   .summary-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
   .summary-name{font-size:var(--summary-size);color:var(--text);font-weight:600;-webkit-font-smoothing:antialiased;white-space:nowrap;min-width:72px;}
@@ -125,17 +138,16 @@
   .summary-stat-val{font-family:'JetBrains Mono',monospace;font-size:var(--summary-size);color:var(--text);font-weight:700;-webkit-font-smoothing:antialiased;}
   .summary-stat-unit{font-size:calc(var(--summary-size) * 0.75);color:var(--text-muted);}
 
-  /* Pie col — stacks below rows when screen is narrow */
-  .pie-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
-  #pie-canvas{display:block;filter:drop-shadow(0 2px 12px rgba(0,0,0,0.5));}
-
   /* ── BOTTOM BAR ── */
   .bottom-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 28px 40px;}
   .bottom-settings-btn{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:10px 18px;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.84rem;font-weight:500;transition:all 0.15s;}
   .bottom-settings-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
   .bottom-settings-btn svg{width:17px;height:17px;transition:transform 0.4s ease;}
   .bottom-settings-btn:hover svg{transform:rotate(90deg);}
-  .btn-add-range{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:2px 9px;border-radius:5px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:500;letter-spacing:0.04em;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+  #sync-bar{display:flex;align-items:center;gap:6px;padding:4px 36px;background:var(--bg3);border-bottom:1px solid var(--border);min-height:30px;}
+  #sync-msg{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);margin-right:auto;}
+  #sync-msg.ok{color:var(--accent2);}#sync-msg.err{color:var(--danger);}
+  .btn-add-range{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:2px 9px;border-radius:5px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:500;letter-spacing:0.04em;transition:all 0.15s;white-space:nowrap;}
   .btn-add-range:hover{border-color:var(--border-bright);color:var(--accent);}
 
   /* ── OVERLAYS ── */
@@ -246,8 +258,7 @@
     main{padding:14px 10px 6px;}header{padding:0 14px;}
     .legend{padding:0 14px;padding-top:10px;padding-bottom:10px;}
     .month-bar{padding:8px 14px;}
-    #sync-bar{padding:4px 10px;}
-    .btn-add-range span{display:none;}/* hide text, keep icon on very small */
+    .bottom-bar{padding:10px 14px 28px;gap:8px;}
     .day-cell{min-height:70px;padding:5px 4px 4px;}.day-num{font-size:0.72rem;}
     .person-tag{font-size:0.6rem;}
     .summary-card{padding:16px 14px;}
@@ -313,7 +324,6 @@
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       Recurring
     </button>
-    <button id="sync-refresh-btn">↻ REFRESH</button>
   </div>
 
   <div class="month-bar">
@@ -350,6 +360,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       <span>Settings</span>
     </button>
+    <button id="sync-refresh-btn" class="bottom-refresh-btn">↻ Refresh</button>
   </div>
 </div>
 
