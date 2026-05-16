@@ -44,22 +44,49 @@
   .retry-btn:hover{background:var(--accent);color:#fff;}
 
   /* ── HEADER ── */
-  #app-shell{display:none;zoom:var(--ui-scale);}
-  header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 36px;min-height:68px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;}
-  header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);opacity:0.5;}
-  .logo-wrap{display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:linear-gradient(135deg,rgba(61,142,240,0.18),rgba(0,212,170,0.08));border:1px solid var(--border-bright);border-radius:10px;flex-shrink:0;overflow:hidden;}
-  .logo-wrap svg,.logo-wrap img{width:24px;height:24px;object-fit:cover;}
-  .logo-wrap.hidden{display:none;}
-  .header-title h1{font-size:var(--title-size);font-weight:600;color:var(--text);letter-spacing:0.01em;}
+  /* ── APP SHELL — centered on desktop ── */
+  #app-shell{
+    display:none;
+    max-width:900px;
+    margin:0 auto;
+    min-height:100vh;
+    position:relative;
+  }
+  @media(min-width:900px){
+    body{background:#060810;}
+    #app-shell{
+      background:var(--bg);
+      box-shadow:0 0 80px rgba(0,0,0,0.6),0 0 0 1px rgba(61,142,240,0.08);
+      border-left:1px solid rgba(61,142,240,0.1);
+      border-right:1px solid rgba(61,142,240,0.1);
+    }
+  }
 
-  /* ── SYNC BAR ── */
-  .bottom-bar{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 28px 32px;flex-wrap:wrap;}
-  .bottom-settings-btn,.bottom-refresh-btn{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:5px 12px;border-radius:7px;cursor:pointer;font-family:var(--ui-font);font-size:0.72rem;font-weight:500;letter-spacing:0.02em;transition:all 0.15s;-webkit-font-smoothing:antialiased;}
-  .bottom-settings-btn:hover,.bottom-refresh-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
-  .bottom-settings-btn svg{width:13px;height:13px;transition:transform 0.4s ease;}
-  .bottom-settings-btn:hover svg{transform:rotate(90deg);}
-  #sync-msg{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);}
+  /* ── HEADER ── */
+  header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;min-height:62px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
+  header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);opacity:0.4;}
+  .logo-wrap{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:linear-gradient(135deg,rgba(61,142,240,0.18),rgba(0,212,170,0.08));border:1px solid var(--border-bright);border-radius:9px;flex-shrink:0;overflow:hidden;}
+  .logo-wrap svg,.logo-wrap img{width:20px;height:20px;object-fit:cover;}
+  .logo-wrap.hidden{display:none;}
+  .header-title{flex:1;}
+  .header-title h1{font-size:var(--title-size);font-weight:600;color:var(--text);letter-spacing:0.01em;-webkit-font-smoothing:antialiased;}
+  .header-icons{display:flex;align-items:center;gap:4px;margin-left:auto;}
+  .header-icon-btn{background:transparent;border:1px solid transparent;color:rgba(99,130,200,0.4);width:34px;height:34px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .header-icon-btn:hover{background:var(--surface);border-color:var(--border);color:var(--text-dim);}
+  .header-icon-btn:active{transform:scale(0.92);}
+
+  /* ── SYNC BAR with animated scanner ── */
+  #sync-bar{display:flex;align-items:center;gap:8px;padding:6px 20px;background:var(--bg3);border-bottom:1px solid var(--border);min-height:36px;position:relative;overflow:hidden;}
+  .sync-bar-scanner{position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,212,170,0.25),rgba(0,212,170,0.5),rgba(0,212,170,0.25),transparent);animation:scanner 4s linear infinite;pointer-events:none;}
+  @keyframes scanner{0%{left:-60%}100%{left:120%}}
+  /* Top glowing line that moves */
+  #sync-bar::before{content:'';position:absolute;top:0;left:-200%;width:80%;height:1.5px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);animation:scanline 4s linear infinite;pointer-events:none;}
+  @keyframes scanline{0%{left:-200%}100%{left:200%}}
+  #sync-msg{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);margin-right:auto;}
   #sync-msg.ok{color:var(--accent2);}#sync-msg.err{color:var(--danger);}
+
+  /* ── BOTTOM BAR (removed) ── */
+  .bottom-bar{display:none;}
 
   /* ── MONTH BAR ── */
   .month-bar{display:flex;align-items:center;padding:10px 28px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;}
@@ -297,9 +324,18 @@
   <header>
     <div class="logo-wrap" id="logo-wrap"><span id="logo-content"></span></div>
     <div class="header-title"><h1 id="app-title">Vacation &amp; Unavailability Tracker</h1></div>
+    <div class="header-icons">
+      <button class="header-icon-btn" id="sync-refresh-btn" title="Refresh">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </button>
+      <button class="header-icon-btn" id="open-settings" title="Settings">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
   </header>
 
   <div id="sync-bar">
+    <div class="sync-bar-scanner"></div>
     <span id="sync-msg"></span>
     <button class="btn-add-range" id="open-range">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -334,14 +370,6 @@
       </div>
     </div>
   </main>
-
-  <div class="bottom-bar">
-    <button class="bottom-settings-btn" id="open-settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span>Settings</span>
-    </button>
-    <button id="sync-refresh-btn" class="bottom-refresh-btn">↻ Refresh</button>
-  </div>
 </div>
 
 <!-- RANGE POPUP -->
@@ -575,8 +603,10 @@ if(sessionStorage.getItem('pw_ok')==='1'){
 
 // ── APP START ──────────────────────────────────────────────────
 function startApp(){
-  document.getElementById('app-shell').style.display='block';
-  // Restore token from session if available
+  const shell=document.getElementById('app-shell');
+  shell.style.display='block';
+  shell.style.zoom=settings.uiScale||1;
+  ghToken=sessionStorage.getItem('gh_token')||'';
   buildWeekdayChecks();
   loadData(true);
 }
@@ -740,6 +770,7 @@ function applySettings(){
   r.style.setProperty('--summary-size',settings.summarySize+'px');
   r.style.setProperty('--ui-font',`'${settings.uiFont}',sans-serif`);
   r.style.setProperty('--ui-scale',settings.uiScale);
+  document.getElementById('app-shell').style.zoom=settings.uiScale;
   document.getElementById('app-title').textContent=settings.title;
   document.title=settings.title;
   const wrap=document.getElementById('logo-wrap');
