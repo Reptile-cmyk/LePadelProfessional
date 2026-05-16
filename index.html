@@ -144,11 +144,12 @@
   .popup,.range-popup{background:var(--bg3);border:1px solid var(--border-bright);border-radius:16px;padding:26px 26px 22px;width:100%;max-width:360px;max-height:calc(100vh - 40px);overflow-y:auto;box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:translateY(12px) scale(0.98);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);}
   .popup *,.range-popup *{box-sizing:border-box;}
   .overlay.open .popup,.overlay.open .range-popup{transform:translateY(0) scale(1);}
-  @media(max-width:480px){
+  /* Always stack date fields vertically — cleaner in a narrow popup */
+  .range-date-row{flex-direction:column;}
+  .range-date-field{width:100%;}
+  @media(max-width:640px){
     .overlay{padding:10px;}
     .popup,.range-popup{padding:20px 16px 18px;border-radius:12px;}
-    .range-date-row{flex-direction:column;}
-    .range-date-field{width:100%;}
   }
   .popup-date-label{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;}
   .popup h3{font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:18px;}
