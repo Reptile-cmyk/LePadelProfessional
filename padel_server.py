@@ -25,6 +25,11 @@ from padel_checker import (
 app = Flask(__name__)
 CORS(app)   # allows claudeusercontent.com (and any origin) to call the API
 
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """Always return JSON, never an HTML error page."""
+    return jsonify({"error": str(e)}), 500
+
 
 # ── API ───────────────────────────────────────────────────────────────────────
 
@@ -32,14 +37,19 @@ def slots_for_date(d: date) -> list[dict]:
     tasks = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
         for name, cid in PADELMATES_CLUBS.items():
-            tasks.append(ex.submit(scrape_padelmates, name, cid, d))
+            tasks.append(('pm', name, ex.submit(scrape_padelmates, name, cid, d)))
         for name, fid in MATCHI_FACILITIES.items():
-            tasks.append(ex.submit(scrape_matchi, name, fid, d))
+            tasks.append(('mc', name, ex.submit(scrape_matchi, name, fid, d)))
         for centre in WANNASPORT_VENUES:
-            tasks.append(ex.submit(scrape_wannasport, centre, d))
-        results = [t.result() for t in tasks]
+            tasks.append(('ws', centre, ex.submit(scrape_wannasport, centre, d)))
 
-    slots = [s for group in results for s in group]
+    slots = []
+    for _, name, future in tasks:
+        try:
+            slots.extend(future.result(timeout=15))
+        except Exception as e:
+            print(f"  [WARN] {name}: {e}")   # log but don't crash
+
     slots.sort(key=lambda s: (s.centre, s.start, -s.duration))
     return [
         {
