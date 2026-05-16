@@ -151,7 +151,7 @@
         1
       ],
       "notes": {
-        "1": "Chilling at the sea of Brøndby"
+        "1": "Chilling at the sea of BrÃ¸ndby"
       }
     },
     "2026-06-09": {
@@ -159,7 +159,7 @@
         1
       ],
       "notes": {
-        "1": "Chilling at the sea of Brøndby"
+        "1": "Chilling at the sea of BrÃ¸ndby"
       }
     },
     "2026-06-10": {
@@ -167,7 +167,7 @@
         1
       ],
       "notes": {
-        "1": "Chilling at the sea of Brøndby"
+        "1": "Chilling at the sea of BrÃ¸ndby"
       }
     },
     "2026-07-10": {
@@ -247,6 +247,18 @@
       "notes": {
         "1": "Dubai? Need to ask my GF as I forgot"
       }
+    },
+    "2026-05-06": {
+      "people": [
+        3
+      ],
+      "notes": {}
+    },
+    "2026-05-13": {
+      "people": [
+        3
+      ],
+      "notes": {}
     }
   }
 }
