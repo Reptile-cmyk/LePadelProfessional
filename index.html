@@ -49,8 +49,6 @@
     display:none;
     max-width:900px;
     margin:0 auto;
-    min-height:100vh;
-    position:relative;
   }
   @media(min-width:900px){
     body{background:#060810;}
@@ -77,10 +75,10 @@
 
   /* ── SYNC BAR with animated scanner ── */
   #sync-bar{display:flex;align-items:center;gap:8px;padding:6px 20px;background:var(--bg3);border-bottom:1px solid var(--border);min-height:36px;position:relative;overflow:hidden;}
-  .sync-bar-scanner{position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,212,170,0.25),rgba(0,212,170,0.5),rgba(0,212,170,0.25),transparent);animation:scanner 4s linear infinite;pointer-events:none;}
+  .sync-bar-scanner{position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,212,170,0.25),rgba(0,212,170,0.5),rgba(0,212,170,0.25),transparent);animation:scanner 3s linear 1 forwards;pointer-events:none;}
   @keyframes scanner{0%{left:-60%}100%{left:120%}}
   /* Top glowing line that moves */
-  #sync-bar::before{content:'';position:absolute;top:0;left:-200%;width:80%;height:1.5px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);animation:scanline 4s linear infinite;pointer-events:none;}
+  #sync-bar::before{content:'';position:absolute;top:0;left:-200%;width:80%;height:1.5px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);animation:scanline 3s linear 1 forwards;pointer-events:none;}
   @keyframes scanline{0%{left:-200%}100%{left:200%}}
   #sync-msg{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);margin-right:auto;}
   #sync-msg.ok{color:var(--accent2);}#sync-msg.err{color:var(--danger);}
@@ -102,7 +100,7 @@
   /* legend removed */
 
   /* ── CALENDAR ── */
-  main{padding:24px 28px 8px;}
+  main{padding:24px 28px 0;}
   .weekday-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;}
   .weekday-header div{text-align:center;font-size:0.64rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-muted);font-family:'JetBrains Mono',monospace;padding:8px 0;}
   .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
@@ -124,10 +122,10 @@
   .note-indicator{position:absolute;top:6px;right:7px;font-size:0.55rem;color:var(--accent2);}
 
   /* ── SUMMARY ── */
-  .summary-section{margin-top:20px;}
+  .summary-section{margin-top:16px;padding-bottom:env(safe-area-inset-bottom,16px);}
   .summary-card{
     background:linear-gradient(160deg,rgba(15,21,32,0.95) 0%,rgba(10,13,20,0.98) 100%);
-    border:1px solid rgba(61,142,240,0.2);border-radius:16px;padding:24px 28px 28px;
+    border:1px solid rgba(61,142,240,0.2);border-radius:16px;padding:16px 28px 18px;
     position:relative;overflow:hidden;
   }
   .summary-card::before{
@@ -136,12 +134,12 @@
   }
   .summary-card-title{
     font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;
-    letter-spacing:0.18em;color:var(--text-muted);margin-bottom:20px;
+    letter-spacing:0.18em;color:var(--text-muted);margin-bottom:12px;
     display:flex;align-items:center;justify-content:center;gap:8px;
   }
   .summary-card-title::before{content:'';display:block;width:3px;height:8px;border-radius:2px;background:var(--accent);}
   #year-badge{color:var(--accent);letter-spacing:0.18em;}
-  .summary-rows{display:flex;flex-direction:column;gap:14px;width:fit-content;margin:0 auto;}
+  .summary-rows{display:flex;flex-direction:column;gap:8px;width:fit-content;margin:0 auto;}
   .summary-row{display:flex;align-items:center;white-space:nowrap;}
   .summary-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-right:12px;}
   .summary-name{font-size:var(--summary-size);color:var(--text);font-weight:600;-webkit-font-smoothing:antialiased;white-space:nowrap;min-width:80px;margin-right:8px;}
