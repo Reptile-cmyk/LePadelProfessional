@@ -4,7 +4,7 @@
     "titleSize": 1.4,
     "monthSize": 1.4,
     "todaySize": 0.9,
-    "membersSize": 1.05,
+    "membersSize": 0.85,
     "tagSize": 0.9,
     "summarySize": 0.82,
     "uiFont": "Inter",
