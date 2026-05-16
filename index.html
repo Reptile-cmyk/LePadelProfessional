@@ -100,6 +100,7 @@
   .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 24px;}
   .summary-card-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;}
   .summary-card-title::before{content:'';display:block;width:3px;height:10px;border-radius:2px;background:var(--card-accent,var(--accent));}
+  #year-badge{color:var(--text-muted);letter-spacing:0.12em;}
   .summary-rows{display:flex;flex-direction:column;gap:10px;}
   .summary-row{display:flex;align-items:center;gap:12px;}
   .summary-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
@@ -207,14 +208,10 @@
   .seg button.active{background:var(--accent);color:#fff;}
 
   /* PIE CHART */
-  .summary-body{display:flex;align-items:center;gap:28px;}
-  .summary-rows{flex:1;display:flex;flex-direction:column;gap:10px;}
-  .pie-col{display:flex;flex-direction:column;align-items:center;gap:12px;flex-shrink:0;}
-  .pie-wrap{position:relative;width:180px;height:180px;}
+  .summary-body{display:flex;align-items:center;justify-content:center;gap:40px;}
+  .summary-rows{display:flex;flex-direction:column;gap:10px;}
+  .pie-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
   #pie-canvas{display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4));}
-  .pie-toggle{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px;}
-  .pie-toggle-btn{padding:5px 18px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text-muted);font-family:var(--ui-font);font-size:0.78rem;font-weight:600;transition:all 0.15s;-webkit-font-smoothing:antialiased;}
-  .pie-toggle-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(61,142,240,0.35);}
   .rec-day-btn{padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--ui-font);font-size:0.78rem;font-weight:500;cursor:pointer;transition:all 0.15s;}
   .rec-day-btn:hover{border-color:var(--border-bright);background:var(--surface2);}
   .rec-day-btn.active{border-color:var(--accent);background:rgba(61,142,240,0.12);color:var(--accent);font-weight:600;}
@@ -318,17 +315,11 @@
     <div class="calendar-grid" id="calendar-grid"></div>
     <div class="summary-section">
       <div class="summary-card" style="--card-accent:var(--accent)">
-        <div class="summary-card-title">Days away <span id="year-badge" style="color:var(--text-muted);margin-left:4px;font-size:0.6rem;"></span></div>
+        <div class="summary-card-title">Days away <span id="year-badge"></span></div>
         <div class="summary-body">
           <div class="summary-rows" id="summary-combined"></div>
           <div class="pie-col">
-            <div class="pie-wrap">
-              <canvas id="pie-canvas" width="180" height="180"></canvas>
-            </div>
-            <div class="pie-toggle">
-              <button class="pie-toggle-btn active" id="pie-month-btn">Month</button>
-              <button class="pie-toggle-btn" id="pie-year-btn">Year</button>
-            </div>
+            <canvas id="pie-canvas" width="180" height="180"></canvas>
           </div>
         </div>
       </div>
@@ -807,14 +798,12 @@ function renderCalendar(){
   }
 }
 
-let pieMode='month'; // 'month' or 'year'
-
 function drawPie(counts){
   const canvas=document.getElementById('pie-canvas');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  const cx=W/2,cy=H/2,r=W/2-4;
+  const cx=W/2,cy=H/2,r=W/2-18; // leave room for outside labels
   ctx.clearRect(0,0,W,H);
 
   const total=counts.reduce((a,b)=>a+b,0);
@@ -823,46 +812,61 @@ function drawPie(counts){
     ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
     ctx.strokeStyle='rgba(99,130,200,0.15)';ctx.lineWidth=2;ctx.setLineDash([6,4]);
     ctx.stroke();ctx.setLineDash([]);
-    ctx.fillStyle='rgba(99,130,200,0.1)';ctx.fill();
-    ctx.font='bold 13px Inter,sans-serif';ctx.fillStyle='rgba(120,138,170,0.6)';
+    ctx.font='bold 12px Inter,sans-serif';ctx.fillStyle='rgba(120,138,170,0.5)';
     ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('No data',cx,cy);
     return;
   }
 
-  // Draw slices
+  // First pass: draw all slices
   let angle=-Math.PI/2;
   const slices=[];
   counts.forEach((c,i)=>{
     if(c===0)return;
     const sweep=(c/total)*Math.PI*2;
     const p=settings.people[i];
-    // Draw slice
     ctx.beginPath();ctx.moveTo(cx,cy);
     ctx.arc(cx,cy,r,angle,angle+sweep);
     ctx.closePath();
     ctx.fillStyle=p.color;ctx.fill();
-    // Subtle dark border between slices
-    ctx.strokeStyle='rgba(10,13,20,0.7)';ctx.lineWidth=2;ctx.stroke();
+    ctx.strokeStyle='rgba(10,13,20,0.8)';ctx.lineWidth=2;ctx.stroke();
     slices.push({angle,sweep,count:c,color:p.color});
     angle+=sweep;
   });
 
-  // Draw numbers inside each slice
+  // Second pass: draw labels
+  // Use a fixed readable font size for ALL slices
+  const FONT_SIZE=18;
+  ctx.font=`bold ${FONT_SIZE}px Inter,sans-serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+
   slices.forEach(({angle,sweep,count})=>{
-    if(count===0)return;
     const midAngle=angle+sweep/2;
-    // Position label at 60% of radius from center
-    const lx=cx+Math.cos(midAngle)*r*0.62;
-    const ly=cy+Math.sin(midAngle)*r*0.62;
-    const fontSize=sweep>0.5?Math.min(28,Math.max(14,r*0.28)):Math.max(12,r*0.18);
-    ctx.font=`bold ${fontSize}px Inter,sans-serif`;
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    // White text with dark shadow for legibility
-    ctx.shadowColor='rgba(0,0,0,0.5)';ctx.shadowBlur=4;
-    ctx.fillStyle='#ffffff';
-    ctx.fillText(count,lx,ly);
-    ctx.shadowBlur=0;
+    const isSmall=sweep<0.45; // less than ~26 degrees
+
+    if(isSmall){
+      // Draw label outside with a leader line
+      const innerX=cx+Math.cos(midAngle)*(r*0.75);
+      const innerY=cy+Math.sin(midAngle)*(r*0.75);
+      const outerX=cx+Math.cos(midAngle)*(r+10);
+      const outerY=cy+Math.sin(midAngle)*(r+10);
+      // Leader line
+      ctx.beginPath();ctx.moveTo(innerX,innerY);ctx.lineTo(outerX,outerY);
+      ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=1.5;ctx.stroke();
+      // Label outside
+      ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=6;
+      ctx.fillStyle='#ffffff';
+      ctx.fillText(count,outerX+(Math.cos(midAngle)>0?10:-10),outerY);
+      ctx.shadowBlur=0;
+    } else {
+      // Label inside slice
+      const lx=cx+Math.cos(midAngle)*r*0.6;
+      const ly=cy+Math.sin(midAngle)*r*0.6;
+      ctx.shadowColor='rgba(0,0,0,0.6)';ctx.shadowBlur=6;
+      ctx.fillStyle='#ffffff';
+      ctx.fillText(count,lx,ly);
+      ctx.shadowBlur=0;
+    }
   });
 }
 
@@ -884,7 +888,7 @@ function renderSummary(){
         Year: <span class="summary-count-val">${yc[i]}<span class="summary-unit">d</span></span>
       </span>
     </div>`).join('');
-  drawPie(pieMode==='month'?mc:yc);
+  drawPie(yc);
 }
 
 // ── WEEKDAY HIGHLIGHT CHECKBOXES ───────────────────────────────
@@ -988,20 +992,6 @@ document.getElementById('prev-btn').addEventListener('click',()=>{if(--state.mon
 document.getElementById('next-btn').addEventListener('click',()=>{if(++state.month>11){state.month=0;state.year++;}renderCalendar();renderSummary();});
 document.getElementById('today-btn').addEventListener('click',()=>{state.year=today.getFullYear();state.month=today.getMonth();renderCalendar();renderSummary();});
 document.getElementById('sync-refresh-btn').addEventListener('click',()=>loadData(false));
-
-// ── PIE TOGGLE ─────────────────────────────────────────────────
-document.getElementById('pie-month-btn').addEventListener('click',()=>{
-  pieMode='month';
-  document.getElementById('pie-month-btn').classList.add('active');
-  document.getElementById('pie-year-btn').classList.remove('active');
-  renderSummary();
-});
-document.getElementById('pie-year-btn').addEventListener('click',()=>{
-  pieMode='year';
-  document.getElementById('pie-year-btn').classList.add('active');
-  document.getElementById('pie-month-btn').classList.remove('active');
-  renderSummary();
-});
 
 // ── RANGE POPUP ────────────────────────────────────────────────
 const rangeOverlay=document.getElementById('range-overlay');
