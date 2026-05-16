@@ -2,7 +2,7 @@
   "settings": {
     "title": "Vacation & Unavailability",
     "titleSize": 16,
-    "monthSize": 12,
+    "monthSize": 15,
     "todaySize": 10,
     "membersSize": 12,
     "tagSize": 12,
