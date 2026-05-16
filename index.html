@@ -141,15 +141,15 @@
   /* ── OVERLAYS ── */
   .overlay{position:fixed;inset:0;background:rgba(5,8,18,0.72);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity 0.2s;overflow-y:auto;}
   .overlay.open{opacity:1;pointer-events:all;}
-  .popup,.range-popup{background:var(--bg3);border:1px solid var(--border-bright);border-radius:16px;padding:26px 26px 22px;width:100%;max-width:360px;max-height:calc(100vh - 40px);overflow-y:auto;box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:translateY(12px) scale(0.98);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);}
-  .popup *,.range-popup *{box-sizing:border-box;}
+  .popup,.range-popup{background:var(--bg3);border:1px solid var(--border-bright);border-radius:16px;padding:24px 20px 20px;width:100%;max-width:360px;max-height:calc(100vh - 40px);overflow-y:auto;overflow-x:hidden;box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:translateY(12px) scale(0.98);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);}
+  .popup *,.range-popup *{box-sizing:border-box;max-width:100%;}
   .overlay.open .popup,.overlay.open .range-popup{transform:translateY(0) scale(1);}
-  /* Always stack date fields vertically — cleaner in a narrow popup */
+  /* Force stack on mobile, reduce padding */
   .range-date-row{flex-direction:column;}
   .range-date-field{width:100%;}
   @media(max-width:640px){
-    .overlay{padding:10px;}
-    .popup,.range-popup{padding:20px 16px 18px;border-radius:12px;}
+    .overlay{padding:8px;}
+    .popup,.range-popup{padding:18px 14px 16px;border-radius:12px;}
   }
   .popup-date-label{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;}
   .popup h3{font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:18px;}
@@ -180,8 +180,8 @@
   .range-date-row{display:flex;gap:10px;margin-bottom:14px;width:100%;}
   .range-date-field{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;}
   .range-date-label{font-size:0.68rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);display:block;margin-bottom:6px;}
-  .range-field-block{display:flex;flex-direction:column;width:100%;margin-bottom:8px;}
-  .range-date-input,.range-note-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--ui-font);font-size:0.85rem;outline:none;width:100%;min-width:0;box-sizing:border-box;transition:border-color 0.15s;}
+  .range-field-block{display:flex;flex-direction:column;width:100%;margin-bottom:8px;overflow:hidden;}
+  .range-date-input,.range-note-input{display:block;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--ui-font);font-size:0.85rem;outline:none;width:100%;max-width:100%;min-width:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;transition:border-color 0.15s;}
   .range-date-input:focus,.range-note-input:focus{border-color:var(--accent);}
   .range-note-input{margin-bottom:16px;}
   .range-note-input::placeholder{color:var(--text-muted);}
