@@ -4,7 +4,7 @@
     "titleSize": 1,
     "monthSize": 0.9,
     "todaySize": 0.55,
-    "membersSize": 0.65,
+    "membersSize": 0.75,
     "showLogo": true,
     "weekStart": 1,
     "showWeekends": false,
