@@ -62,7 +62,7 @@
   /* ── MONTH BAR ── */
   .month-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:var(--bg2);border-bottom:1px solid var(--border);}
   .month-row{display:flex;align-items:center;gap:10px;}
-  .today-btn{width:auto!important;font-size:var(--today-size)!important;font-family:'JetBrains Mono',monospace;letter-spacing:0.1em;padding:0.4em 1.1em;line-height:2;}
+  .today-btn{width:auto!important;font-size:var(--today-size)!important;font-family:var(--ui-font);font-weight:600;letter-spacing:0.01em;padding:0.4em 1.1em;line-height:2;-webkit-font-smoothing:antialiased;}
   .month-bar-left{display:flex;align-items:center;}
   .month-bar-center{display:flex;align-items:center;}
   .month-bar-right{display:flex;align-items:center;}
@@ -115,7 +115,7 @@
   .bottom-settings-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
   .bottom-settings-btn svg{width:17px;height:17px;transition:transform 0.4s ease;}
   .bottom-settings-btn:hover svg{transform:rotate(90deg);}
-  .btn-add-range{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:7px 12px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:500;transition:all 0.15s;}
+  .btn-add-range{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:7px 12px;border-radius:8px;cursor:pointer;font-family:var(--ui-font);font-size:var(--today-size);font-weight:600;letter-spacing:0.01em;-webkit-font-smoothing:antialiased;transition:all 0.15s;}
   .btn-add-range:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
 
   /* ── OVERLAYS ── */
