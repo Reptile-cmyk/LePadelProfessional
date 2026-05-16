@@ -76,9 +76,15 @@
   /* ── CALENDAR ── */
   main{padding:24px 28px 8px;}
   .weekday-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;}
-  .weekday-header div{text-align:center;font-size:0.64rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-muted);font-family:'JetBrains Mono',monospace;padding:8px 0;}
+  
+  /* 1. Added smoothing to your header text */
+  .weekday-header div{text-align:center;font-size:0.64rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-muted);font-family:'JetBrains Mono',monospace;padding:8px 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility;}
+  
   .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-  .day-cell{background:var(--surface);border:1px solid var(--border);border-radius:8px;min-height:92px;padding:8px 7px 6px;position:relative;cursor:pointer;transition:border-color 0.15s,background 0.15s,box-shadow 0.15s;}
+  
+  /* 2. Added smoothing and hardware fix to the day cells */
+  .day-cell{background:var(--surface);border:1px solid var(--border);border-radius:8px;min-height:92px;padding:8px 7px 6px;position:relative;cursor:pointer;transition:border-color 0.15s,background 0.15s,box-shadow 0.15s; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; transform: translateZ(0); backface-visibility: hidden;}
+  
   .day-cell:hover{border-color:var(--border-bright);background:var(--surface2);box-shadow:0 0 0 1px rgba(61,142,240,0.1),0 4px 20px rgba(0,0,0,0.3);}
   .day-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none;}
   .day-cell.today{border-color:var(--accent);box-shadow:0 0 0 1px rgba(61,142,240,0.25),inset 0 0 20px rgba(61,142,240,0.04);}
@@ -89,7 +95,10 @@
   .day-cell.today .day-num{color:var(--accent);}
   .today-pip{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);}
   .day-people{display:flex;flex-direction:column;gap:2px;}
-  .person-tag{display:flex;align-items:center;gap:4px;border-radius:4px;padding:2px 6px 2px 5px;font-size:var(--tag-size);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  
+  /* 3. Added smoothing and hardware fix to the person tags inside the cells */
+  .person-tag{display:flex;align-items:center;gap:4px;border-radius:4px;padding:2px 6px 2px 5px;font-size:var(--tag-size);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; transform: translateZ(0); backface-visibility: hidden;}
+  
   .person-tag-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
   .note-indicator{position:absolute;top:6px;right:7px;font-size:0.55rem;color:var(--accent2);}
 
