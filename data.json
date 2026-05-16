@@ -5,7 +5,7 @@
     "monthSize": 1.15,
     "todaySize": 0.9,
     "membersSize": 0.85,
-    "tagSize": 0.8,
+    "tagSize": 1,
     "summarySize": 0.82,
     "uiFont": "Inter",
     "showLogo": true,
