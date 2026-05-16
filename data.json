@@ -1,0 +1,50 @@
+{
+  "settings": {
+    "title": "Vacation & Unavailability",
+    "titleSize": 1,
+    "monthSize": 0.9,
+    "todaySize": 0.5,
+    "membersSize": 0.6,
+    "showLogo": true,
+    "customLogo": null,
+    "weekStart": 1,
+    "showWeekends": false,
+    "highlightWeekends": false,
+    "highlightedWeekdays": [1, 2, 3, 4, 5]
+  },
+  "members": [
+    { "id": 0, "name": "Zadar",    "color": "#e22400" },
+    { "id": 1, "name": "Anders",   "color": "#3d8ef0" },
+    { "id": 2, "name": "Frederik", "color": "#ff6a00" },
+    { "id": 3, "name": "Carsten",  "color": "#f0b840" }
+  ],
+  "days": {
+    "2026-05-24": { "people": [0], "notes": {} },
+    "2026-05-25": { "people": [0, 2], "notes": {} },
+    "2026-05-26": { "people": [0, 2], "notes": {} },
+    "2026-05-27": { "people": [0, 2], "notes": {} },
+    "2026-05-28": { "people": [0, 2], "notes": {} },
+    "2026-05-29": { "people": [0, 2], "notes": {} },
+    "2026-05-30": { "people": [0, 2], "notes": {} },
+    "2026-05-31": { "people": [0, 2], "notes": {} },
+    "2026-06-01": { "people": [0, 2], "notes": {} },
+    "2026-06-04": { "people": [1], "notes": {} },
+    "2026-06-05": { "people": [1], "notes": {} },
+    "2026-06-06": { "people": [1], "notes": {} },
+    "2026-06-07": { "people": [1], "notes": {} },
+    "2026-06-08": { "people": [1], "notes": {} },
+    "2026-06-09": { "people": [1], "notes": {} },
+    "2026-06-10": { "people": [1], "notes": {} },
+    "2026-07-10": { "people": [1], "notes": {} },
+    "2026-07-14": { "people": [1], "notes": {} },
+    "2026-07-15": { "people": [1], "notes": {} },
+    "2026-07-16": { "people": [1], "notes": {} },
+    "2026-07-17": { "people": [1], "notes": {} },
+    "2026-07-20": { "people": [1], "notes": {} },
+    "2026-07-21": { "people": [1], "notes": {} },
+    "2026-07-22": { "people": [1], "notes": {} },
+    "2026-07-23": { "people": [1], "notes": {} },
+    "2026-07-24": { "people": [1], "notes": {} },
+    "2026-07-27": { "people": [1], "notes": {} }
+  }
+}
