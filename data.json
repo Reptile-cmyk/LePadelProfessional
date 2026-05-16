@@ -7,7 +7,7 @@
     "membersSize": 0.95,
     "tagSize": 0.9,
     "summarySize": 0.9,
-    "uiFont": "Inter",
+    "uiFont": "Roboto",
     "showLogo": true,
     "weekStart": 1,
     "showWeekends": false,
