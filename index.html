@@ -60,12 +60,20 @@
   #sync-refresh-btn:hover{border-color:var(--border-bright);color:var(--accent);}
 
   /* ── MONTH BAR ── */
-  .month-bar{display:flex;align-items:center;padding:12px 28px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;}
-  .month-bar-left{display:flex;align-items:center;gap:8px;flex:1;}
-  .month-bar-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;}
-  .month-bar-right{display:flex;align-items:center;justify-content:flex-end;flex:1;}
+  .month-bar{display:flex;align-items:center;padding:10px 28px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;gap:12px;}
+  .month-bar-left{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .month-bar-center{flex:1;display:flex;align-items:center;justify-content:center;}
+  .month-bar-right{display:flex;align-items:center;justify-content:flex-end;flex-shrink:0;}
   .month-row{display:flex;align-items:center;gap:10px;}
   .today-btn{width:auto!important;font-size:var(--today-size)!important;font-family:var(--ui-font);font-weight:600;letter-spacing:0.01em;padding:0.4em 1.1em;line-height:2;-webkit-font-smoothing:antialiased;}
+
+  /* On narrow screens: buttons row on top, nav row below */
+  @media(max-width:640px){
+    .month-bar{flex-wrap:wrap;padding:8px 14px;gap:8px;}
+    .month-bar-left{order:1;flex:1;}
+    .month-bar-right{order:2;}
+    .month-bar-center{order:3;width:100%;flex:unset;padding:4px 0;}
+  }
   .nav-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.95rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
   .nav-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--text);}
   #month-label{font-family:var(--ui-font);color:var(--text);font-size:var(--month-size);font-weight:600;min-width:152px;text-align:center;-webkit-font-smoothing:antialiased;}
@@ -246,7 +254,7 @@
   @media(max-width:640px){
     main{padding:14px 10px 6px;}header{padding:0 14px;}
     .legend{padding:0 14px;padding-top:10px;padding-bottom:10px;}
-    .month-bar{padding:10px 14px;}#sync-bar{padding:4px 14px;}
+    #sync-bar{padding:4px 14px;}
     .day-cell{min-height:70px;padding:5px 4px 4px;}.day-num{font-size:0.72rem;}
     .person-tag{font-size:0.6rem;}
     .summary-card{padding:16px 14px;}
