@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vacation & Unavailability Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -11,11 +11,13 @@
     --border:rgba(99,130,200,0.12);--border-bright:rgba(99,130,200,0.28);
     --accent:#3d8ef0;--accent2:#00d4aa;--text:#e2e8f8;--text-dim:#7a8aaa;
     --text-muted:#3d4a66;--danger:#f0607a;
-    --title-size:17px;--month-size:15px;--today-size:11px;--members-size:13px;
-    --tag-size:11px;--summary-size:13px;--ui-font:'Inter',sans-serif;--ui-scale:1;
+    --title-size:1.05rem;--month-size:0.9rem;--today-size:0.66rem;--members-size:0.82rem;
+    --tag-size:0.67rem;--summary-size:0.82rem;--ui-font:'Inter',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:var(--ui-font);background:#060810;color:var(--text);}
+  body{font-family:var(--ui-font);background:var(--bg);color:var(--text);min-height:100vh;
+    background-image:radial-gradient(ellipse 60% 40% at 85% 0%,rgba(61,142,240,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 30% at 10% 100%,rgba(0,212,170,0.05) 0%,transparent 50%);}
 
   /* ── PASSWORD SCREEN ── */
   #password-screen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;}
@@ -42,68 +44,41 @@
   .retry-btn:hover{background:var(--accent);color:#fff;}
 
   /* ── HEADER ── */
-  /* ── APP SHELL — centered on desktop ── */
-  #app-shell{
-    display:none;
-    max-width:900px;
-    margin:0 auto;
-    background:#060810;
-  }
-  @media(min-width:900px){
-    #app-shell{
-      border:1px solid rgba(61,142,240,0.15);
-      border-radius:20px;
-      overflow:hidden;
-      padding-bottom:28px;
-      box-shadow:0 0 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(61,142,240,0.06);
-    }
-  }
-
-  /* ── HEADER ── */
-  header{background:#060810;border-bottom:1px solid rgba(61,142,240,0.1);padding:0 20px;min-height:62px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
-  header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);opacity:0.3;}
-  .logo-wrap{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:linear-gradient(135deg,rgba(61,142,240,0.18),rgba(0,212,170,0.08));border:1px solid var(--border-bright);border-radius:9px;flex-shrink:0;overflow:hidden;}
-  .logo-wrap svg,.logo-wrap img{width:20px;height:20px;object-fit:cover;}
+  #app-shell{display:none;}
+  header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 36px;min-height:68px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;}
+  header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);opacity:0.5;}
+  .logo-wrap{display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:linear-gradient(135deg,rgba(61,142,240,0.18),rgba(0,212,170,0.08));border:1px solid var(--border-bright);border-radius:10px;flex-shrink:0;overflow:hidden;}
+  .logo-wrap svg,.logo-wrap img{width:24px;height:24px;object-fit:cover;}
   .logo-wrap.hidden{display:none;}
-  .header-title{flex:1;}
-  .header-title h1{font-size:var(--title-size);font-weight:600;color:var(--text);letter-spacing:0.01em;-webkit-font-smoothing:antialiased;}
-  .header-icons{display:flex;align-items:center;gap:4px;margin-left:auto;}
-  .header-icon-btn{background:transparent;border:1px solid transparent;color:rgba(99,130,200,0.4);width:34px;height:34px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
-  .header-icon-btn:hover{background:var(--surface);border-color:var(--border);color:var(--text-dim);}
-  .header-icon-btn:active{transform:scale(0.92);}
+  .header-title h1{font-size:var(--title-size);font-weight:600;color:var(--text);letter-spacing:0.01em;}
 
-  /* ── SYNC BAR with animated scanner ── */
-  #sync-bar{display:flex;align-items:center;gap:8px;padding:6px 16px;background:#0b1120;border-top:1px solid rgba(61,142,240,0.28);border-bottom:1px solid rgba(61,142,240,0.28);min-height:34px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(61,142,240,0.06),inset 0 -1px 0 rgba(61,142,240,0.06);}
-  #sync-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(61,142,240,0.04),transparent 40%,transparent 60%,rgba(61,142,240,0.04));pointer-events:none;}
-  .sync-bar-scanner{position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,212,170,0.2),rgba(0,212,170,0.4),rgba(0,212,170,0.2),transparent);animation:scanner 3s linear 1 forwards;pointer-events:none;}
-  @keyframes scanner{0%{left:-60%}100%{left:120%}}
-  #sync-bar::before{content:'';position:absolute;top:0;left:-200%;width:80%;height:1.5px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);animation:scanline 3s linear 1 forwards;pointer-events:none;}
-  @keyframes scanline{0%{left:-200%}100%{left:200%}}
-  #sync-msg{font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);margin-right:auto;letter-spacing:0.03em;}
+  /* ── SYNC BAR ── */
+  #sync-bar{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:4px 36px;background:var(--bg3);border-bottom:1px solid var(--border);min-height:28px;}
+  #sync-msg{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);}
   #sync-msg.ok{color:var(--accent2);}#sync-msg.err{color:var(--danger);}
-
-  /* ── BOTTOM BAR (removed) ── */
-  .bottom-bar{display:none;}
+  #sync-refresh-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:2px 10px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;transition:all 0.15s;letter-spacing:0.05em;}
+  #sync-refresh-btn:hover{border-color:var(--border-bright);color:var(--accent);}
 
   /* ── MONTH BAR ── */
-  .month-bar{display:flex;align-items:center;padding:10px 28px;background:#060810;border-bottom:1px solid rgba(61,142,240,0.08);position:relative;}
-  .month-bar-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;}
-  .month-bar-right{margin-left:auto;display:flex;align-items:center;}
+  .month-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:var(--bg2);border-bottom:1px solid var(--border);}
   .month-row{display:flex;align-items:center;gap:10px;}
-  .today-btn{width:auto!important;font-size:var(--today-size)!important;font-family:var(--ui-font);font-weight:600;letter-spacing:0.01em;padding:0.4em 1.1em;line-height:2;-webkit-font-smoothing:antialiased;}
+  .today-btn{width:auto!important;font-size:var(--today-size)!important;font-family:'JetBrains Mono',monospace;letter-spacing:0.1em;padding:0.4em 1.1em;line-height:2;}
+  .month-bar-left{display:flex;align-items:center;}
+  .month-bar-center{display:flex;align-items:center;}
+  .month-bar-right{display:flex;align-items:center;}
   .nav-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.95rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
   .nav-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--text);}
-  #month-label{font-family:var(--ui-font);color:var(--text);font-size:var(--month-size);font-weight:600;min-width:152px;text-align:center;-webkit-font-smoothing:antialiased;}
+  #month-label{font-family:'JetBrains Mono',monospace;color:var(--text);font-size:var(--month-size);font-weight:500;min-width:152px;text-align:center;letter-spacing:0.02em;}
 
   /* ── LEGEND ── */
   /* legend removed */
 
   /* ── CALENDAR ── */
-  main{padding:24px 28px 0;}
+  main{padding:24px 28px 8px;}
   .weekday-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;}
-  .weekday-header div{text-align:center;font-size:0.64rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);font-family:'JetBrains Mono',monospace;padding:8px 0;opacity:0.7;}
+  .weekday-header div{text-align:center;font-size:0.64rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-muted);font-family:'JetBrains Mono',monospace;padding:8px 0;}
   .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-  .day-cell{background:var(--surface);border:1px solid var(--border);border-radius:8px;min-height:92px;padding:8px 7px 6px;position:relative;cursor:pointer;transition:border-color 0.15s,background 0.15s,box-shadow 0.15s;min-width:0;overflow:hidden;}
+  .day-cell{background:var(--surface);border:1px solid var(--border);border-radius:8px;min-height:92px;padding:8px 7px 6px;position:relative;cursor:pointer;transition:border-color 0.15s,background 0.15s,box-shadow 0.15s;}
   .day-cell:hover{border-color:var(--border-bright);background:var(--surface2);box-shadow:0 0 0 1px rgba(61,142,240,0.1),0 4px 20px rgba(0,0,0,0.3);}
   .day-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none;}
   .day-cell.today{border-color:var(--accent);box-shadow:0 0 0 1px rgba(61,142,240,0.25),inset 0 0 20px rgba(61,142,240,0.04);}
@@ -113,59 +88,41 @@
   .day-num{font-family:'JetBrains Mono',monospace;font-size:0.8rem;font-weight:500;color:var(--text-dim);line-height:1;margin-bottom:7px;display:flex;align-items:center;gap:5px;}
   .day-cell.today .day-num{color:var(--accent);}
   .today-pip{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);}
-  .day-people{display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;}
-  .person-tag{display:flex;align-items:center;gap:5px;padding:1px 0;font-size:var(--tag-size);font-weight:600;-webkit-font-smoothing:antialiased;min-width:0;width:100%;}
-  .person-tag-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .person-tag-text{display:flex;align-items:baseline;min-width:0;flex:1;overflow:hidden;}
-  .person-tag-note{color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;}
+  .day-people{display:flex;flex-direction:column;gap:2px;}
+  .person-tag{display:flex;align-items:center;gap:4px;border-radius:4px;padding:2px 6px 2px 5px;font-size:var(--tag-size);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .person-tag-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
   .note-indicator{position:absolute;top:6px;right:7px;font-size:0.55rem;color:var(--accent2);}
 
   /* ── SUMMARY ── */
-  .summary-section{margin-top:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));}
-  .summary-card{
-    background:linear-gradient(160deg,rgba(15,21,32,0.95) 0%,rgba(10,13,20,0.98) 100%);
-    border:1px solid rgba(61,142,240,0.2);border-radius:16px;padding:16px 28px 18px;
-    position:relative;overflow:hidden;
-  }
-  .summary-card::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:1px;
-    background:linear-gradient(90deg,transparent,rgba(61,142,240,0.5),rgba(0,212,170,0.4),transparent);
-  }
-  .summary-card-title{
-    font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;
-    letter-spacing:0.18em;color:var(--text-muted);margin-bottom:12px;
-    display:flex;align-items:center;justify-content:center;gap:8px;
-  }
-  .summary-card-title::before{content:'';display:block;width:3px;height:8px;border-radius:2px;background:var(--accent);}
-  #year-badge{color:var(--accent);letter-spacing:0.18em;}
-  .summary-rows{display:flex;flex-direction:column;gap:8px;width:fit-content;margin:0 auto;}
-  .summary-row{display:flex;align-items:center;white-space:nowrap;}
-  .summary-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-right:12px;}
-  .summary-name{font-size:var(--summary-size);color:var(--text);font-weight:600;-webkit-font-smoothing:antialiased;white-space:nowrap;min-width:80px;margin-right:8px;}
-  .summary-divider{width:1px;height:18px;background:rgba(99,130,200,0.25);flex-shrink:0;margin:0 14px;}
-  .summary-stat{display:inline-flex;align-items:baseline;gap:3px;margin-right:20px;}
-  .summary-stat:last-child{margin-right:0;}
-  .summary-stat-label{font-family:'JetBrains Mono',monospace;font-size:calc(var(--summary-size) * 0.82);color:var(--text-muted);letter-spacing:0.04em;margin-right:4px;}
-  .summary-stat-val{font-family:'JetBrains Mono',monospace;font-size:var(--summary-size);color:var(--text);font-weight:700;-webkit-font-smoothing:antialiased;}
+  .summary-section{margin-top:20px;}
+  .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 24px;}
+  .summary-card-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .summary-card-title::before{content:'';display:block;width:3px;height:10px;border-radius:2px;background:var(--card-accent,var(--accent));}
+  .summary-rows{display:flex;flex-direction:column;gap:10px;}
+  .summary-row{display:flex;align-items:center;gap:12px;}
+  .summary-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .summary-name{font-size:var(--summary-size);color:var(--text);flex-shrink:0;font-weight:600;min-width:80px;}
+  .summary-counts{font-family:'JetBrains Mono',monospace;font-size:var(--summary-size);color:var(--text-dim);margin-left:4px;}
+  .summary-counts .sep{margin:0 6px;opacity:0.3;}
+  .summary-count-val{color:var(--text);font-weight:700;}
+  .summary-unit{font-size:calc(var(--summary-size) * 0.85);color:var(--text-muted);margin-left:1px;}
 
   /* ── BOTTOM BAR ── */
-  /* bottom bar defined above */
-  .btn-add-range{display:flex;align-items:center;gap:5px;background:rgba(61,142,240,0.08);border:1px solid rgba(61,142,240,0.3);color:rgba(160,200,255,0.85);padding:4px 12px;border-radius:7px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:500;letter-spacing:0.04em;transition:all 0.15s;white-space:nowrap;-webkit-font-smoothing:antialiased;}
-  .btn-add-range:hover{background:rgba(61,142,240,0.16);border-color:rgba(61,142,240,0.6);color:#fff;}
+  .bottom-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 28px 40px;}
+  .bottom-settings-btn{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:10px 18px;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.84rem;font-weight:500;transition:all 0.15s;}
+  .bottom-settings-btn:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
+  .bottom-settings-btn svg{width:17px;height:17px;transition:transform 0.4s ease;}
+  .bottom-settings-btn:hover svg{transform:rotate(90deg);}
+  .btn-add-range{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:7px 12px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:500;transition:all 0.15s;}
+  .btn-add-range:hover{background:var(--surface2);border-color:var(--border-bright);color:var(--accent);}
 
   /* ── OVERLAYS ── */
-  .overlay{position:fixed;inset:0;background:rgba(5,8,18,0.72);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity 0.2s;overflow-y:auto;}
+  .overlay{position:fixed;inset:0;background:rgba(5,8,18,0.72);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity 0.2s;}
   .overlay.open{opacity:1;pointer-events:all;}
-  .popup,.range-popup{background:var(--bg3);border:1px solid var(--border-bright);border-radius:16px;padding:24px 20px 20px;width:100%;max-width:360px;max-height:calc(100vh - 40px);overflow-y:auto;overflow-x:hidden;box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:translateY(12px) scale(0.98);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);}
-  .popup *,.range-popup *{box-sizing:border-box;max-width:100%;}
+  .popup,.range-popup{background:var(--bg3);border:1px solid var(--border-bright);border-radius:16px;padding:26px 26px 22px;max-width:92vw;box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:translateY(12px) scale(0.98);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);}
+  .popup{width:320px;}
+  .range-popup{width:340px;}
   .overlay.open .popup,.overlay.open .range-popup{transform:translateY(0) scale(1);}
-  /* Force stack on mobile, reduce padding */
-  .range-date-row{flex-direction:column;}
-  .range-date-field{width:100%;}
-  @media(max-width:640px){
-    .overlay{padding:8px;}
-    .popup,.range-popup{padding:18px 14px 16px;border-radius:12px;}
-  }
   .popup-date-label{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;}
   .popup h3{font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:18px;}
   .popup-people{display:flex;flex-direction:column;gap:4px;margin-bottom:20px;}
@@ -192,15 +149,14 @@
   .btn-clear:hover{background:rgba(240,96,122,0.16);}
 
   /* RANGE */
-  .range-date-row{display:flex;gap:10px;margin-bottom:14px;width:100%;}
-  .range-date-field{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;}
-  .range-date-label{font-size:0.68rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);display:block;margin-bottom:6px;}
-  .range-field-block{display:flex;flex-direction:column;width:100%;margin-bottom:8px;overflow:hidden;}
-  .range-date-input,.range-note-input{display:block;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--ui-font);font-size:0.85rem;outline:none;width:100%;max-width:100%;min-width:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;transition:border-color 0.15s;}
+  .range-date-row{display:flex;gap:10px;margin-bottom:14px;}
+  .range-date-field{flex:1;display:flex;flex-direction:column;gap:5px;}
+  .range-date-label{font-size:0.68rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);}
+  .range-date-input,.range-note-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;width:100%;transition:border-color 0.15s;}
   .range-date-input:focus,.range-note-input:focus{border-color:var(--accent);}
   .range-note-input{margin-bottom:16px;}
   .range-note-input::placeholder{color:var(--text-muted);}
-  .range-people{display:flex;flex-direction:column;gap:6px;margin-top:6px;margin-bottom:14px;}
+  .range-people{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
   .popup-note-label{font-size:0.67rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;font-family:'JetBrains Mono',monospace;}
   .range-saving{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);text-align:center;min-height:18px;margin-top:6px;}
 
@@ -248,9 +204,7 @@
   .seg button{flex:1;padding:6px 10px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:500;transition:all 0.15s;}
   .seg button.active{background:var(--accent);color:#fff;}
 
-  .rec-day-btn{padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--ui-font);font-size:0.78rem;font-weight:500;cursor:pointer;transition:all 0.15s;}
-  .rec-day-btn:hover{border-color:var(--border-bright);background:var(--surface2);}
-  .rec-day-btn.active{border-color:var(--accent);background:rgba(61,142,240,0.12);color:var(--accent);font-weight:600;}
+  .font-picker{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
   .font-option{padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:0.8rem;cursor:pointer;transition:all 0.15s;}
   .font-option:hover{border-color:var(--border-bright);background:var(--surface2);}
   .font-option.active{border-color:var(--accent);color:var(--accent);background:rgba(61,142,240,0.08);}
@@ -267,11 +221,75 @@
   @media(max-width:640px){
     main{padding:14px 10px 6px;}header{padding:0 14px;}
     .legend{padding:0 14px;padding-top:10px;padding-bottom:10px;}
-    .month-bar{padding:8px 14px;}
-    .bottom-bar{padding:10px 14px 28px;gap:8px;}
+    .month-bar{padding:10px 14px;}#sync-bar{padding:4px 14px;}
     .day-cell{min-height:70px;padding:5px 4px 4px;}.day-num{font-size:0.72rem;}
     .person-tag{font-size:0.6rem;}
-    .summary-card{padding:16px 14px;}
+  }
+
+  /* ── TAB NAV ── */
+  .header-tabs{display:flex;gap:2px;margin-left:auto;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:3px;}
+  .htab{padding:5px 14px;border-radius:6px;border:none;background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+  .htab:hover{color:var(--text);background:var(--surface);}
+  .htab.active{background:var(--surface2);color:var(--accent);border:1px solid var(--border-bright);}
+  .htab svg{width:14px;height:14px;flex-shrink:0;}
+  #view-calendar,#view-padel{display:none;}
+  #view-calendar.active,#view-padel.active{display:block;}
+
+  /* ── PADEL VIEW ── */
+  #view-padel .padel-bar{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;
+    padding:12px 28px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .padel-mode-seg{display:flex;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px;flex-shrink:0;}
+  .padel-mode-seg button{padding:5px 14px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:500;transition:all .15s;}
+  .padel-mode-seg button.active{background:var(--accent);color:#fff;}
+  .padel-fld{display:flex;flex-direction:column;gap:4px;}
+  .padel-fld-label{font-size:0.65rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);}
+  .padel-date-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.82rem;outline:none;transition:border-color .15s;color-scheme:dark;}
+  .padel-date-input:focus{border-color:var(--accent);}
+  .padel-search-btn{padding:7px 20px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--accent),#2a7ad8);color:#fff;font-family:'Inter',sans-serif;font-size:0.84rem;font-weight:600;cursor:pointer;transition:opacity .15s;box-shadow:0 2px 12px rgba(61,142,240,.3);white-space:nowrap;align-self:flex-end;}
+  .padel-search-btn:hover{opacity:.88;}.padel-search-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  #padel-results{padding:20px 28px 32px;}
+  .padel-summary-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .padel-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 20px;}
+  .padel-stat-label{font-family:'JetBrains Mono',monospace;font-size:0.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:4px;}
+  .padel-stat-val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;}
+  .padel-stat-val.cy{color:var(--accent)}.padel-stat-val.go{color:#f0b840;}
+
+  .padel-day{margin-bottom:18px;}
+  .padel-day-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .padel-day-wd{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);}
+  .padel-day-dt{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--accent2);}
+  .padel-day-line{flex:1;height:1px;background:var(--border);}
+  .padel-day-cnt{font-size:0.65rem;color:var(--accent);background:rgba(61,142,240,.1);border:1px solid rgba(61,142,240,.2);padding:1px 8px;border-radius:20px;}
+
+  .padel-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden;}
+  .padel-card-hdr{padding:9px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;}
+  .padel-cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .padel-cname{font-size:0.85rem;font-weight:600;color:var(--text);}
+  .padel-ccnt{margin-left:auto;font-size:0.72rem;color:var(--text-dim);}
+
+  .padel-slot{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);transition:background .1s;}
+  .padel-slot:last-child{border-bottom:none;}
+  .padel-slot:hover{background:var(--surface2);}
+  .padel-si{font-size:0.82rem;width:16px;text-align:center;flex-shrink:0;}
+  .padel-si.star{color:#f0b840;}.padel-si.circ{color:var(--text-muted);}
+  .padel-time{font-family:'JetBrains Mono',monospace;font-size:0.8rem;font-weight:500;min-width:105px;white-space:nowrap;color:var(--text);}
+  .padel-dur{font-size:0.7rem;color:var(--text-dim);background:var(--bg3);padding:2px 7px;border-radius:20px;border:1px solid var(--border);white-space:nowrap;}
+  .padel-court{font-size:0.78rem;color:var(--text-dim);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .padel-price{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text);white-space:nowrap;}
+  .padel-book{padding:3px 10px;border:1px solid var(--border-bright);border-radius:6px;color:var(--text-dim);font-size:0.68rem;text-decoration:none;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+  .padel-book:hover{border-color:var(--accent);color:var(--accent);}
+
+  .padel-empty{text-align:center;padding:48px 24px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.04em;}
+  .padel-noslot{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;color:var(--text-muted);font-size:0.78rem;margin-bottom:8px;font-family:'JetBrains Mono',monospace;}
+  .padel-server-msg{font-size:0.72rem;color:var(--text-muted);text-align:center;margin-top:6px;font-family:'JetBrains Mono',monospace;}
+  .padel-server-msg a{color:var(--accent);text-decoration:none;}
+  .padel-server-msg a:hover{text-decoration:underline;}
+  .padel-spin{width:32px;height:32px;border:2px solid var(--border-bright);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+
+  @media(max-width:640px){
+    #view-padel .padel-bar{padding:10px 14px;}
+    #padel-results{padding:14px 14px 24px;}
   }
 </style>
 </head>
@@ -318,30 +336,31 @@
   <header>
     <div class="logo-wrap" id="logo-wrap"><span id="logo-content"></span></div>
     <div class="header-title"><h1 id="app-title">Vacation &amp; Unavailability Tracker</h1></div>
-    <div class="header-icons">
-      <button class="header-icon-btn" id="sync-refresh-btn" title="Refresh">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    <nav class="header-tabs">
+      <button class="htab active" id="tab-cal-btn" onclick="switchTab('calendar')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Calendar
       </button>
-      <button class="header-icon-btn" id="open-settings" title="Settings">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <button class="htab" id="tab-padel-btn" onclick="switchTab('padel')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M6.5 6.5 Q12 2 17.5 6.5 Q22 12 17.5 17.5 Q12 22 6.5 17.5 Q2 12 6.5 6.5Z"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+        Padel
       </button>
-    </div>
+    </nav>
   </header>
 
   <div id="sync-bar">
-    <div class="sync-bar-scanner"></div>
     <span id="sync-msg"></span>
-    <button class="btn-add-range" id="open-range">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Add range
-    </button>
-    <button class="btn-add-range" id="open-recurring">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-      Recurring
-    </button>
+    <button id="sync-refresh-btn">↻ REFRESH</button>
   </div>
 
+  <div id="view-calendar" class="active">
   <div class="month-bar">
+    <div class="month-bar-left">
+      <button class="btn-add-range" id="open-range">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Add range
+      </button>
+    </div>
     <div class="month-bar-center">
       <div class="month-row">
         <button class="nav-btn" id="prev-btn">&#8592;</button>
@@ -358,12 +377,44 @@
     <div class="weekday-header" id="weekday-header"></div>
     <div class="calendar-grid" id="calendar-grid"></div>
     <div class="summary-section">
-      <div class="summary-card">
-        <div class="summary-card-title">Days away <span id="year-badge"></span></div>
+      <div class="summary-card" style="--card-accent:var(--accent)">
+        <div class="summary-card-title">Days away <span id="year-badge" style="color:var(--text-muted);margin-left:4px;font-size:0.6rem;"></span></div>
         <div class="summary-rows" id="summary-combined"></div>
       </div>
     </div>
   </main>
+
+  <div class="bottom-bar">
+    <button class="bottom-settings-btn" id="open-settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Settings</span>
+    </button>
+  </div>
+  </div><!-- /#view-calendar -->
+
+  <!-- PADEL TAB -->
+  <div id="view-padel">
+    <div class="padel-bar">
+      <div class="padel-mode-seg">
+        <button class="active" id="pm-single" onclick="padelSetMode('single')">Single date</button>
+        <button id="pm-range" onclick="padelSetMode('range')">Date range</button>
+      </div>
+      <div class="padel-fld">
+        <span class="padel-fld-label" id="padel-lbl-from">Date</span>
+        <input type="date" class="padel-date-input" id="padel-from">
+      </div>
+      <div class="padel-fld" id="padel-to-wrap" style="display:none">
+        <span class="padel-fld-label">To</span>
+        <input type="date" class="padel-date-input" id="padel-to">
+      </div>
+      <button class="padel-search-btn" id="padel-search-btn" onclick="padelSearch()">Search</button>
+    </div>
+    <div id="padel-results">
+      <div class="padel-empty">Select a date and press Search
+        <div class="padel-server-msg" style="margin-top:10px;">Requires <strong>padel_server.py</strong> running on <code style="color:var(--accent2)">localhost:5000</code></div>
+      </div>
+    </div>
+  </div><!-- /#view-padel -->
 </div>
 
 <!-- RANGE POPUP -->
@@ -371,13 +422,9 @@
   <div class="range-popup">
     <div class="popup-date-label">Add range entry</div>
     <h3 style="margin-bottom:18px;">Who &amp; when?</h3>
-    <div class="range-field-block">
-      <span class="range-date-label">From</span>
-      <input type="date" class="range-date-input" id="range-from">
-    </div>
-    <div class="range-field-block">
-      <span class="range-date-label">To</span>
-      <input type="date" class="range-date-input" id="range-to">
+    <div class="range-date-row">
+      <div class="range-date-field"><span class="range-date-label">From</span><input type="date" class="range-date-input" id="range-from"></div>
+      <div class="range-date-field"><span class="range-date-label">To</span><input type="date" class="range-date-input" id="range-to"></div>
     </div>
     <div class="range-people" id="range-people"></div>
     <div class="popup-note-label">Note (same for all days)</div>
@@ -387,37 +434,6 @@
       <button class="btn-save" id="range-save">Save range</button>
     </div>
     <div class="range-saving" id="range-saving"></div>
-  </div>
-</div>
-
-<!-- RECURRING POPUP -->
-<div class="overlay" id="recurring-overlay">
-  <div class="range-popup">
-    <div class="popup-date-label">Add recurring entry</div>
-    <h3 style="margin-bottom:18px;">Which day, how often?</h3>
-    <div class="range-field-block">
-      <span class="range-date-label">Starting from</span>
-      <input type="date" class="range-date-input" id="rec-start">
-    </div>
-    <div class="range-field-block">
-      <span class="range-date-label">Occurrences</span>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <input type="number" class="range-date-input" id="rec-count" min="1" max="52" value="4" style="width:80px;flex-shrink:0;">
-        <span style="font-size:0.82rem;color:var(--text-dim);">times</span>
-      </div>
-    </div>
-    <div class="range-field-block">
-      <span class="range-date-label">Day of week</span>
-      <div class="rec-day-picker" id="rec-day-picker"></div>
-    </div>
-    <div class="range-people" id="rec-people"></div>
-    <div class="popup-note-label">Note (same for all)</div>
-    <input type="text" class="range-note-input" id="rec-note" placeholder="e.g. Football, Stand-up…">
-    <div class="popup-actions">
-      <button class="btn-close" id="rec-cancel">Cancel</button>
-      <button class="btn-save" id="rec-save">Save recurring</button>
-    </div>
-    <div class="range-saving" id="rec-saving"></div>
   </div>
 </div>
 
@@ -447,7 +463,7 @@
       <div class="settings-group">
         <div class="settings-group-title">Title</div>
         <div class="field"><label class="field-label">Title text</label><input type="text" class="text-input" id="set-title" maxlength="60"></div>
-        <div class="field"><label class="field-label">Title font size</label><div class="slider-row"><input type="range" id="set-title-size" min="12" max="28" step="1"><span class="slider-val" id="title-size-val"></span></div></div>
+        <div class="field"><label class="field-label">Title font size</label><div class="slider-row"><input type="range" id="set-title-size" min="0.8" max="1.8" step="0.05"><span class="slider-val" id="title-size-val"></span></div></div>
       </div>
 
       <div class="settings-group">
@@ -456,30 +472,25 @@
           <label class="field-label">Interface font</label>
           <div class="font-picker" id="font-picker"></div>
         </div>
-        <div class="field" style="margin-top:14px;">
-          <label class="field-label">UI Scale (zoom)</label>
-          <div class="slider-row"><input type="range" id="set-ui-scale" min="0.7" max="1.4" step="0.05"><span class="slider-val" id="ui-scale-val"></span></div>
-          <p class="hint" style="margin-top:4px;">Scales the whole interface. Useful for larger screens or accessibility.</p>
-        </div>
       </div>
 
       <div class="settings-group">
         <div class="settings-group-title">Members</div>
         <div id="people-editor"></div>
-        <div class="field" style="margin-top:14px;"><label class="field-label">Members bar text size</label><div class="slider-row"><input type="range" id="set-members-size" min="9" max="20" step="1"><span class="slider-val" id="members-size-val"></span></div></div>
-        <div class="field"><label class="field-label">Calendar entry tag size</label><div class="slider-row"><input type="range" id="set-tag-size" min="9" max="18" step="1"><span class="slider-val" id="tag-size-val"></span></div></div>
+        <div class="field" style="margin-top:14px;"><label class="field-label">Members bar text size</label><div class="slider-row"><input type="range" id="set-members-size" min="0.6" max="1.2" step="0.05"><span class="slider-val" id="members-size-val"></span></div></div>
+        <div class="field"><label class="field-label">Calendar entry tag size</label><div class="slider-row"><input type="range" id="set-tag-size" min="0.5" max="1.1" step="0.05"><span class="slider-val" id="tag-size-val"></span></div></div>
         <p class="hint">Names and colors apply everywhere — calendar, legend and summary.</p>
       </div>
 
       <div class="settings-group">
         <div class="settings-group-title">Month selector</div>
-        <div class="field"><label class="field-label">Month label font size</label><div class="slider-row"><input type="range" id="set-month-size" min="11" max="24" step="1"><span class="slider-val" id="month-size-val"></span></div></div>
-        <div class="field"><label class="field-label">"Today" button size</label><div class="slider-row"><input type="range" id="set-today-size" min="9" max="20" step="1"><span class="slider-val" id="today-size-val"></span></div></div>
+        <div class="field"><label class="field-label">Month label font size</label><div class="slider-row"><input type="range" id="set-month-size" min="0.7" max="1.5" step="0.05"><span class="slider-val" id="month-size-val"></span></div></div>
+        <div class="field"><label class="field-label">"Today" button size</label><div class="slider-row"><input type="range" id="set-today-size" min="0.5" max="1.3" step="0.05"><span class="slider-val" id="today-size-val"></span></div></div>
       </div>
 
       <div class="settings-group">
         <div class="settings-group-title">Days away summary</div>
-        <div class="field"><label class="field-label">Summary text size</label><div class="slider-row"><input type="range" id="set-summary-size" min="10" max="22" step="1"><span class="slider-val" id="summary-size-val"></span></div></div>
+        <div class="field"><label class="field-label">Summary text size</label><div class="slider-row"><input type="range" id="set-summary-size" min="0.65" max="1.4" step="0.05"><span class="slider-val" id="summary-size-val"></span></div></div>
       </div>
 
       <div class="settings-group">
@@ -550,8 +561,8 @@ const DEFAULT_LOGO_SVG = `<svg viewBox="0 0 100 110" fill="none" xmlns="http://w
 
 let settings = {
   title:'Vacation & Unavailability Tracker',
-  titleSize:17, monthSize:15, todaySize:11, membersSize:13,
-  tagSize:11, summarySize:13, uiFont:'Inter', uiScale:1.0,
+  titleSize:1.05, monthSize:0.9, todaySize:0.66, membersSize:0.82,
+  tagSize:0.67, summarySize:0.82, uiFont:'Inter',
   showLogo:true, customLogo:null,
   weekStart:1, showWeekends:false, highlightWeekends:true,
   weekdayModes:{0:'normal',1:'normal',2:'normal',3:'normal',4:'normal',5:'normal',6:'normal'},
@@ -597,10 +608,8 @@ if(sessionStorage.getItem('pw_ok')==='1'){
 
 // ── APP START ──────────────────────────────────────────────────
 function startApp(){
-  const shell=document.getElementById('app-shell');
-  shell.style.display='block';
-  shell.style.zoom=settings.uiScale||1;
-  ghToken=sessionStorage.getItem('gh_token')||'';
+  document.getElementById('app-shell').style.display='block';
+  // Restore token from session if available
   buildWeekdayChecks();
   loadData(true);
 }
@@ -650,7 +659,7 @@ function stateToJson(){
       title:settings.title, titleSize:settings.titleSize,
       monthSize:settings.monthSize, todaySize:settings.todaySize,
       membersSize:settings.membersSize, tagSize:settings.tagSize,
-      summarySize:settings.summarySize, uiFont:settings.uiFont, uiScale:settings.uiScale, showLogo:settings.showLogo,
+      summarySize:settings.summarySize, uiFont:settings.uiFont, showLogo:settings.showLogo,
       weekStart:settings.weekStart, showWeekends:settings.showWeekends,
       highlightWeekends:settings.highlightWeekends,
       weekdayModes:settings.weekdayModes,
@@ -664,16 +673,13 @@ function jsonToState(data){
   if(data.settings){
     const s=data.settings;
     if(s.title)           settings.title=s.title;
-    // Convert to px integer — migrate old rem values (< 5) by multiplying by 16
-    function toPx(v,def){const n=Number(v);if(!n)return def;return n<5?Math.round(n*16):Math.round(n);}
-    if(s.titleSize)   settings.titleSize=toPx(s.titleSize,17);
-    if(s.monthSize)   settings.monthSize=toPx(s.monthSize,15);
-    if(s.todaySize)   settings.todaySize=toPx(s.todaySize,11);
-    if(s.membersSize) settings.membersSize=toPx(s.membersSize,13);
-    if(s.tagSize)     settings.tagSize=toPx(s.tagSize,11);
-    if(s.summarySize) settings.summarySize=toPx(s.summarySize,13);
+    if(s.titleSize)       settings.titleSize=Number(s.titleSize);
+    if(s.monthSize)       settings.monthSize=Number(s.monthSize);
+    if(s.todaySize)       settings.todaySize=Number(s.todaySize);
+    if(s.membersSize)     settings.membersSize=Number(s.membersSize);
+    if(s.tagSize)         settings.tagSize=Number(s.tagSize);
+    if(s.summarySize)     settings.summarySize=Number(s.summarySize);
     if(s.uiFont)          settings.uiFont=s.uiFont;
-    if(s.uiScale)         settings.uiScale=Number(s.uiScale)||1.0;
     if(s.showLogo!==undefined)         settings.showLogo=s.showLogo;
     if(s.weekStart!==undefined)        settings.weekStart=Number(s.weekStart);
     if(s.showWeekends!==undefined)     settings.showWeekends=s.showWeekends;
@@ -756,15 +762,13 @@ function dateKey(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).
 
 function applySettings(){
   const r=document.documentElement;
-  r.style.setProperty('--title-size',settings.titleSize+'px');
-  r.style.setProperty('--month-size',settings.monthSize+'px');
-  r.style.setProperty('--today-size',settings.todaySize+'px');
-  r.style.setProperty('--members-size',settings.membersSize+'px');
-  r.style.setProperty('--tag-size',settings.tagSize+'px');
-  r.style.setProperty('--summary-size',settings.summarySize+'px');
+  r.style.setProperty('--title-size',settings.titleSize+'rem');
+  r.style.setProperty('--month-size',settings.monthSize+'rem');
+  r.style.setProperty('--today-size',settings.todaySize+'rem');
+  r.style.setProperty('--members-size',settings.membersSize+'rem');
+  r.style.setProperty('--tag-size',settings.tagSize+'rem');
+  r.style.setProperty('--summary-size',settings.summarySize+'rem');
   r.style.setProperty('--ui-font',`'${settings.uiFont}',sans-serif`);
-  r.style.setProperty('--ui-scale',settings.uiScale);
-  document.getElementById('app-shell').style.zoom=settings.uiScale;
   document.getElementById('app-title').textContent=settings.title;
   document.title=settings.title;
   const wrap=document.getElementById('logo-wrap');
@@ -827,8 +831,7 @@ function renderCalendar(){
     let html=`<div class="day-num">${String(d).padStart(2,'0')}${isToday?'<span class="today-pip"></span>':''}</div><div class="day-people">`;
     data.people.forEach(pid=>{
       const p=settings.people[pid];if(!p)return;
-      const note=data.notes&&data.notes[pid]?data.notes[pid]:'';
-      html+=`<div class="person-tag"><span class="person-tag-dot" style="background:${p.color};box-shadow:0 0 4px ${p.color}88;"></span><span class="person-tag-text"><span style="color:var(--text);flex-shrink:0;white-space:nowrap;">${p.name}</span>${note?`<span class="person-tag-note"> — ${note}</span>`:''}</span></div>`;
+      html+=`<div class="person-tag" style="background:${bgFor(p.color)};color:${p.color};"><span class="person-tag-dot" style="background:${p.color};"></span>${p.name}</div>`;
     });
     html+='</div>';cell.innerHTML=html;
     const hasNote=data.notes&&Object.keys(data.notes).length>0;
@@ -842,104 +845,6 @@ function renderCalendar(){
   }
 }
 
-function drawPie(counts){
-  const canvas=document.getElementById('pie-canvas');
-  if(!canvas)return;
-  const dpr=window.devicePixelRatio||1;
-  const SIZE=220;
-  canvas.width=SIZE*dpr;canvas.height=SIZE*dpr;
-  canvas.style.width=SIZE+'px';canvas.style.height=SIZE+'px';
-  ctx=canvas.getContext('2d');
-  ctx.scale(dpr,dpr);
-  const cx=SIZE/2,cy=SIZE/2,r=SIZE/2-30;
-  ctx.clearRect(0,0,SIZE,SIZE);
-
-  const raw=counts.slice();
-  const total=raw.reduce((a,b)=>a+b,0);
-
-  // Decorative outer rings
-  [r+18,r+26].forEach((ri,idx)=>{
-    ctx.beginPath();ctx.arc(cx,cy,ri,0,Math.PI*2);
-    ctx.strokeStyle=idx===0?'rgba(61,142,240,0.18)':'rgba(61,142,240,0.07)';
-    ctx.lineWidth=idx===0?1.5:1;ctx.stroke();
-  });
-
-  if(total===0){
-    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
-    ctx.strokeStyle='rgba(61,142,240,0.15)';ctx.lineWidth=2;ctx.setLineDash([5,4]);
-    ctx.stroke();ctx.setLineDash([]);
-    ctx.font='500 11px Inter,sans-serif';ctx.fillStyle='rgba(120,138,170,0.4)';
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('No data',cx,cy);
-    return;
-  }
-
-  // Enforce minimum slice angle
-  const MIN=0.55;
-  const adj=raw.map(c=>c>0?Math.max((c/total)*Math.PI*2,MIN):0);
-  const adjTot=adj.reduce((a,b)=>a+b,0);
-  const sweeps=adj.map(a=>a>0?(a/adjTot)*Math.PI*2:0);
-
-  let angle=-Math.PI/2;
-  const slices=[];
-  sweeps.forEach((sweep,i)=>{
-    if(sweep===0)return;
-    const p=settings.people[i];
-    const mid=angle+sweep/2;
-
-    // Outer glow halo per slice
-    ctx.save();
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r+2,angle,angle+sweep);ctx.closePath();
-    ctx.shadowColor=p.color;ctx.shadowBlur=18;
-    ctx.fillStyle=p.color+'44';ctx.fill();
-    ctx.restore();
-
-    // Main slice with radial gradient bright→dark
-    const g=ctx.createRadialGradient(
-      cx+Math.cos(mid)*r*0.25,cy+Math.sin(mid)*r*0.25,0,cx,cy,r);
-    g.addColorStop(0,p.color+'ff');
-    g.addColorStop(0.7,p.color+'dd');
-    g.addColorStop(1,p.color+'88');
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,angle,angle+sweep);ctx.closePath();
-    ctx.fillStyle=g;ctx.fill();
-
-    // Bright neon edge on outer arc
-    ctx.beginPath();ctx.arc(cx,cy,r,angle,angle+sweep);
-    ctx.strokeStyle=p.color;ctx.lineWidth=2.5;
-    ctx.shadowColor=p.color;ctx.shadowBlur=10;ctx.stroke();ctx.shadowBlur=0;
-
-    // Dark sharp separator lines
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(angle)*r,cy+Math.sin(angle)*r);
-    ctx.strokeStyle='rgba(5,8,18,0.95)';ctx.lineWidth=2.5;ctx.shadowBlur=0;ctx.stroke();
-
-    slices.push({angle,sweep,count:raw[i],pct:Math.round((raw[i]/total)*100),color:p.color});
-    angle+=sweep;
-  });
-
-  // Labels — count (large) + pct (small colored) inside each slice
-  ctx.shadowBlur=0;
-  slices.forEach(({angle,sweep,count,pct,color})=>{
-    const mid=angle+sweep/2;
-    const lx=cx+Math.cos(mid)*r*0.62;
-    const ly=cy+Math.sin(mid)*r*0.62;
-
-    // Large number
-    ctx.font=`700 ${sweep>0.8?18:14}px Inter,sans-serif`;
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillStyle='#ffffff';
-    ctx.shadowColor='rgba(0,0,0,0.7)';ctx.shadowBlur=6;
-    ctx.fillText(String(count),lx,ly-5);
-
-    // Small percentage in the slice's color
-    ctx.font=`600 9px 'JetBrains Mono',monospace`;
-    ctx.fillStyle=color+'ee';
-    ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=4;
-    ctx.fillText(pct+'%',lx,ly+9);
-    ctx.shadowBlur=0;
-  });
-}
-
 function renderSummary(){
   const mc=settings.people.map(()=>0), yc=settings.people.map(()=>0);
   const mp=`${state.year}-${String(state.month+1).padStart(2,'0')}-`;
@@ -947,15 +852,17 @@ function renderSummary(){
   for(const[k,v]of Object.entries(state.days))
     if(k.startsWith(yp)) v.people.forEach(pid=>{if(yc[pid]!==undefined){yc[pid]++;if(k.startsWith(mp))mc[pid]++;}});
   document.getElementById('year-badge').textContent=state.year;
+  const monthName=MONTHS[state.month].substring(0,3);
   document.getElementById('summary-combined').innerHTML=settings.people.map((p,i)=>
     `<div class="summary-row">
-      <span class="summary-dot" style="background:${p.color};box-shadow:0 0 7px ${p.color}99;"></span>
+      <span class="summary-dot" style="background:${p.color};box-shadow:0 0 5px ${p.color}55;"></span>
       <span class="summary-name">${p.name}</span>
-      <span class="summary-divider"></span>
-      <span class="summary-stat"><span class="summary-stat-label">May:</span><span class="summary-stat-val">${mc[i]}</span></span>
-      <span class="summary-stat"><span class="summary-stat-label">Year:</span><span class="summary-stat-val">${yc[i]}</span></span>
+      <span class="summary-counts">
+        ${monthName}: <span class="summary-count-val">${mc[i]}<span class="summary-unit">d</span></span>
+        <span class="sep">·</span>
+        Year: <span class="summary-count-val">${yc[i]}<span class="summary-unit">d</span></span>
+      </span>
     </div>`).join('');
-  drawPie(yc);
 }
 
 // ── WEEKDAY HIGHLIGHT CHECKBOXES ───────────────────────────────
@@ -1128,98 +1035,6 @@ document.getElementById('range-save').addEventListener('click',async()=>{
   setTimeout(closeRange,1200);
 });
 
-// ── RECURRING POPUP ────────────────────────────────────────────
-const recurringOverlay=document.getElementById('recurring-overlay');
-let recSelected=new Set();
-let recDow=3; // default Wednesday (0=Sun,1=Mon,...,6=Sat)
-
-function openRecurring(){
-  recSelected=new Set();
-  recDow=3; // Wednesday
-  const pad=n=>String(n).padStart(2,'0');
-  const t=today;
-  document.getElementById('rec-start').value=`${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;
-  document.getElementById('rec-count').value=4;
-  document.getElementById('rec-note').value='';
-  document.getElementById('rec-saving').textContent='';
-  document.getElementById('rec-saving').style.color='';
-
-  // Day picker
-  const dp=document.getElementById('rec-day-picker');dp.innerHTML='';
-  const dayLabels=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  dayLabels.forEach((label,i)=>{
-    const btn=document.createElement('button');
-    btn.className='rec-day-btn'+(i===recDow?' active':'');
-    btn.textContent=label;
-    btn.addEventListener('click',()=>{
-      recDow=i;
-      dp.querySelectorAll('.rec-day-btn').forEach((b,bi)=>b.classList.toggle('active',bi===i));
-    });
-    dp.appendChild(btn);
-  });
-
-  // People
-  const rp=document.getElementById('rec-people');rp.innerHTML='';
-  settings.people.forEach((p,i)=>{
-    const row=document.createElement('div');
-    row.className='popup-person-row';
-    row.style.setProperty('--person-color',p.color);row.style.setProperty('--person-bg',bgFor(p.color));
-    row.innerHTML=`<span class="popup-person-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color};"></span><span class="popup-person-name">${p.name}</span><span class="popup-check">✓</span>`;
-    row.addEventListener('click',()=>{
-      if(recSelected.has(i)){recSelected.delete(i);row.classList.remove('selected');}
-      else{recSelected.add(i);row.classList.add('selected');}
-    });
-    rp.appendChild(row);
-  });
-  recurringOverlay.classList.add('open');
-}
-function closeRecurring(){recurringOverlay.classList.remove('open');}
-document.getElementById('open-recurring').addEventListener('click',openRecurring);
-document.getElementById('rec-cancel').addEventListener('click',closeRecurring);
-recurringOverlay.addEventListener('click',e=>{if(e.target.id==='recurring-overlay')closeRecurring();});
-
-document.getElementById('rec-save').addEventListener('click',async()=>{
-  const startVal=document.getElementById('rec-start').value;
-  const count=parseInt(document.getElementById('rec-count').value)||4;
-  const note=document.getElementById('rec-note').value.trim();
-  const status=document.getElementById('rec-saving');
-
-  if(!startVal){alert('Please set a start date.');return;}
-  if(recSelected.size===0){alert('Please select at least one person.');return;}
-  if(count<1||count>52){alert('Please enter between 1 and 52 occurrences.');return;}
-
-  // Build list of matching weekdays starting from startVal
-  const days=[];
-  const pad=n=>String(n).padStart(2,'0');
-  const cur=new Date(startVal+'T12:00:00');
-  // Advance to the first occurrence of recDow on or after start date
-  while(cur.getDay()!==recDow) cur.setDate(cur.getDate()+1);
-  for(let i=0;i<count;i++){
-    days.push(`${cur.getFullYear()}-${pad(cur.getMonth()+1)}-${pad(cur.getDate())}`);
-    cur.setDate(cur.getDate()+7);
-  }
-
-  document.getElementById('rec-save').disabled=true;
-  const dayName=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][recDow];
-  status.textContent=`Building ${count} ${dayName}s…`;
-
-  const notes={};recSelected.forEach(pid=>{if(note)notes[pid]=note;});
-  for(const key of days){
-    const existing=state.days[key]||{people:new Set(),notes:{}};
-    const merged=new Set([...existing.people,...recSelected]);
-    const mergedNotes=Object.assign({},existing.notes,notes);
-    if(merged.size===0)delete state.days[key];
-    else state.days[key]={people:merged,notes:mergedNotes};
-  }
-  renderCalendar();renderSummary();
-  status.textContent='Saving to GitHub…';
-  await persistAll();
-  status.textContent=`✓ ${count} ${dayName}s saved!`;
-  status.style.color='var(--accent2)';
-  document.getElementById('rec-save').disabled=false;
-  setTimeout(closeRecurring,1200);
-});
-
 // ── SETTINGS ───────────────────────────────────────────────────
 const settingsOverlay=document.getElementById('settings-overlay');
 function openSettings(){syncSettingsForm();settingsOverlay.classList.add('open');}
@@ -1273,21 +1088,19 @@ function setToggle(el,on){el.classList.toggle('on',on);}
 function syncSettingsForm(){
   document.getElementById('set-title').value=settings.title;
   document.getElementById('set-title-size').value=settings.titleSize;
-  document.getElementById('title-size-val').textContent=settings.titleSize+'px';
+  document.getElementById('title-size-val').textContent=settings.titleSize.toFixed(2)+'rem';
   document.getElementById('set-month-size').value=settings.monthSize;
-  document.getElementById('month-size-val').textContent=settings.monthSize+'px';
+  document.getElementById('month-size-val').textContent=settings.monthSize.toFixed(2)+'rem';
   document.getElementById('set-today-size').value=settings.todaySize;
-  document.getElementById('today-size-val').textContent=settings.todaySize+'px';
+  document.getElementById('today-size-val').textContent=settings.todaySize.toFixed(2)+'rem';
   document.getElementById('set-members-size').value=settings.membersSize;
-  document.getElementById('members-size-val').textContent=settings.membersSize+'px';
+  document.getElementById('members-size-val').textContent=settings.membersSize.toFixed(2)+'rem';
   document.getElementById('set-tag-size').value=settings.tagSize;
-  document.getElementById('tag-size-val').textContent=settings.tagSize+'px';
+  document.getElementById('tag-size-val').textContent=settings.tagSize.toFixed(2)+'rem';
   document.getElementById('set-summary-size').value=settings.summarySize;
-  document.getElementById('summary-size-val').textContent=settings.summarySize+'px';
+  document.getElementById('summary-size-val').textContent=settings.summarySize.toFixed(2)+'rem';
   renderPeopleEditor();
   buildFontPicker();
-  document.getElementById('set-ui-scale').value=settings.uiScale;
-  document.getElementById('ui-scale-val').textContent=Math.round(settings.uiScale*100)+'%';
   setToggle(document.getElementById('set-logo-toggle'),settings.showLogo);
   updateLogoPreview();
   document.querySelectorAll('#set-week-start button').forEach(b=>{
@@ -1305,13 +1118,12 @@ function updateLogoPreview(){
 
 // Settings listeners
 document.getElementById('set-title').addEventListener('input',async e=>{settings.title=e.target.value||'Untitled';applySettings();await persistAll();});
-document.getElementById('set-title-size').addEventListener('input',async e=>{settings.titleSize=parseInt(e.target.value);document.getElementById('title-size-val').textContent=settings.titleSize+'px';applySettings();await persistAll();});
-document.getElementById('set-month-size').addEventListener('input',async e=>{settings.monthSize=parseInt(e.target.value);document.getElementById('month-size-val').textContent=settings.monthSize+'px';applySettings();await persistAll();});
-document.getElementById('set-today-size').addEventListener('input',async e=>{settings.todaySize=parseInt(e.target.value);document.getElementById('today-size-val').textContent=settings.todaySize+'px';applySettings();await persistAll();});
-document.getElementById('set-members-size').addEventListener('input',async e=>{settings.membersSize=parseInt(e.target.value);document.getElementById('members-size-val').textContent=settings.membersSize+'px';applySettings();await persistAll();});
-document.getElementById('set-tag-size').addEventListener('input',async e=>{settings.tagSize=parseInt(e.target.value);document.getElementById('tag-size-val').textContent=settings.tagSize+'px';applySettings();await persistAll();});
-document.getElementById('set-summary-size').addEventListener('input',async e=>{settings.summarySize=parseInt(e.target.value);document.getElementById('summary-size-val').textContent=settings.summarySize+'px';applySettings();await persistAll();});
-document.getElementById('set-ui-scale').addEventListener('input',async e=>{settings.uiScale=parseFloat(e.target.value);document.getElementById('ui-scale-val').textContent=Math.round(settings.uiScale*100)+'%';applySettings();await persistAll();});
+document.getElementById('set-title-size').addEventListener('input',async e=>{settings.titleSize=parseFloat(e.target.value);document.getElementById('title-size-val').textContent=settings.titleSize.toFixed(2)+'rem';applySettings();await persistAll();});
+document.getElementById('set-month-size').addEventListener('input',async e=>{settings.monthSize=parseFloat(e.target.value);document.getElementById('month-size-val').textContent=settings.monthSize.toFixed(2)+'rem';applySettings();await persistAll();});
+document.getElementById('set-today-size').addEventListener('input',async e=>{settings.todaySize=parseFloat(e.target.value);document.getElementById('today-size-val').textContent=settings.todaySize.toFixed(2)+'rem';applySettings();await persistAll();});
+document.getElementById('set-members-size').addEventListener('input',async e=>{settings.membersSize=parseFloat(e.target.value);document.getElementById('members-size-val').textContent=settings.membersSize.toFixed(2)+'rem';applySettings();await persistAll();});
+document.getElementById('set-tag-size').addEventListener('input',async e=>{settings.tagSize=parseFloat(e.target.value);document.getElementById('tag-size-val').textContent=settings.tagSize.toFixed(2)+'rem';applySettings();await persistAll();});
+document.getElementById('set-summary-size').addEventListener('input',async e=>{settings.summarySize=parseFloat(e.target.value);document.getElementById('summary-size-val').textContent=settings.summarySize.toFixed(2)+'rem';applySettings();await persistAll();});
 document.getElementById('set-logo-toggle').addEventListener('click',async()=>{settings.showLogo=!settings.showLogo;setToggle(document.getElementById('set-logo-toggle'),settings.showLogo);applySettings();await persistAll();});
 document.getElementById('upload-logo-btn').addEventListener('click',()=>document.getElementById('logo-file-input').click());
 document.getElementById('logo-file-input').addEventListener('change',e=>{
@@ -1343,8 +1155,8 @@ document.getElementById('wipe-btn').addEventListener('click',async()=>{
 });
 document.getElementById('reset-all-btn').addEventListener('click',async()=>{
   if(!confirm('Reset all display settings to defaults?'))return;
-  Object.assign(settings,{titleSize:17,monthSize:15,todaySize:11,membersSize:13,
-    tagSize:11,summarySize:13,uiFont:'Inter',uiScale:1.0,
+  Object.assign(settings,{titleSize:1.05,monthSize:0.9,todaySize:0.66,membersSize:0.82,
+    tagSize:0.67,summarySize:0.82,uiFont:'Inter',
     showLogo:true,showWeekends:false,highlightWeekends:true,weekStart:1,
     weekdayModes:{0:'normal',1:'normal',2:'normal',3:'normal',4:'normal',5:'normal',6:'normal'},customLogo:null});
   applySettings();renderWeekdayHeader();renderLegend();renderCalendar();renderSummary();
@@ -1352,8 +1164,136 @@ document.getElementById('reset-all-btn').addEventListener('click',async()=>{
 });
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closePopup();closeSettings();closeRange();closeRecurring();}
+  if(e.key==='Escape'){closePopup();closeSettings();closeRange();}
 });
+
+// ── PADEL FINDER ──────────────────────────────────────────────
+const PADEL_API     = 'https://lepadelprofessional.onrender.com';
+const PADEL_COLOURS = ['#3d8ef0','#f0607a','#00d4aa','#f0b840','#a78bfa','#fb923c','#34d399','#f472b6'];
+let padelMode = 'single';
+
+function switchTab(tab) {
+  document.getElementById('view-calendar').classList.toggle('active', tab === 'calendar');
+  document.getElementById('view-padel').classList.toggle('active', tab === 'padel');
+  document.getElementById('tab-cal-btn').classList.toggle('active', tab === 'calendar');
+  document.getElementById('tab-padel-btn').classList.toggle('active', tab === 'padel');
+}
+
+function padelSetMode(m) {
+  padelMode = m;
+  document.getElementById('pm-single').classList.toggle('active', m === 'single');
+  document.getElementById('pm-range').classList.toggle('active', m === 'range');
+  document.getElementById('padel-to-wrap').style.display = m === 'range' ? '' : 'none';
+  document.getElementById('padel-lbl-from').textContent  = m === 'range' ? 'From' : 'Date';
+}
+
+// Set default date to today
+(function(){
+  const t = new Date().toISOString().slice(0,10);
+  document.getElementById('padel-from').value = t;
+  document.getElementById('padel-to').value   = t;
+})();
+
+function padelColour(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % PADEL_COLOURS.length;
+  return PADEL_COLOURS[h];
+}
+
+function padelCleanCourt(s) { return s.replace(/^\d+\s*[|│]\s*/, '').trim() || s; }
+
+function padelRender(data) {
+  const box = document.getElementById('padel-results');
+  box.innerHTML = '';
+
+  // Summary stats
+  const summ = document.createElement('div');
+  summ.className = 'padel-summary-row';
+  summ.innerHTML = `
+    <div class="padel-stat"><div class="padel-stat-label">Total slots</div><div class="padel-stat-val cy">${data.total}</div></div>
+    <div class="padel-stat"><div class="padel-stat-label">★ 90 min preferred</div><div class="padel-stat-val go">${data.preferred}</div></div>
+    <div class="padel-stat"><div class="padel-stat-label">Days checked</div><div class="padel-stat-val">${data.results.length}</div></div>
+  `;
+  box.appendChild(summ);
+
+  if (!data.results.length) {
+    box.innerHTML += '<div class="padel-empty">No results returned.</div>';
+    return;
+  }
+
+  for (const day of data.results) {
+    const sec = document.createElement('div');
+    sec.className = 'padel-day';
+    const cntHtml = day.total > 0 ? `<span class="padel-day-cnt">${day.total} slot${day.total!==1?'s':''}</span>` : '';
+    sec.innerHTML = `<div class="padel-day-hdr">
+      <span class="padel-day-wd">${day.weekday}</span>
+      <span class="padel-day-dt">${day.date}</span>
+      <div class="padel-day-line"></div>${cntHtml}</div>`;
+
+    if (!day.total) {
+      sec.innerHTML += '<div class="padel-noslot">No available slots on this date</div>';
+    } else {
+      for (const centre of day.centres) {
+        if (!centre.slots.length) continue;
+        const col  = padelColour(centre.name);
+        const card = document.createElement('div');
+        card.className = 'padel-card';
+        card.innerHTML = `<div class="padel-card-hdr">
+          <div class="padel-cdot" style="background:${col}"></div>
+          <span class="padel-cname">${centre.name}</span>
+          <span class="padel-ccnt">${centre.slots.length} slot${centre.slots.length!==1?'s':''}</span></div>`;
+
+        for (const s of centre.slots) {
+          const court = padelCleanCourt(s.court);
+          const price = s.price ? `<span class="padel-price">${s.price}</span>` : '';
+          const book  = s.book_url ? `<a class="padel-book" href="${s.book_url}" target="_blank">Book →</a>` : '';
+          const row   = document.createElement('div');
+          row.className = 'padel-slot';
+          row.innerHTML = `
+            <span class="padel-si ${s.preferred?'star':'circ'}">${s.preferred?'★':'○'}</span>
+            <span class="padel-time">${s.start}–${s.end}</span>
+            <span class="padel-dur">${s.duration} min</span>
+            <span class="padel-court">${court}</span>
+            ${price}${book}`;
+          card.appendChild(row);
+        }
+        sec.appendChild(card);
+      }
+    }
+    box.appendChild(sec);
+  }
+}
+
+async function padelSearch() {
+  const btn  = document.getElementById('padel-search-btn');
+  const from = document.getElementById('padel-from').value;
+  const to   = padelMode === 'range' ? document.getElementById('padel-to').value : from;
+  if (!from) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Searching…';
+  document.getElementById('padel-results').innerHTML =
+    '<div class="padel-empty"><div class="padel-spin"></div>Checking all 6 centres…</div>';
+
+  try {
+    const res  = await fetch(`${PADEL_API}?from=${from}&to=${to}`);
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    padelRender(data);
+  } catch (e) {
+    document.getElementById('padel-results').innerHTML = `
+      <div class="padel-empty">${e.message.includes('fetch') ? 'Cannot reach local server.' : e.message}
+        <div class="padel-server-msg" style="margin-top:10px;">
+          Make sure <strong>padel_server.py</strong> is running:<br>
+          <code style="color:var(--accent2)">python padel_server.py</code>
+        </div>
+      </div>`;
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Search';
+  }
+}
 </script>
 </body>
 </html>
