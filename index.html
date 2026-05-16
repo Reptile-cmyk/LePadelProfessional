@@ -103,6 +103,17 @@
   font-smoothing: none;
 }
 
+/* Make the tiny header text bold to force sharper rendering */
+.weekday-header div {
+  font-weight: 700; 
+  letter-spacing: 0.16em; /* Slightly more spacing helps bold, tiny text stay readable */
+}
+
+/* Give the person tags a stronger weight to combat the blur */
+.person-tag {
+  font-weight: 600; 
+}
+
   /* ── SUMMARY ── */
   .summary-section{margin-top:20px;}
   .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 24px;}
