@@ -5,6 +5,9 @@
     "monthSize": 0.9,
     "todaySize": 0.55,
     "membersSize": 0.95,
+    "tagSize": 0.67,
+    "summarySize": 0.82,
+    "uiFont": "Inter",
     "showLogo": true,
     "weekStart": 1,
     "showWeekends": false,
@@ -16,7 +19,7 @@
       "3": "normal",
       "4": "dim",
       "5": "dim",
-      "6": "dim"
+      "6": "hide"
     }
   },
   "members": [
