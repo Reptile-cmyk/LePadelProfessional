@@ -8,7 +8,7 @@
     "tagSize": 12,
     "summarySize": 10,
     "uiFont": "DM Sans",
-    "uiScale": 1.05,
+    "uiScale": 1,
     "showLogo": true,
     "weekStart": 1,
     "showWeekends": false,
