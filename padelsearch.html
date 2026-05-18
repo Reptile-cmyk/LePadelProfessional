@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Padel — Ledige tider</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
+  :root {
+    --bg:#0d0f14; --surface:#151820; --border:#232840;
+    --accent:#4fff91; --accent2:#3de0ff; --text:#e8ecf5; --muted:#5a6080;
+    --slot-bg:#1a1f2e; --radius:12px;
+    --mono:'DM Mono',monospace; --display:'Syne',sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;padding:28px 16px 64px}
+  body::before{content:'';position:fixed;inset:0;
+    background-image:linear-gradient(rgba(79,255,145,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(79,255,145,.03) 1px,transparent 1px);
+    background-size:40px 40px;pointer-events:none}
+  .wrap{max-width:760px;margin:0 auto;position:relative}
+
+  h1{font-family:var(--display);font-size:clamp(26px,6vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.05;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+  .sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+
+  /* Tabs */
+  .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    padding:10px 16px;cursor:pointer;font-family:var(--mono);font-size:13px;color:var(--muted);
+    transition:all .2s;line-height:1.4}
+  .tab:hover{border-color:var(--accent);color:var(--text)}
+  .tab.active{background:var(--border);color:var(--text);border-color:var(--accent)}
+  .tab .vname{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);display:block}
+  .tab .vsub{font-size:11px}
+
+  /* Controls */
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:14px 18px;margin-bottom:28px}
+  .controls label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+  input[type="date"]{background:var(--bg);border:1px solid var(--border);border-radius:8px;
+    color:var(--text);font-family:var(--mono);font-size:14px;padding:7px 12px;
+    outline:none;color-scheme:dark;cursor:pointer;transition:border-color .2s}
+  input[type="date"]:focus{border-color:var(--accent)}
+  .btn{background:var(--accent);color:#000;border:none;border-radius:8px;font-family:var(--mono);
+    font-size:13px;font-weight:500;padding:8px 18px;cursor:pointer;letter-spacing:.05em;
+    transition:opacity .2s,transform .1s}
+  .btn:hover{opacity:.85} .btn:active{transform:scale(.97)} .btn:disabled{opacity:.35;cursor:not-allowed}
+  .dur-filter{display:flex;gap:6px;margin-left:auto}
+  .dur-btn{background:var(--slot-bg);border:1px solid var(--border);border-radius:6px;
+    color:var(--muted);font-family:var(--mono);font-size:12px;padding:6px 12px;cursor:pointer;transition:all .2s}
+  .dur-btn.on{background:var(--border);color:var(--text);border-color:var(--accent)}
+
+  /* States */
+  .status{text-align:center;padding:56px 24px;color:var(--muted);font-size:13px;display:none}
+  .spinner{display:inline-block;width:22px;height:22px;border:2px solid var(--border);
+    border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:12px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .err{background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.25);border-radius:var(--radius);
+    padding:14px 18px;color:#ff7070;font-size:13px;display:none;margin-bottom:20px}
+  .empty{text-align:center;padding:56px 24px;color:var(--muted);font-size:14px;display:none}
+  .summary{display:none;justify-content:space-between;align-items:baseline;
+    margin-bottom:16px;font-size:12px;color:var(--muted)}
+  .summary strong{color:var(--accent);font-family:var(--display);font-size:20px}
+
+  /* Slots */
+  .slots{display:flex;flex-direction:column;gap:10px}
+  .slot-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:14px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    animation:up .25s ease both}
+  @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .slot-time{font-family:var(--display);font-size:22px;font-weight:800;color:var(--accent);min-width:60px}
+  .slot-options{display:flex;gap:8px;flex-wrap:wrap;flex:1}
+  .opt-chip{display:inline-flex;flex-direction:column;align-items:center;
+    background:var(--slot-bg);border:1px solid var(--border);border-radius:10px;
+    padding:8px 16px;text-decoration:none;transition:all .15s}
+  .opt-chip:hover{border-color:var(--accent);background:#1f2535;transform:translateY(-1px)}
+  .opt-dur{font-size:13px;color:var(--text);font-weight:500}
+  .opt-price{font-size:11px;color:var(--muted);margin-top:2px}
+  .opt-chip:hover .opt-dur{color:var(--accent)}
+
+  footer{margin-top:40px;text-align:center;font-size:11px;color:var(--muted);letter-spacing:.07em}
+  footer a{color:var(--muted)} footer a:hover{color:var(--accent)}
+  @media(max-width:500px){.dur-filter{margin-left:0}.controls{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>PADEL<br>LEDIGE TIDER</h1>
+  <p class="sub">Indendørs double · Klik for direkte booking hos WannaSport</p>
+
+  <div class="tabs">
+    <div class="tab active" data-v="cupra" onclick="switchVenue('cupra',this)">
+      <span class="vname">CUPRA ARENA</span>
+      <span class="vsub">PadelPadel CPH · Brøndby</span>
+    </div>
+    <div class="tab" data-v="match" onclick="switchVenue('match',this)">
+      <span class="vname">MATCH PADEL</span>
+      <span class="vsub">Ballerup · Telegrafvej 6</span>
+    </div>
+    <div class="tab" data-v="reffen" onclick="switchVenue('reffen',this)">
+      <span class="vname">PADEL YARD REFFEN</span>
+      <span class="vsub">Refshaleøen · Refshalevej 167E</span>
+    </div>
+    <div class="tab" data-v="jernbanebyen" onclick="switchVenue('jernbanebyen',this)">
+      <span class="vname">PADEL YARD JERNBANEBYEN</span>
+      <span class="vsub">København SV · Otto Busses Vej 7X</span>
+    </div>
+    <div class="tab" data-v="kloevermarken" onclick="switchVenue('kloevermarken',this)">
+      <span class="vname">MATCH PADEL KLØVERMARKEN</span>
+      <span class="vsub">København S · Raffinaderivej 20</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label for="dp">Dato</label>
+    <input type="date" id="dp" />
+    <button class="btn" id="fetchBtn" onclick="load()">Hent tider →</button>
+    <div class="dur-filter">
+      <button class="dur-btn on" data-min="60" onclick="toggleDur(this)">60 min</button>
+      <button class="dur-btn on" data-min="90" onclick="toggleDur(this)">90 min</button>
+    </div>
+  </div>
+
+  <div class="err" id="err"></div>
+  <div class="status" id="status"><div><div class="spinner"></div></div><div id="stxt">Henter…</div></div>
+  <div class="empty" id="empty">🎾 Ingen ledige tider for valgte filtre.</div>
+  <div class="summary" id="summary"></div>
+  <div class="slots" id="slots"></div>
+
+  <footer id="footer">Data fra <a href="https://www.wannasport.com" target="_blank">wannasport.com</a> · Booking hos WannaSport</footer>
+
+</div>
+<script>
+// ── CONFIG — replace with your deployed Cloudflare Worker URLs ──────────────
+const WORKERS = {
+  cupra:       "https://cupraarena.carsten-houborg.workers.dev",
+  match:       "https://matchballerup.carsten-houborg.workers.dev",
+  reffen:      "https://reffen.carsten-houborg.workers.dev",
+  jernbanebyen:  "https://jernbanebyen.carsten-houborg.workers.dev",
+  kloevermarken: "https://kloevermarken.carsten-houborg.workers.dev",
+};
+const META = {
+  cupra:        { name:"CUPRA ARENA",             url:"https://www.wannasport.com/dnk/da/product/padelpadel-cph-cupra-arena/padelbane-inde-double" },
+  match:        { name:"Match Padel Ballerup",    url:"https://www.wannasport.com/dnk/da/product/match-padel-ballerup/padeltennis-inde" },
+  reffen:       { name:"Padel Yard Reffen",       url:"https://www.wannasport.com/dnk/da/product/padel-yard-reffen-indendoers/padelbane-inde" },
+  jernbanebyen:  { name:"Padel Yard Jernbanebyen",   url:"https://www.wannasport.com/dnk/da/product/padel-yard-jernbanebyen/padelbane-inde-double" },
+  kloevermarken: { name:"Match Padel Kløvermarken",  url:"https://www.wannasport.com/dnk/da/product/match-padel-kloevermarken/padeltennis-inde" },
+};
+// ────────────────────────────────────────────────────────────────────────────
+
+let venue = "cupra", active = new Set(["60","90"]), cached = null;
+
+const dp = document.getElementById("dp");
+const today = new Date().toISOString().slice(0,10);
+dp.value = dp.min = today;
+
+function switchVenue(v, el) {
+  venue = v; cached = null;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+  clear(); load();
+}
+function toggleDur(btn) {
+  const m = btn.dataset.min;
+  active.has(m) ? active.delete(m) : active.add(m);
+  btn.classList.toggle("on");
+  if (cached) render(cached);
+}
+function clear() {
+  ["slots","err","empty","status"].forEach(id => {
+    const el = document.getElementById(id);
+    if (id === "slots") el.innerHTML = ""; else el.style.display = "none";
+  });
+  document.getElementById("summary").style.display = "none";
+}
+function showStatus(msg) { clear(); const s=document.getElementById("status"); s.style.display="block"; document.getElementById("stxt").textContent=msg; }
+function hideStatus() { document.getElementById("status").style.display="none"; }
+function showErr(msg) { hideStatus(); const e=document.getElementById("err"); e.textContent="⚠ "+msg; e.style.display="block"; }
+
+async function load() {
+  const date = dp.value;
+  if (!date) { showErr("Vælg en dato."); return; }
+  const w = WORKERS[venue];
+  if (!w || w.includes("YOUR-")) { showErr(`Indsæt Worker URL for ${META[venue].name}.`); return; }
+  const btn = document.getElementById("fetchBtn");
+  btn.disabled = true;
+  showStatus(`Henter tider for ${fmt(date)}…`);
+  try {
+    const res = await fetch(`${w}?date=${date}`);
+    if (!res.ok) throw new Error(`Server fejl ${res.status}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    cached = data;
+    document.getElementById("footer").innerHTML =
+      `Data fra <a href="${META[venue].url}" target="_blank">wannasport.com</a> · Booking hos WannaSport`;
+    render(data);
+  } catch(e) { showErr(e.message); }
+  finally { btn.disabled = false; }
+}
+
+function render(data) {
+  hideStatus();
+  const grid = document.getElementById("slots");
+  const summary = document.getElementById("summary");
+  const empty = document.getElementById("empty");
+  grid.innerHTML = ""; summary.style.display = "none"; empty.style.display = "none";
+
+  const slots = (data.slots||[]).map(s => ({
+    ...s, options: s.options.filter(o => active.has(String(o.minutes)))
+  })).filter(s => s.options.length);
+
+  if (!slots.length) { empty.style.display = "block"; return; }
+
+  summary.style.display = "flex";
+  summary.innerHTML = `<span><strong>${slots.length}</strong> ledige tider</span><span>${fmt(data.date)}</span>`;
+
+  slots.forEach((slot, i) => {
+    const row = document.createElement("div");
+    row.className = "slot-row";
+    row.style.animationDelay = (i*.04)+"s";
+    row.innerHTML = `<div class="slot-time">${slot.time}</div><div class="slot-options">${
+      slot.options.map(o =>
+        `<a class="opt-chip" href="${o.bookingUrl}" target="_blank" rel="noopener">
+           <span class="opt-dur">${o.minutes} min</span>
+           <span class="opt-price">${o.price.toFixed(0)} DKK</span>
+         </a>`
+      ).join("")
+    }</div>`;
+    grid.appendChild(row);
+  });
+}
+
+function fmt(iso) {
+  return new Date(iso+"T12:00:00").toLocaleDateString("da-DK",{weekday:"long",day:"numeric",month:"long"});
+}
+
+window.addEventListener("load", load);
+</script>
+</body>
+</html>
