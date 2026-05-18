@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Padel — Find Ledige Tider</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg:     #0f1117;
+    --card:   #161b27;
+    --card2:  #1c2233;
+    --border: #252d42;
+    --accent: #00e5b4;
+    --accent2:#3db8f5;
+    --gold:   #f5a623;
+    --text:   #e4eaf5;
+    --muted:  #5b6a8a;
+    --muted2: #3a4560;
+    --radius: 10px;
+    --font:   'Inter', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    padding: 24px 16px 80px;
+  }
+
+  /* ── Search card ─────────────────────────── */
+  .search-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ctrl-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-label {
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    min-width: 70px;
+  }
+
+  .mode-toggle {
+    display: flex;
+    background: var(--card2);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .mode-btn {
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .mode-btn.active { background: var(--accent); color: #000; }
+
+  input[type="date"],
+  input[type="time"] {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 12px;
+    outline: none;
+    color-scheme: dark;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  input[type="date"] { min-width: 140px; }
+  input[type="time"] { min-width: 110px; }
+  input[type="date"]:focus,
+  input[type="time"]:focus { border-color: var(--accent); }
+
+  .sep { color: var(--muted); font-size: 13px; padding: 0 2px; }
+
+  .search-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 28px;
+    cursor: pointer;
+    transition: opacity .15s, transform .1s;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+  .search-btn:hover  { opacity: .88; }
+  .search-btn:active { transform: scale(.97); }
+  .search-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+  /* Duration pills */
+  .pill-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .pill-label { font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+  .pill {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .pill.on          { border-color: var(--accent);  color: var(--accent);  background: rgba(0,229,180,.08); }
+  .pill.on.gold-pill{ border-color: var(--gold);    color: var(--gold);    background: rgba(245,166,35,.08); }
+
+  /* ── Stats ───────────────────────────────── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+  }
+  .stat-lbl {
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .stat-lbl .star { color: var(--gold); margin-right: 3px; }
+  .stat-val { font-size: 36px; font-weight: 700; line-height: 1; }
+  .stat-card:nth-child(1) .stat-val { color: var(--accent2); }
+  .stat-card:nth-child(2) .stat-val { color: var(--gold); }
+  .stat-card:nth-child(3) .stat-val { color: var(--text); }
+
+  /* ── Day / venue / slot ──────────────────── */
+  .day-section { margin-bottom: 32px; }
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .day-name  { font-size: 12px; font-weight: 700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  .day-date  { font-size: 13px; font-weight: 600; color: var(--accent2); }
+  .day-line  { flex: 1; height: 1px; background: var(--border); }
+  .day-count {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 3px 10px;
+  }
+
+  .venue-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    animation: fadeUp .22s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .venue-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+  }
+  .venue-left  { display: flex; align-items: center; gap: 10px; }
+  .venue-dot   { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .venue-name  { font-size: 15px; font-weight: 600; }
+  .venue-count { font-size: 12px; color: var(--muted); }
+
+  .slots-body { border-top: 1px solid var(--border); }
+
+  .slot-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--muted2);
+    transition: background .12s;
+  }
+  .slot-row:last-child { border-bottom: none; }
+  .slot-row:hover { background: var(--card2); }
+
+  .slot-star  { font-size: 14px; width: 16px; flex-shrink: 0; color: var(--gold); }
+  .slot-star.dim { color: var(--muted2); }
+  .slot-time  { font-size: 14px; font-weight: 600; min-width: 110px; font-variant-numeric: tabular-nums; }
+  .slot-dur   {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .slot-dur.pref {
+    background: rgba(245,166,35,.12);
+    border-color: rgba(245,166,35,.3);
+    color: var(--gold);
+  }
+  .slot-court { flex: 1; font-size: 13px; color: var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .slot-price { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; min-width: 80px; text-align: right; }
+  .book-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all .15s;
+    display: inline-block;
+  }
+  .book-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,229,180,.06); }
+
+  /* ── Misc ────────────────────────────────── */
+  .venue-loading {
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .spinner-sm {
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state { text-align:center; padding:60px 24px; color:var(--muted); font-size:14px; display:none; }
+  .err-bar {
+    background: rgba(255,90,90,.08);
+    border: 1px solid rgba(255,90,90,.2);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    color: #ff8080;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  footer { margin-top: 48px; text-align: center; font-size: 11px; color: var(--muted); letter-spacing: .07em; }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 580px) {
+    .stat-val { font-size: 28px; }
+    .slot-court { display: none; }
+    .slot-price { min-width: 60px; }
+    .search-btn { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<script>
+// ── VENUE CONFIG ──────────────────────────────────────────────
+const VENUES = [
+  { id:"cupra",         name:"CUPRA ARENA",             address:"Brøndby",      worker:"https://cupraarena.carsten-houborg.workers.dev",      color:"#3db8f5" },
+  { id:"match",         name:"Match Padel Ballerup",    address:"Ballerup",     worker:"https://matchballerup.carsten-houborg.workers.dev",   color:"#00e5b4" },
+  { id:"reffen",        name:"Padel Yard Reffen",       address:"Refshaleøen",  worker:"https://reffen.carsten-houborg.workers.dev",          color:"#a78bfa" },
+  { id:"jernbanebyen",  name:"Padel Yard Jernbanebyen", address:"København SV", worker:"https://jernbanebyen.carsten-houborg.workers.dev",    color:"#f472b6" },
+  { id:"kloevermarken", name:"Match Padel Kløvermarken",address:"København S",  worker:"https://kloevermarken.carsten-houborg.workers.dev",   color:"#fb923c" },
+];
+const PREFERRED_MIN = 90;
+// ─────────────────────────────────────────────────────────────
+</script>
+
+<div style="max-width:860px;margin:0 auto">
+
+  <!-- ── Search card ── -->
+  <div class="search-card">
+
+    <!-- Date row -->
+    <div class="ctrl-row">
+      <span class="ctrl-label">Date</span>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="modeSingle" onclick="setMode('single')">Single date</button>
+        <button class="mode-btn"        id="modeRange"  onclick="setMode('range')">Date range</button>
+      </div>
+      <input type="date" id="dateFrom" />
+      <span class="sep" id="dateSep" style="display:none">→</span>
+      <input type="date" id="dateTo"  style="display:none" />
+      <button class="search-btn" id="searchBtn" onclick="runSearch()">Search</button>
+    </div>
+
+    <!-- Start time row -->
+    <div class="ctrl-row">
+      <span class="ctrl-label">Start time</span>
+      <input type="time" id="timeFrom" value="17:30" step="1800" />
+      <span class="sep">→</span>
+      <input type="time" id="timeTo"   value="18:30" step="1800" />
+    </div>
+
+    <!-- Duration row -->
+    <div class="pill-row">
+      <span class="pill-label">Duration</span>
+      <button class="pill on gold-pill" data-min="90" onclick="toggleDur(this)">★ 90 min</button>
+      <button class="pill on"           data-min="60" onclick="toggleDur(this)">60 min</button>
+    </div>
+
+  </div>
+
+  <!-- ── Stats ── -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-lbl">TOTAL SLOTS</div>
+      <div class="stat-val" id="statTotal">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl"><span class="star">★</span>90 MIN PREFERRED</div>
+      <div class="stat-val" id="statPref">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">DAYS CHECKED</div>
+      <div class="stat-val" id="statDays">—</div>
+    </div>
+  </div>
+
+  <div class="err-bar"     id="errBar"></div>
+  <div class="empty-state" id="emptyState">🎾 Ingen ledige tider — prøv at udvide tidsintervallet eller datoen.</div>
+  <div id="results"></div>
+
+  <footer>Data fra <a href="https://www.wannasport.com" target="_blank">wannasport.com</a> · Booking og betaling sker hos WannaSport</footer>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────
+let searchMode  = "single";
+let activeDurs  = new Set(["60","90"]);
+let lastResults = null;
+
+// ── Init dates ────────────────────────────────────────────────
+const todayIso = new Date().toISOString().slice(0,10);
+["dateFrom","dateTo"].forEach(id => {
+  const el = document.getElementById(id);
+  el.value = todayIso;
+  el.min   = todayIso;
+});
+
+// Re-filter instantly when time inputs change (no re-fetch)
+document.getElementById("timeFrom").addEventListener("change", () => { if(lastResults) renderAll(lastResults); });
+document.getElementById("timeTo").addEventListener("change",   () => { if(lastResults) renderAll(lastResults); });
+
+// ── Mode toggle ───────────────────────────────────────────────
+function setMode(m) {
+  searchMode = m;
+  document.getElementById("modeSingle").classList.toggle("active", m==="single");
+  document.getElementById("modeRange").classList.toggle("active",  m==="range");
+  document.getElementById("dateSep").style.display = m==="range" ? "" : "none";
+  document.getElementById("dateTo").style.display  = m==="range" ? "" : "none";
+}
+
+// ── Duration toggle ───────────────────────────────────────────
+function toggleDur(btn) {
+  const m = btn.dataset.min;
+  if (activeDurs.has(m)) {
+    if (activeDurs.size === 1) return;
+    activeDurs.delete(m);
+    btn.classList.remove("on");
+  } else {
+    activeDurs.add(m);
+    btn.classList.add("on");
+  }
+  if (lastResults) renderAll(lastResults);
+}
+
+// ── Helpers ───────────────────────────────────────────────────
+function dateRange(from, to) {
+  const dates = [];
+  let d = new Date(from + "T12:00:00");
+  const end = new Date(to + "T12:00:00");
+  while (d <= end) { dates.push(d.toISOString().slice(0,10)); d.setDate(d.getDate()+1); }
+  return dates;
+}
+
+function addMins(isoDate, timeStr, mins) {
+  const dt = new Date(`${isoDate}T${timeStr}:00`);
+  dt.setMinutes(dt.getMinutes() + mins);
+  return dt.toTimeString().slice(0,5);
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso + "T12:00:00");
+  return {
+    day:  d.toLocaleDateString("en-DK", {weekday:"long"}).toUpperCase(),
+    date: iso,
+  };
+}
+
+function timeInRange(time) {
+  const from = document.getElementById("timeFrom").value || "00:00";
+  const to   = document.getElementById("timeTo").value   || "23:59";
+  return time >= from && time <= to;
+}
+
+// ── Fetch ─────────────────────────────────────────────────────
+async function runSearch() {
+  const from = document.getElementById("dateFrom").value;
+  const to   = searchMode==="range" ? document.getElementById("dateTo").value : from;
+  if (!from) return;
+
+  const dates = dateRange(from, to >= from ? to : from);
+  if (dates.length > 14) { showErr("Maks 14 dage ad gangen."); return; }
+
+  document.getElementById("searchBtn").disabled = true;
+  document.getElementById("errBar").style.display = "none";
+  document.getElementById("emptyState").style.display = "none";
+  ["statTotal","statPref","statDays"].forEach(id => document.getElementById(id).textContent = "—");
+
+  renderSkeleton(dates);
+
+  const fetches = VENUES.flatMap(venue =>
+    dates.map(date =>
+      fetch(`${venue.worker}?date=${date}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(data => ({ venueId: venue.id, date, data }))
+        .catch(()  => ({ venueId: venue.id, date, data: null }))
+    )
+  );
+
+  const raw = await Promise.all(fetches);
+
+  const byDate = {};
+  for (const { venueId, date, data } of raw) {
+    if (!byDate[date]) byDate[date] = {};
+    byDate[date][venueId] = data?.slots ?? [];
+  }
+
+  lastResults = { byDate, dates };
+  document.getElementById("searchBtn").disabled = false;
+  renderAll(lastResults);
+}
+
+// ── Render ────────────────────────────────────────────────────
+function renderAll({ byDate, dates }) {
+  const results = document.getElementById("results");
+  const emptyEl = document.getElementById("emptyState");
+  results.innerHTML = "";
+
+  let totalSlots = 0, prefSlots = 0, daysWithSlots = 0;
+
+  for (const date of dates) {
+    const venueData = byDate[date] ?? {};
+    const dayVenues = buildDayVenues(date, venueData);
+    if (!dayVenues.length) continue;
+
+    let dayTotal = 0;
+    const section = document.createElement("div");
+    section.className = "day-section";
+
+    const { day, date: ds } = fmtDate(date);
+    const hdr = document.createElement("div");
+    hdr.className = "day-header";
+    hdr.innerHTML = `
+      <span class="day-name">${day}</span>
+      <span class="day-date">${ds}</span>
+      <div class="day-line"></div>
+      <span class="day-count" id="dc-${date}">…</span>`;
+    section.appendChild(hdr);
+
+    for (const { venue, rows } of dayVenues) {
+      if (!rows.length) continue;
+      dayTotal   += rows.length;
+      totalSlots += rows.length;
+      prefSlots  += rows.filter(r => r.minutes === PREFERRED_MIN).length;
+      section.appendChild(buildVenueCard(venue, date, rows));
+    }
+
+    if (!dayTotal) continue;
+    daysWithSlots++;
+    section.querySelector(`#dc-${date}`).textContent = `${dayTotal} slot${dayTotal!==1?"s":""}`;
+    results.appendChild(section);
+  }
+
+  document.getElementById("statTotal").textContent = totalSlots || "0";
+  document.getElementById("statPref").textContent  = prefSlots  || "0";
+  document.getElementById("statDays").textContent  = daysWithSlots || "0";
+  emptyEl.style.display = results.children.length ? "none" : "block";
+}
+
+function buildDayVenues(date, venueData) {
+  return VENUES.map(venue => {
+    const slots = venueData[venue.id] ?? [];
+    const rows = [];
+    for (const slot of slots) {
+      if (!timeInRange(slot.time)) continue;             // ← time filter
+      for (const opt of slot.options ?? []) {
+        if (!activeDurs.has(String(opt.minutes))) continue; // ← duration filter
+        rows.push({
+          time:       slot.time,
+          minutes:    opt.minutes,
+          price:      opt.price,
+          currency:   opt.currency ?? "DKK",
+          bookingUrl: opt.bookingUrl,
+        });
+      }
+    }
+    rows.sort((a,b) => a.time.localeCompare(b.time) || a.minutes - b.minutes);
+    return { venue, rows };
+  }).filter(v => v.rows.length);
+}
+
+function buildVenueCard(venue, date, rows) {
+  const card = document.createElement("div");
+  card.className = "venue-card";
+  card.innerHTML = `
+    <div class="venue-header">
+      <div class="venue-left">
+        <div class="venue-dot" style="background:${venue.color}"></div>
+        <span class="venue-name">${venue.name}</span>
+      </div>
+      <span class="venue-count">${rows.length} slot${rows.length!==1?"s":""}</span>
+    </div>
+    <div class="slots-body" id="sb-${venue.id}-${date}"></div>`;
+
+  const body = card.querySelector(`#sb-${venue.id}-${date}`);
+  for (const row of rows) {
+    const isPref   = row.minutes === PREFERRED_MIN;
+    const endTime  = addMins(date, row.time, row.minutes);
+    const priceStr = row.price ? `${Math.round(row.price)} ${row.currency}` : "";
+    const r = document.createElement("div");
+    r.className = "slot-row";
+    r.innerHTML = `
+      <span class="slot-star ${isPref?"":"dim"}">${isPref?"★":"○"}</span>
+      <span class="slot-time">${row.time}–${endTime}</span>
+      <span class="slot-dur ${isPref?"pref":""}">${row.minutes} min</span>
+      <span class="slot-court">${venue.address} (Indoor)</span>
+      <span class="slot-price">${priceStr}</span>
+      <a class="book-btn" href="${row.bookingUrl}" target="_blank" rel="noopener">Book →</a>`;
+    body.appendChild(r);
+  }
+  return card;
+}
+
+function renderSkeleton(dates) {
+  const results = document.getElementById("results");
+  results.innerHTML = "";
+  for (const date of dates) {
+    const { day, date: ds } = fmtDate(date);
+    const s = document.createElement("div");
+    s.className = "day-section";
+    s.innerHTML = `
+      <div class="day-header">
+        <span class="day-name">${day}</span>
+        <span class="day-date">${ds}</span>
+        <div class="day-line"></div>
+        <span class="day-count">…</span>
+      </div>
+      ${VENUES.map(v=>`
+        <div class="venue-card">
+          <div class="venue-header">
+            <div class="venue-left">
+              <div class="venue-dot" style="background:${v.color}"></div>
+              <span class="venue-name">${v.name}</span>
+            </div>
+          </div>
+          <div class="venue-loading"><div class="spinner-sm"></div>Henter tider…</div>
+        </div>`).join("")}`;
+    results.appendChild(s);
+  }
+}
+
+function showErr(msg) {
+  const el = document.getElementById("errBar");
+  el.textContent = "⚠ " + msg;
+  el.style.display = "block";
+}
+
+window.addEventListener("load", runSearch);
+</script>
+</body>
+</html>
