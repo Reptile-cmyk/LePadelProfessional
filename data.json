@@ -55,10 +55,12 @@
     "2026-05-25": {
       "people": [
         0,
-        2
+        2,
+        1
       ],
       "notes": {
         "0": "Turkey :-)",
+        "1": "Tennis",
         "2": "I think it is Thailand?"
       }
     },
@@ -116,10 +118,12 @@
     "2026-06-01": {
       "people": [
         0,
-        2
+        2,
+        1
       ],
       "notes": {
         "0": "Turkey :-)",
+        "1": "Tennis",
         "2": "I think it is Thailand?"
       }
     },
@@ -152,7 +156,7 @@
         1
       ],
       "notes": {
-        "1": "Chilling at the sea of Brøndby!"
+        "1": "Tennis"
       }
     },
     "2026-06-09": {
@@ -247,6 +251,22 @@
       ],
       "notes": {
         "1": "Dubai? Need to ask my GF as I forgot"
+      }
+    },
+    "2026-05-18": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Tennis"
+      }
+    },
+    "2026-06-15": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Tennis"
       }
     }
   }
