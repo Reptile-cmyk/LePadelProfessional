@@ -274,13 +274,10 @@
     .summary-card{padding:16px 14px;}
   }
   /* ── SEARCH ENGINE STYLES (se- prefix) ── */
-  .se-card{background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.15);border-radius:12px;padding:16px 18px;margin-bottom:14px;display:flex;flex-direction:column;gap:12px;}
+  .se-card{background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.15);border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px;}
   .se-ctrl-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-  .se-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted,#3d4a66);white-space:nowrap;min-width:58px;}
-  .se-mode-toggle{display:flex;background:var(--bg,#0a0d14);border-radius:8px;padding:3px;gap:2px;}
-  .se-mode-btn{background:none;border:none;border-radius:6px;color:var(--text-dim,#7a8aaa);font-family:var(--ui-font,'Inter'),sans-serif;font-size:12px;font-weight:500;padding:5px 12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
-  .se-mode-btn.active{background:var(--accent,#3d8ef0);color:#fff;}
-  .se-search-btn{background:var(--accent,#3d8ef0);color:#fff;border:none;border-radius:8px;font-family:var(--ui-font,'Inter'),sans-serif;font-size:13px;font-weight:600;padding:8px 20px;cursor:pointer;transition:opacity .15s;white-space:nowrap;margin-left:auto;}
+  .se-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(61,142,240,0.7);white-space:nowrap;min-width:58px;-webkit-font-smoothing:antialiased;}
+  .se-search-btn{background:var(--accent,#3d8ef0);color:#fff;border:none;border-radius:7px;font-family:var(--ui-font,'Inter'),sans-serif;font-size:11px;font-weight:600;padding:5px 14px;cursor:pointer;transition:opacity .15s;white-space:nowrap;margin-left:auto;}
   .se-search-btn:hover{opacity:.88;}.se-search-btn:disabled{opacity:.35;cursor:not-allowed;}
   .se-pill-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
   .se-pill{background:var(--surface2,#1f2940);border:1px solid rgba(61,142,240,0.15);border-radius:20px;color:var(--text-dim,#7a8aaa);font-family:var(--ui-font,'Inter'),sans-serif;font-size:12px;font-weight:500;padding:4px 12px;cursor:pointer;transition:all .15s;}
@@ -595,25 +592,19 @@
     <div class="se-card">
       <div class="se-ctrl-row">
         <span class="se-label">Date</span>
-        <div class="se-mode-toggle">
-          <button class="se-mode-btn active" id="se-modeSingle" onclick="seSetMode('single')">Single date</button>
-          <button class="se-mode-btn"        id="se-modeRange"  onclick="seSetMode('range')">Date range</button>
-        </div>
-        <input type="date" id="se-dateFrom" style="background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.2);border-radius:8px;color:var(--text,#e2e8f8);font-family:var(--ui-font,'Inter');font-size:13px;padding:7px 10px;outline:none;color-scheme:dark;min-width:130px;">
-        <span id="se-dateSep" style="display:none;color:var(--text-dim,#7a8aaa);">→</span>
-        <input type="date" id="se-dateTo"   style="display:none;background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.2);border-radius:8px;color:var(--text,#e2e8f8);font-family:var(--ui-font,'Inter');font-size:13px;padding:7px 10px;outline:none;color-scheme:dark;min-width:130px;">
-        <button class="se-search-btn" id="se-searchBtn" onclick="seRunSearch()">Search</button>
+        <input type="date" id="se-dateFrom" style="background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.2);border-radius:7px;color:var(--text,#e2e8f8);font-family:var(--ui-font,'Inter');font-size:11px;padding:5px 8px;outline:none;color-scheme:dark;max-width:140px;">
       </div>
       <div class="se-ctrl-row">
         <span class="se-label">Start time</span>
-        <input type="time" id="se-timeFrom" value="17:30" step="1800" style="background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.2);border-radius:8px;color:var(--text,#e2e8f8);font-family:var(--ui-font,'Inter');font-size:13px;padding:7px 10px;outline:none;color-scheme:dark;">
-        <span style="color:var(--text-dim,#7a8aaa);">→</span>
-        <input type="time" id="se-timeTo"   value="18:30" step="1800" style="background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.2);border-radius:8px;color:var(--text,#e2e8f8);font-family:var(--ui-font,'Inter');font-size:13px;padding:7px 10px;outline:none;color-scheme:dark;">
+        <input type="time" id="se-timeFrom" value="17:30" step="1800" style="background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.2);border-radius:7px;color:var(--text,#e2e8f8);font-family:var(--ui-font,'Inter');font-size:11px;padding:5px 8px;outline:none;color-scheme:dark;">
+        <span style="color:var(--text-dim,#7a8aaa);font-size:11px;">→</span>
+        <input type="time" id="se-timeTo"   value="18:30" step="1800" style="background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.2);border-radius:7px;color:var(--text,#e2e8f8);font-family:var(--ui-font,'Inter');font-size:11px;padding:5px 8px;outline:none;color-scheme:dark;">
       </div>
       <div class="se-pill-row">
         <span class="se-label" style="letter-spacing:.1em;">Duration</span>
         <button class="se-pill on gold-pill" data-min="90" onclick="seToggleDur(this)">★ 90 min</button>
         <button class="se-pill on"           data-min="60" onclick="seToggleDur(this)">60 min</button>
+        <button class="se-search-btn" id="se-searchBtn" onclick="seRunSearch()">Search</button>
       </div>
     </div>
 
@@ -1495,27 +1486,16 @@ const SE_VENUES = [
 ];
 const SE_PREF_MIN = 90;
 
-let seMode     = 'single';
 let seActiveDurs = new Set(['60','90']);
 let seLastResults = null;
 
 function seInit(){
   const todayIso = new Date().toISOString().slice(0,10);
-  ['se-dateFrom','se-dateTo'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.value=todayIso; el.min=todayIso;
-  });
+  const el=document.getElementById('se-dateFrom');
+  el.value=todayIso; el.min=todayIso;
   document.getElementById('se-timeFrom').addEventListener('change',()=>{if(seLastResults)seRenderAll(seLastResults);});
   document.getElementById('se-timeTo').addEventListener('change',()=>{if(seLastResults)seRenderAll(seLastResults);});
   seRunSearch();
-}
-
-function seSetMode(m){
-  seMode=m;
-  document.getElementById('se-modeSingle').classList.toggle('active',m==='single');
-  document.getElementById('se-modeRange').classList.toggle('active',m==='range');
-  document.getElementById('se-dateSep').style.display=m==='range'?'':'none';
-  document.getElementById('se-dateTo').style.display=m==='range'?'':'none';
 }
 
 function seToggleDur(btn){
@@ -1540,9 +1520,8 @@ function seTimeInRange(time){
 
 async function seRunSearch(){
   const from=document.getElementById('se-dateFrom').value;
-  const to=seMode==='range'?document.getElementById('se-dateTo').value:from;
   if(!from)return;
-  const dates=seDateRange(from,to>=from?to:from);
+  const dates=seDateRange(from,from);
   if(dates.length>14){seShowErr('Max 14 days at a time.');return;}
   document.getElementById('se-searchBtn').disabled=true;
   document.getElementById('se-errBar').style.display='none';
