@@ -309,7 +309,12 @@
     "2026-06-02": {
       "people": [],
       "notes": {},
-      "padel": "Reffen 17:30-19:00. Court: 01. Code: 7460#"
+      "padel": {
+        "location": "Reffen",
+        "start": "17:30",
+        "duration": 90,
+        "doorcode": "7460"
+      }
     }
   }
 }
