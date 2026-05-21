@@ -50,7 +50,8 @@
       "people": [
         0
       ],
-      "notes": {}
+      "notes": {},
+      "padel": null
     },
     "2026-05-25": {
       "people": [
@@ -62,7 +63,8 @@
         "0": "Turkey :-)",
         "1": "Tennis",
         "2": "I think it is Thailand?"
-      }
+      },
+      "padel": null
     },
     "2026-05-26": {
       "people": [
@@ -72,7 +74,8 @@
       "notes": {
         "0": "Turkey :-)",
         "2": "I think it is Thailand?"
-      }
+      },
+      "padel": null
     },
     "2026-05-27": {
       "people": [
@@ -82,14 +85,16 @@
       "notes": {
         "0": "Turkey :-)",
         "2": "I think it is Thailand?"
-      }
+      },
+      "padel": null
     },
     "2026-05-28": {
       "people": [
         0,
         2
       ],
-      "notes": {}
+      "notes": {},
+      "padel": null
     },
     "2026-05-29": {
       "people": [
@@ -99,21 +104,24 @@
       ],
       "notes": {
         "3": "Linkin Park"
-      }
+      },
+      "padel": null
     },
     "2026-05-30": {
       "people": [
         0,
         2
       ],
-      "notes": {}
+      "notes": {},
+      "padel": null
     },
     "2026-05-31": {
       "people": [
         0,
         2
       ],
-      "notes": {}
+      "notes": {},
+      "padel": null
     },
     "2026-06-01": {
       "people": [
@@ -125,31 +133,36 @@
         "0": "Turkey :-)",
         "1": "Tennis",
         "2": "I think it is Thailand?"
-      }
+      },
+      "padel": null
     },
     "2026-06-04": {
       "people": [
         1
       ],
-      "notes": {}
+      "notes": {},
+      "padel": null
     },
     "2026-06-05": {
       "people": [
         1
       ],
-      "notes": {}
+      "notes": {},
+      "padel": null
     },
     "2026-06-06": {
       "people": [
         1
       ],
-      "notes": {}
+      "notes": {},
+      "padel": null
     },
     "2026-06-07": {
       "people": [
         1
       ],
-      "notes": {}
+      "notes": {},
+      "padel": null
     },
     "2026-06-08": {
       "people": [
@@ -157,7 +170,8 @@
       ],
       "notes": {
         "1": "Tennis"
-      }
+      },
+      "padel": null
     },
     "2026-06-09": {
       "people": [
@@ -165,7 +179,8 @@
       ],
       "notes": {
         "1": "Chilling at the sea of Brøndby!"
-      }
+      },
+      "padel": null
     },
     "2026-06-10": {
       "people": [
@@ -173,13 +188,15 @@
       ],
       "notes": {
         "1": "Chilling at the sea of Brøndby!"
-      }
+      },
+      "padel": null
     },
     "2026-07-10": {
       "people": [
         1
       ],
-      "notes": {}
+      "notes": {},
+      "padel": null
     },
     "2026-07-14": {
       "people": [
@@ -187,7 +204,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-07-15": {
       "people": [
@@ -195,7 +213,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-07-16": {
       "people": [
@@ -203,7 +222,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-07-17": {
       "people": [
@@ -211,7 +231,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-07-20": {
       "people": [
@@ -219,7 +240,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-07-21": {
       "people": [
@@ -227,7 +249,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-07-22": {
       "people": [
@@ -235,7 +258,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-07-23": {
       "people": [
@@ -243,7 +267,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-07-24": {
       "people": [
@@ -251,7 +276,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-07-27": {
       "people": [
@@ -259,7 +285,8 @@
       ],
       "notes": {
         "1": "Japan"
-      }
+      },
+      "padel": null
     },
     "2026-05-18": {
       "people": [
@@ -267,7 +294,8 @@
       ],
       "notes": {
         "1": "Tennis"
-      }
+      },
+      "padel": null
     },
     "2026-06-15": {
       "people": [
@@ -275,7 +303,13 @@
       ],
       "notes": {
         "1": "Tennis"
-      }
+      },
+      "padel": null
+    },
+    "2026-06-02": {
+      "people": [],
+      "notes": {},
+      "padel": "Reffen 01 | Horten (Indoor) 17:30-19:00. Bring good mood."
     }
   }
 }
