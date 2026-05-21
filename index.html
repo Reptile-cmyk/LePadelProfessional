@@ -330,20 +330,16 @@
   .se-day-count{background:var(--surface,#1a2236);border:1px solid rgba(61,142,240,0.15);border-radius:20px;font-size:11px;font-weight:600;color:var(--text-dim,#7a8aaa);padding:3px 9px;white-space:nowrap;}
   .se-venue-card{background:#0b1120;border-top:1px solid rgba(61,142,240,0.28);border-bottom:1px solid rgba(61,142,240,0.28);margin-bottom:6px;overflow:hidden;position:relative;}
   .se-venue-card::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(61,142,240,0.03),transparent 40%,transparent 60%,rgba(61,142,240,0.03));pointer-events:none;}
-  .se-venue-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;}
-  .se-venue-left{display:flex;align-items:center;gap:8px;}
-  .se-venue-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-  .se-slots-body{border-top:1px solid rgba(61,142,240,0.12);}
-  .se-slot-row{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid rgba(61,142,240,0.08);transition:background .12s;}
-  .se-slot-row:last-child{border-bottom:none;}
-  .se-slot-row:hover{background:rgba(61,142,240,0.04);}
-  .se-slot-star{font-size:12px;width:14px;flex-shrink:0;color:#f5a623;}
-  .se-slot-star.dim{color:var(--text-muted,#3d4a66);}
-  /* Duration pill in results matches filter pills */
-  .se-slot-dur{background:transparent;border:1px solid rgba(61,142,240,0.25);border-radius:20px;font-size:10px;font-weight:500;padding:3px 9px;color:var(--accent,#3d8ef0);white-space:nowrap;font-family:var(--ui-font,'Inter'),sans-serif;}
+  .se-venue-header{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:rgba(61,142,240,0.07);border-bottom:1px solid rgba(61,142,240,0.15);}
+  .se-slots-body{border-top:none;}
+  .se-slot-row{display:flex;align-items:center;gap:8px;padding:6px 14px;border-bottom:1px solid rgba(61,142,240,0.06);transition:background .12s;}
+  .se-slot-time{font-size:12px;font-weight:600;min-width:90px;color:var(--text,#e2e8f8);font-family:var(--ui-font,'Inter'),sans-serif;}
+  .se-slot-dur{background:transparent;border:1px solid rgba(61,142,240,0.25);border-radius:20px;font-size:9px;font-weight:500;padding:2px 8px;color:var(--accent,#3d8ef0);white-space:nowrap;font-family:var(--ui-font,'Inter'),sans-serif;}
   .se-slot-dur.pref{border-color:#f5a623;color:#f5a623;}
-  .se-slot-price{font-size:11px;font-weight:600;color:var(--text,#e2e8f8);white-space:nowrap;font-family:var(--ui-font,'Inter'),sans-serif;}
-  .se-book-btn{background:none;border:1px solid rgba(61,142,240,0.3);border-radius:7px;color:var(--accent,#3d8ef0);font-family:var(--ui-font,'Inter'),sans-serif;font-size:11px;font-weight:600;padding:4px 10px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:all .15s;display:inline-block;flex-shrink:0;margin-left:auto;}
+  .se-slot-price{font-size:10px;font-weight:600;color:var(--text,#e2e8f8);white-space:nowrap;font-family:var(--ui-font,'Inter'),sans-serif;}
+  .se-slot-star{font-size:11px;width:12px;flex-shrink:0;color:#f5a623;}
+  .se-slot-star.dim{color:var(--text-muted,#3d4a66);}
+  .se-book-btn{background:none;border:1px solid rgba(61,142,240,0.3);border-radius:6px;color:var(--accent,#3d8ef0);font-family:var(--ui-font,'Inter'),sans-serif;font-size:10px;font-weight:600;padding:3px 8px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:all .15s;display:inline-block;flex-shrink:0;margin-left:auto;}
   .se-book-btn:hover{background:rgba(61,142,240,0.1);border-color:var(--accent,#3d8ef0);}
   #search-view{font-family:var(--ui-font,'Inter'),sans-serif;}
 </style>
