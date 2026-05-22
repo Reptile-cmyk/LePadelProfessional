@@ -744,7 +744,7 @@ async function checkPassword(){
     return;
   }
   // Correct — store session flag and proceed
-  localStorage.setItem('pw_ok','1');
+  localStorage.setItem('pw_ok', Date.now().toString());
   document.getElementById('password-screen').style.display='none';
   startApp();
 }
@@ -753,7 +753,8 @@ document.getElementById('pw-btn').addEventListener('click', checkPassword);
 document.getElementById('pw-input').addEventListener('keydown', e=>{if(e.key==='Enter')checkPassword();});
 
 // Check if already authenticated this session
-if(localStorage.getItem('pw_ok')==='1'){
+const _loginTs=parseInt(localStorage.getItem('pw_ok')||'0');
+if(_loginTs && (Date.now()-_loginTs) < 7*24*60*60*1000){
   document.getElementById('password-screen').style.display='none';
   startApp();
 }
@@ -1125,8 +1126,29 @@ function renderSummary(){
   const mc=settings.people.map(()=>0), yc=settings.people.map(()=>0);
   const mp=`${state.year}-${String(state.month+1).padStart(2,'0')}-`;
   const yp=`${state.year}-`;
-  for(const[k,v]of Object.entries(state.days))
-    if(k.startsWith(yp)) v.people.forEach(pid=>{if(yc[pid]!==undefined){yc[pid]++;if(k.startsWith(mp))mc[pid]++;}});
+  for(const[k,v]of Object.entries(state.days)){
+    if(!k.startsWith(yp)) continue;
+    const dow=new Date(k+'T12:00:00').getDay();
+    if((settings.weekdayModes[dow]||'normal')==='hide') continue;
+    v.people.forEach(pid=>{if(yc[pid]!==undefined){yc[pid]++;if(k.startsWith(mp))mc[pid]++;}});
+  }
+
+  // Count available (non-hidden) days in month and year
+  let mAvail=0, yAvail=0;
+  const daysInMonth=new Date(state.year,state.month+1,0).getDate();
+  for(let d=1;d<=daysInMonth;d++){
+    const dow=new Date(state.year,state.month,d).getDay();
+    if((settings.weekdayModes[dow]||'normal')!=='hide') mAvail++;
+  }
+  for(let mo=0;mo<12;mo++){
+    const dim=new Date(state.year,mo+1,0).getDate();
+    for(let d=1;d<=dim;d++){
+      const dow=new Date(state.year,mo,d).getDay();
+      if((settings.weekdayModes[dow]||'normal')!=='hide') yAvail++;
+    }
+  }
+  const pct=(n,total)=>total>0?`<span class="summary-pct">${Math.round(n/total*100)}%</span>`:'';
+
   const monthName=MONTHS[state.month].substring(0,3);
   document.getElementById('year-badge').textContent=state.year;
   document.getElementById('summary-combined').innerHTML=settings.people.map((p,i)=>
@@ -1134,8 +1156,8 @@ function renderSummary(){
       <span class="summary-dot" style="background:${p.color};box-shadow:0 0 7px ${p.color}99;"></span>
       <span class="summary-name">${p.name}</span>
       <span class="summary-divider"></span>
-      <span class="summary-stat"><span class="summary-stat-label">${monthName}:</span><span class="summary-stat-val">${mc[i]}</span></span>
-      <span class="summary-stat"><span class="summary-stat-label">Year:</span><span class="summary-stat-val">${yc[i]}</span></span>
+      <span class="summary-stat"><span class="summary-stat-label">${monthName}:</span><span class="summary-stat-val">${mc[i]}</span>${pct(mc[i],mAvail)}</span>
+      <span class="summary-stat"><span class="summary-stat-label">Year:</span><span class="summary-stat-val">${yc[i]}</span>${pct(yc[i],yAvail)}</span>
     </div>`).join('');
   drawPie(yc);
 }
