@@ -1650,32 +1650,45 @@ function downloadPadelIcs(dateKey, p){
   ].join('\r\n');
 
   setSyncStatus('Preparing calendar event…','');
-  try{
-    const res=await fetch(WORKER_URL+'/ics',{
-      method:'PUT',
-      headers:{'Content-Type':'text/plain'},
-      body:ics,
-    });
-    if(!res.ok) throw new Error('Upload failed');
-    setSyncStatus('✓ Opening Calendar…','ok');
 
-    // Hidden iframe triggers webcal:// without opening a blank tab on any browser
-    const webcalUrl='webcal://reptile-cmyk.github.io/LePadelProfessional/padel-event.ics';
-    const iframe=document.createElement('iframe');
-    iframe.style.cssText='display:none;width:0;height:0;border:none;';
-    iframe.src=webcalUrl;
-    document.body.appendChild(iframe);
-    setTimeout(()=>{if(iframe.parentNode)iframe.parentNode.removeChild(iframe);},3000);
+  const isChromeIOS=/CriOS/.test(navigator.userAgent);
 
-  }catch(err){
-    setSyncStatus('✗ '+err.message,'err');
-    // Fallback: plain download
+  if(isChromeIOS){
+    // Chrome on iOS blocks webcal:// — download the file and show a clear instruction
     const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
     a.download=`padel-${dateKey}.ics`;
     document.body.appendChild(a);a.click();
     setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(a.href);},2000);
+
+    // Show instruction toast
+    const toast=document.createElement('div');
+    toast.innerHTML='📅 Tap the downloaded file at the bottom<br>then choose <strong>Open in Calendar</strong>';
+    toast.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0b1120;border:1px solid rgba(61,142,240,0.4);color:#e2e8f8;padding:12px 18px;border-radius:10px;font-size:13px;z-index:9999;text-align:center;line-height:1.6;box-shadow:0 4px 24px rgba(0,0,0,0.6);white-space:nowrap;';
+    document.body.appendChild(toast);
+    setTimeout(()=>toast.remove(),6000);
+    setSyncStatus('✓ File downloaded','ok');
+
+  } else {
+    // Safari, desktop Chrome, Firefox — webcal:// via iframe works fine
+    try{
+      const res=await fetch(WORKER_URL+'/ics',{
+        method:'PUT',
+        headers:{'Content-Type':'text/plain'},
+        body:ics,
+      });
+      if(!res.ok) throw new Error('Upload failed');
+      setSyncStatus('✓ Opening Calendar…','ok');
+      const webcalUrl='webcal://reptile-cmyk.github.io/LePadelProfessional/padel-event.ics';
+      const iframe=document.createElement('iframe');
+      iframe.style.cssText='display:none;width:0;height:0;border:none;';
+      iframe.src=webcalUrl;
+      document.body.appendChild(iframe);
+      setTimeout(()=>{if(iframe.parentNode)iframe.parentNode.removeChild(iframe);},3000);
+    }catch(err){
+      setSyncStatus('✗ '+err.message,'err');
+    }
   }
 }
 function switchView(view){
