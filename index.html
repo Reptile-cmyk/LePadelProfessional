@@ -1649,9 +1649,13 @@ function downloadPadelIcs(dateKey, p){
     'END:VCALENDAR'
   ].join('\r\n');
 
-  // Upload to GitHub via Worker, then open webcal:// — iOS/macOS open Calendar directly
+  // Upload to GitHub in background, open webcal:// immediately via anchor click
+  // (window.location.href navigates away — anchor click doesn't)
+  const webcalUrl='webcal://reptile-cmyk.github.io/LePadelProfessional/padel-event.ics';
+
+  // Upload first (needed so the file exists), then open Calendar
+  setSyncStatus('Preparing calendar event…','');
   try{
-    setSyncStatus('Preparing calendar event…','');
     const res=await fetch(WORKER_URL+'/ics',{
       method:'PUT',
       headers:{'Content-Type':'text/plain'},
@@ -1659,15 +1663,21 @@ function downloadPadelIcs(dateKey, p){
     });
     if(!res.ok) throw new Error('Upload failed');
     setSyncStatus('✓ Opening Calendar…','ok');
-    // Small delay so GitHub Pages CDN picks up the new file
-    await new Promise(r=>setTimeout(r,1500));
-    window.location.href='webcal://reptile-cmyk.github.io/LePadelProfessional/padel-event.ics';
+    // Use anchor click — keeps app page intact, iOS intercepts webcal:// → opens Calendar
+    const a=document.createElement('a');
+    a.href=webcalUrl;
+    a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>document.body.removeChild(a),1000);
   }catch(err){
-    setSyncStatus('✗ Calendar error: '+err.message,'err');
-    // Fallback: direct download
+    setSyncStatus('✗ '+err.message,'err');
+    // Fallback: plain download
     const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-    a.download=`padel-${dateKey}.ics`;document.body.appendChild(a);a.click();
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`padel-${dateKey}.ics`;
+    document.body.appendChild(a);a.click();
     setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(a.href);},2000);
   }
 }
