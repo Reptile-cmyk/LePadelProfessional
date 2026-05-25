@@ -753,11 +753,15 @@ async function checkPassword(){
 document.getElementById('pw-btn').addEventListener('click', checkPassword);
 document.getElementById('pw-input').addEventListener('keydown', e=>{if(e.key==='Enter')checkPassword();});
 
-// Check if already authenticated this session
-const _loginTs=parseInt(localStorage.getItem('pw_ok')||'0');
+// Check if already authenticated — handles both old '1' value and new timestamp
+const _stored = localStorage.getItem('pw_ok');
+const _loginTs = _stored === '1' ? 0 : parseInt(_stored||'0');
 if(_loginTs && (Date.now()-_loginTs) < 7*24*60*60*1000){
   document.getElementById('password-screen').style.display='none';
   startApp();
+} else if(_stored==='1'){
+  // Clear old format — user must log in once more to get proper timestamp
+  localStorage.removeItem('pw_ok');
 }
 
 // ── APP START ──────────────────────────────────────────────────
@@ -1004,12 +1008,12 @@ function renderCalendar(){
       const code=typeof p==='string'?'':(p.doorcode||'');
       const endMins=(parseInt(start.split(':')[0])*60+parseInt(start.split(':')[1]||0))+dur;
       const endStr=`${String(Math.floor(endMins/60)).padStart(2,'0')}:${String(endMins%60).padStart(2,'0')}`;
-      const noteKey=JSON.stringify(p).replace(/"/g,'&quot;').replace(/'/g,"\\'");
+      const padelJson=JSON.stringify(p).replace(/'/g,'&#39;');
       html+=`<div class="padel-entry">
         <span class="padel-entry-title">🏓 Padel Tennis</span>
         ${start?`<span class="padel-entry-note">${start}–${endStr}${loc?' · '+loc:''}</span>`:''}
         ${code?`<span class="padel-entry-note" style="opacity:0.5">🔑 ${code}</span>`:''}
-        <button class="padel-ics-btn" onclick="event.stopPropagation();downloadPadelIcs('${key}',${noteKey})">📅 Add to Calendar</button>
+        <button class="padel-ics-btn" data-date="${key}" data-padel='${padelJson}' onclick="event.stopPropagation();handlePadelIcs(this)">📅 Add to Calendar</button>
       </div>`;
       html+=`</div>`;
     }
@@ -1601,6 +1605,12 @@ document.addEventListener('keydown',e=>{
 });
 
 // ── PADEL ICS EXPORT ───────────────────────────────────────────
+function handlePadelIcs(btn){
+  const dateKey=btn.dataset.date;
+  const p=JSON.parse(btn.dataset.padel);
+  downloadPadelIcs(dateKey,p);
+}
+
 function downloadPadelIcs(dateKey, p){
   // Support both old string format and new structured object
   if(typeof p==='string'){p={location:p,start:'17:30',duration:90,doorcode:''};}
