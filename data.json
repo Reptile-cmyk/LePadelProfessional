@@ -360,6 +360,16 @@
         "3": "Not sure yet"
       },
       "padel": null
+    },
+    "2026-06-22": {
+      "people": [],
+      "notes": {},
+      "padel": {
+        "location": "Cupra Arena, court 10",
+        "start": "17:30",
+        "duration": 90,
+        "doorcode": ""
+      }
     }
   }
 }
