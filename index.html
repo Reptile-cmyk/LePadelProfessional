@@ -1639,18 +1639,15 @@ function downloadPadelIcs(dateKey, p){
     'END:VCALENDAR'
   ].join('\r\n');
 
-  // iOS Safari doesn't support blob downloads — use data URI which triggers Calendar prompt
-  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-  if(isIOS){
-    window.open('data:text/calendar;charset=utf8,'+encodeURIComponent(ics),'_blank');
-  } else {
-    const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download=`padel-${dateKey}.ics`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
+  // Use blob URL universally — more compatible than data URI on iOS 16+
+  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`padel-${dateKey}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
 }
 function switchView(view){
   const tracker = document.getElementById('app-shell');
