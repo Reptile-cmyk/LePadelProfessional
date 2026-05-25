@@ -769,7 +769,6 @@ function startApp(){
   const shell=document.getElementById('app-shell');
   shell.style.display='block';
   shell.style.zoom=settings.uiScale||1;
-  ghToken=sessionStorage.getItem('gh_token')||'';
   buildWeekdayChecks();
   loadData(true);
 }
