@@ -1649,11 +1649,6 @@ function downloadPadelIcs(dateKey, p){
     'END:VCALENDAR'
   ].join('\r\n');
 
-  // Upload to GitHub in background, open webcal:// immediately via anchor click
-  // (window.location.href navigates away — anchor click doesn't)
-  const webcalUrl='webcal://reptile-cmyk.github.io/LePadelProfessional/padel-event.ics';
-
-  // Upload first (needed so the file exists), then open Calendar
   setSyncStatus('Preparing calendar event…','');
   try{
     const res=await fetch(WORKER_URL+'/ics',{
@@ -1663,13 +1658,15 @@ function downloadPadelIcs(dateKey, p){
     });
     if(!res.ok) throw new Error('Upload failed');
     setSyncStatus('✓ Opening Calendar…','ok');
-    // Use anchor click — keeps app page intact, iOS intercepts webcal:// → opens Calendar
-    const a=document.createElement('a');
-    a.href=webcalUrl;
-    a.style.display='none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(()=>document.body.removeChild(a),1000);
+
+    // Hidden iframe triggers webcal:// without opening a blank tab on any browser
+    const webcalUrl='webcal://reptile-cmyk.github.io/LePadelProfessional/padel-event.ics';
+    const iframe=document.createElement('iframe');
+    iframe.style.cssText='display:none;width:0;height:0;border:none;';
+    iframe.src=webcalUrl;
+    document.body.appendChild(iframe);
+    setTimeout(()=>{if(iframe.parentNode)iframe.parentNode.removeChild(iframe);},3000);
+
   }catch(err){
     setSyncStatus('✗ '+err.message,'err');
     // Fallback: plain download
