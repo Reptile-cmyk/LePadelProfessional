@@ -750,6 +750,15 @@ async function checkPassword(){
   startApp();
 }
 
+// ── APP START ──────────────────────────────────────────────────
+function startApp(){
+  const shell=document.getElementById('app-shell');
+  shell.style.display='block';
+  shell.style.zoom=settings.uiScale||1;
+  buildWeekdayChecks();
+  loadData(true);
+}
+
 document.getElementById('pw-btn').addEventListener('click', checkPassword);
 document.getElementById('pw-input').addEventListener('keydown', e=>{if(e.key==='Enter')checkPassword();});
 
@@ -760,17 +769,7 @@ if(_loginTs && (Date.now()-_loginTs) < 7*24*60*60*1000){
   document.getElementById('password-screen').style.display='none';
   startApp();
 } else if(_stored==='1'){
-  // Clear old format — user must log in once more to get proper timestamp
   localStorage.removeItem('pw_ok');
-}
-
-// ── APP START ──────────────────────────────────────────────────
-function startApp(){
-  const shell=document.getElementById('app-shell');
-  shell.style.display='block';
-  shell.style.zoom=settings.uiScale||1;
-  buildWeekdayChecks();
-  loadData(true);
 }
 
 // ── SYNC STATUS ────────────────────────────────────────────────
@@ -1035,7 +1034,7 @@ function drawPie(counts){
   const SIZE=220;
   canvas.width=SIZE*dpr;canvas.height=SIZE*dpr;
   canvas.style.width=SIZE+'px';canvas.style.height=SIZE+'px';
-  ctx=canvas.getContext('2d');
+  const ctx=canvas.getContext('2d');
   ctx.scale(dpr,dpr);
   const cx=SIZE/2,cy=SIZE/2,r=SIZE/2-30;
   ctx.clearRect(0,0,SIZE,SIZE);
