@@ -1639,11 +1639,27 @@ function downloadPadelIcs(dateKey, p){
     'END:VCALENDAR'
   ].join('\r\n');
 
-  // Open directly in Calendar app — iOS/macOS intercept text/calendar and offer to add
-  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  window.location.href=url;
-  setTimeout(()=>URL.revokeObjectURL(url),5000);
+  // Upload to GitHub via Worker, then open webcal:// — iOS/macOS open Calendar directly
+  try{
+    setSyncStatus('Preparing calendar event…','');
+    const res=await fetch(WORKER_URL+'/ics',{
+      method:'PUT',
+      headers:{'Content-Type':'text/plain'},
+      body:ics,
+    });
+    if(!res.ok) throw new Error('Upload failed');
+    setSyncStatus('✓ Opening Calendar…','ok');
+    // Small delay so GitHub Pages CDN picks up the new file
+    await new Promise(r=>setTimeout(r,1500));
+    window.location.href='webcal://reptile-cmyk.github.io/LePadelProfessional/padel-event.ics';
+  }catch(err){
+    setSyncStatus('✗ Calendar error: '+err.message,'err');
+    // Fallback: direct download
+    const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download=`padel-${dateKey}.ics`;document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(a.href);},2000);
+  }
 }
 function switchView(view){
   const tracker = document.getElementById('app-shell');
