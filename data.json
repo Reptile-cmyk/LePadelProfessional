@@ -370,6 +370,27 @@
         "duration": 90,
         "doorcode": ""
       }
+    },
+    "2026-08-03": {
+      "people": [
+        3
+      ],
+      "notes": {},
+      "padel": null
+    },
+    "2026-08-04": {
+      "people": [
+        3
+      ],
+      "notes": {},
+      "padel": null
+    },
+    "2026-08-05": {
+      "people": [
+        3
+      ],
+      "notes": {},
+      "padel": null
     }
   }
 }
