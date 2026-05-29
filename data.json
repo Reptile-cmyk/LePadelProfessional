@@ -350,18 +350,6 @@
       ],
       "notes": {},
       "padel": null
-    },
-    "2026-08-03": {
-      "people": [
-        3
-      ],
-      "notes": {},
-      "padel": {
-        "location": "",
-        "start": "17:30",
-        "duration": 90,
-        "doorcode": ""
-      }
     }
   }
 }
