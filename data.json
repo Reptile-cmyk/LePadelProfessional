@@ -313,12 +313,7 @@
       "notes": {
         "1": "Sick"
       },
-      "padel": {
-        "location": "Reffen Court 01",
-        "start": "17:30",
-        "duration": 90,
-        "doorcode": "7460"
-      }
+      "padel": null
     },
     "2026-08-13": {
       "people": [
