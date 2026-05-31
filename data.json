@@ -348,7 +348,9 @@
       "people": [
         3
       ],
-      "notes": {},
+      "notes": {
+        "3": "Rhodes"
+      },
       "padel": null
     },
     "2026-08-03": {
