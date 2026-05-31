@@ -288,10 +288,12 @@
   .padel-dur-seg{display:flex;gap:4px;}
   .padel-dur-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--ui-font,'Inter'),sans-serif;font-size:0.75rem;cursor:pointer;transition:all 0.15s;}
   .padel-dur-btn.active{border-color:var(--accent2);background:rgba(0,212,170,0.1);color:var(--accent2);font-weight:600;}
-  .padel-toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-  .padel-toggle-label{font-size:0.82rem;color:var(--text-dim);}
-  .padel-clear-btn{font-size:0.72rem;color:#fff;background:var(--danger);border:1px solid var(--danger);border-radius:8px;cursor:pointer;padding:4px 12px;font-family:var(--ui-font,'Inter'),sans-serif;font-weight:500;transition:opacity 0.15s;}
-  .padel-clear-btn:hover{opacity:0.82;}
+  .padel-toggle-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;background:var(--surface);border:1px dashed rgba(0,212,170,0.3);border-radius:8px;color:var(--text-dim);font-family:var(--ui-font,'Inter'),sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.15s;text-align:left;}
+  .padel-toggle-btn:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(0,212,170,0.05);}
+  .padel-toggle-btn.active{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.4);color:var(--accent2);}
+  .padel-fields-wrap{margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,212,170,0.15);}
+  .padel-clear-btn{font-size:0.72rem;color:var(--danger);background:none;border:none;cursor:pointer;padding:0;font-family:var(--ui-font,'Inter'),sans-serif;}
+  .padel-clear-btn:hover{text-decoration:underline;}
   .padel-ics-btn{display:inline-flex;align-items:center;gap:4px;margin-top:4px;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.3);border-radius:5px;color:var(--accent2);font-family:var(--ui-font,'Inter'),sans-serif;font-size:9px;font-weight:600;padding:2px 7px;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
   .padel-ics-btn:hover{background:rgba(0,212,170,0.2);border-color:var(--accent2);}
   .se-card{
@@ -509,30 +511,32 @@
     <h3 id="popup-title"></h3>
     <div class="popup-people" id="popup-people"></div>
     <div class="popup-padel-section">
-      <div class="padel-toggle-row">
-        <span class="popup-padel-label">🏓 Padel Tennis booked</span>
-        <button class="padel-clear-btn" id="padel-clear-btn" style="display:none">Remove</button>
-      </div>
-      <div class="padel-fields">
-        <div class="padel-field-row">
-          <label class="padel-field-label">Location / Court</label>
-          <input type="text" class="padel-field-input" id="padel-location" placeholder="e.g. Cupra Arena court 3">
-        </div>
-        <div class="padel-field-row">
-          <label class="padel-field-label">Start time</label>
-          <input type="time" class="padel-field-input" id="padel-start" value="17:30" step="1800">
-        </div>
-        <div class="padel-field-row">
-          <label class="padel-field-label">Duration</label>
-          <div class="padel-dur-seg" id="padel-dur-seg">
-            <button class="padel-dur-btn" data-min="60">60 min</button>
-            <button class="padel-dur-btn active" data-min="90">90 min</button>
+      <button class="padel-toggle-btn" id="padel-toggle-btn" onclick="togglePadelSection()">
+        <span>🏓</span> Mark as Padel Tennis booked
+      </button>
+      <div class="padel-fields-wrap" id="padel-fields-wrap" style="display:none;">
+        <div class="padel-fields">
+          <div class="padel-field-row">
+            <label class="padel-field-label">Location / Court</label>
+            <input type="text" class="padel-field-input" id="padel-location" placeholder="e.g. Cupra Arena court 3">
+          </div>
+          <div class="padel-field-row">
+            <label class="padel-field-label">Start time</label>
+            <input type="time" class="padel-field-input" id="padel-start" value="17:30" step="1800">
+          </div>
+          <div class="padel-field-row">
+            <label class="padel-field-label">Duration</label>
+            <div class="padel-dur-seg" id="padel-dur-seg">
+              <button class="padel-dur-btn" data-min="60">60 min</button>
+              <button class="padel-dur-btn active" data-min="90">90 min</button>
+            </div>
+          </div>
+          <div class="padel-field-row">
+            <label class="padel-field-label">Door code</label>
+            <input type="text" class="padel-field-input" id="padel-doorcode" placeholder="e.g. 1234">
           </div>
         </div>
-        <div class="padel-field-row">
-          <label class="padel-field-label">Door code</label>
-          <input type="text" class="padel-field-input" id="padel-doorcode" placeholder="e.g. 1234">
-        </div>
+        <button class="padel-clear-btn" id="padel-clear-btn" onclick="togglePadelSection(true)" style="margin-top:8px;">Remove padel entry</button>
       </div>
     </div>
     <div class="popup-actions">
@@ -1245,18 +1249,30 @@ function openPopup(d,key){
     wrap.appendChild(row);wrap.appendChild(noteRow);pc.appendChild(wrap);
   });
   document.getElementById('popup-overlay').classList.add('open');
-  // Padel section
-  const p=data.padel||{};
-  document.getElementById('padel-location').value=p.location||'';
-  document.getElementById('padel-start').value=p.start||'17:30';
-  document.getElementById('padel-doorcode').value=p.doorcode||'';
-  // Duration buttons
-  const activeDur=String(p.duration||90);
-  document.querySelectorAll('.padel-dur-btn').forEach(b=>{
-    b.classList.toggle('active',b.dataset.min===activeDur);
-  });
-  const hasPadel=!!(p.location||p.doorcode||p.start);
-  document.getElementById('padel-clear-btn').style.display=hasPadel?'':'none';
+  // Padel section — hidden by default, only show if existing padel data
+  const p=data.padel||null;
+  const wrap=document.getElementById('padel-fields-wrap');
+  const btn=document.getElementById('padel-toggle-btn');
+  if(p&&(p.location||p.start||p.doorcode)){
+    wrap.style.display='block';
+    btn.classList.add('active');
+    btn.innerHTML='<span>🏓</span> Padel Tennis booked ✓';
+    document.getElementById('padel-location').value=p.location||'';
+    document.getElementById('padel-start').value=p.start||'17:30';
+    document.getElementById('padel-doorcode').value=p.doorcode||'';
+    const activeDur=String(p.duration||90);
+    document.querySelectorAll('.padel-dur-btn').forEach(b=>{
+      b.classList.toggle('active',b.dataset.min===activeDur);
+    });
+  } else {
+    wrap.style.display='none';
+    btn.classList.remove('active');
+    btn.innerHTML='<span>🏓</span> Mark as Padel Tennis booked';
+    document.getElementById('padel-location').value='';
+    document.getElementById('padel-start').value='17:30';
+    document.getElementById('padel-doorcode').value='';
+    document.querySelectorAll('.padel-dur-btn').forEach((b,i)=>b.classList.toggle('active',i===1));
+  }
 }
 function closePopup(){document.getElementById('popup-overlay').classList.remove('open');currentKey=null;}
 document.getElementById('btn-cancel').addEventListener('click',closePopup);
@@ -1270,24 +1286,37 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
     const pid=parseInt(inp.dataset.pid);
     if(popupSelected.has(pid)&&inp.value.trim()) notes[pid]=inp.value.trim();
   });
+  const padelVisible=document.getElementById('padel-fields-wrap').style.display!=='none';
   const activeDurBtn=document.querySelector('.padel-dur-btn.active');
-  const padelData={
+  const padelData=padelVisible ? {
     location:document.getElementById('padel-location').value.trim(),
     start:document.getElementById('padel-start').value||'17:30',
     duration:parseInt(activeDurBtn?.dataset.min||'90'),
     doorcode:document.getElementById('padel-doorcode').value.trim(),
-  };
-  const hasPadel=padelData.location||padelData.doorcode||padelData.start;
-  await saveDay(currentKey,popupSelected,notes,hasPadel?padelData:null);renderCalendar();renderSummary();closePopup();
+  } : null;
+  await saveDay(currentKey,popupSelected,notes,padelData);renderCalendar();renderSummary();closePopup();
 });
 
-document.getElementById('padel-clear-btn').addEventListener('click',()=>{
-  document.getElementById('padel-location').value='';
-  document.getElementById('padel-start').value='17:30';
-  document.getElementById('padel-doorcode').value='';
-  document.querySelectorAll('.padel-dur-btn').forEach((b,i)=>b.classList.toggle('active',i===1));
-  document.getElementById('padel-clear-btn').style.display='none';
-});
+function togglePadelSection(forceOff=false){
+  const wrap=document.getElementById('padel-fields-wrap');
+  const btn=document.getElementById('padel-toggle-btn');
+  const isOn=wrap.style.display!=='none'&&!forceOff;
+  if(isOn||forceOff){
+    // Turn off
+    wrap.style.display='none';
+    btn.classList.remove('active');
+    btn.innerHTML='<span>🏓</span> Mark as Padel Tennis booked';
+    document.getElementById('padel-location').value='';
+    document.getElementById('padel-start').value='17:30';
+    document.getElementById('padel-doorcode').value='';
+    document.querySelectorAll('.padel-dur-btn').forEach((b,i)=>b.classList.toggle('active',i===1));
+  } else {
+    // Turn on
+    wrap.style.display='block';
+    btn.classList.add('active');
+    btn.innerHTML='<span>🏓</span> Padel Tennis booked ✓';
+  }
+}
 document.querySelectorAll('.padel-dur-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('.padel-dur-btn').forEach(b=>b.classList.remove('active'));
