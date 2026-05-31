@@ -388,20 +388,6 @@
         "duration": 90,
         "doorcode": ""
       }
-    },
-    "2026-08-11": {
-      "people": [
-        3
-      ],
-      "notes": {
-        "3": "Test comment"
-      },
-      "padel": {
-        "location": "",
-        "start": "17:30",
-        "duration": 90,
-        "doorcode": ""
-      }
     }
   }
 }
