@@ -307,8 +307,12 @@
       "padel": null
     },
     "2026-06-02": {
-      "people": [],
-      "notes": {},
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Sick"
+      },
       "padel": {
         "location": "Reffen Court 01",
         "start": "17:30",
