@@ -288,9 +288,9 @@
   .padel-dur-seg{display:flex;gap:4px;}
   .padel-dur-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--ui-font,'Inter'),sans-serif;font-size:0.75rem;cursor:pointer;transition:all 0.15s;}
   .padel-dur-btn.active{border-color:var(--accent2);background:rgba(0,212,170,0.1);color:var(--accent2);font-weight:600;}
-  .padel-toggle-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;background:var(--surface);border:1px dashed rgba(0,212,170,0.3);border-radius:8px;color:var(--text-dim);font-family:var(--ui-font,'Inter'),sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.15s;text-align:left;}
-  .padel-toggle-btn:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(0,212,170,0.05);}
-  .padel-toggle-btn.active{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.4);color:var(--accent2);}
+  .padel-toggle-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;background:var(--surface);border:1px dashed rgba(0,212,170,0.3);border-radius:8px;color:#fff;font-family:var(--ui-font,'Inter'),sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.15s;text-align:left;}
+  .padel-toggle-btn:hover{border-color:var(--accent2);background:rgba(0,212,170,0.05);}
+  .padel-toggle-btn.active{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.4);color:#fff;}
   .padel-fields-wrap{margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,212,170,0.15);}
   .padel-clear-btn{font-size:0.72rem;color:var(--danger);background:none;border:none;cursor:pointer;padding:0;font-family:var(--ui-font,'Inter'),sans-serif;}
   .padel-clear-btn:hover{text-decoration:underline;}
@@ -512,7 +512,7 @@
     <div class="popup-people" id="popup-people"></div>
     <div class="popup-padel-section">
       <button class="padel-toggle-btn" id="padel-toggle-btn" onclick="togglePadelSection()">
-        <span>🏓</span> Mark as Padel Tennis booked
+        <span>🏓</span> Add booked Padel time
       </button>
       <div class="padel-fields-wrap" id="padel-fields-wrap" style="display:none;">
         <div class="padel-fields">
@@ -1267,7 +1267,7 @@ function openPopup(d,key){
   } else {
     wrap.style.display='none';
     btn.classList.remove('active');
-    btn.innerHTML='<span>🏓</span> Mark as Padel Tennis booked';
+    btn.innerHTML='<span>🏓</span> Add booked Padel time';
     document.getElementById('padel-location').value='';
     document.getElementById('padel-start').value='17:30';
     document.getElementById('padel-doorcode').value='';
@@ -1305,7 +1305,7 @@ function togglePadelSection(forceOff=false){
     // Turn off
     wrap.style.display='none';
     btn.classList.remove('active');
-    btn.innerHTML='<span>🏓</span> Mark as Padel Tennis booked';
+    btn.innerHTML='<span>🏓</span> Add booked Padel time';
     document.getElementById('padel-location').value='';
     document.getElementById('padel-start').value='17:30';
     document.getElementById('padel-doorcode').value='';
