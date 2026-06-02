@@ -189,7 +189,12 @@
       "notes": {
         "1": "Chilling at the sea of Brøndby!"
       },
-      "padel": null
+      "padel": {
+        "location": "Reffen 02",
+        "start": "17:30",
+        "duration": 90,
+        "doorcode": "7460#"
+      }
     },
     "2026-07-10": {
       "people": [
