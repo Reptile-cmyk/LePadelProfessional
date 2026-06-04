@@ -402,6 +402,15 @@
         "duration": 90,
         "doorcode": ""
       }
+    },
+    "2026-06-16": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
     }
   }
 }
