@@ -401,6 +401,16 @@
         "1": "Injured"
       },
       "padel": null
+    },
+    "2026-06-30": {
+      "people": [],
+      "notes": {},
+      "padel": {
+        "location": "Cupra arena, D5",
+        "start": "17:30",
+        "duration": 90,
+        "doorcode": "261965"
+      }
     }
   }
 }
