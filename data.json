@@ -204,7 +204,9 @@
       "people": [
         1
       ],
-      "notes": {},
+      "notes": {
+        "1": "Injured"
+      },
       "padel": null
     },
     "2026-07-14": {
@@ -447,6 +449,78 @@
       "padel": null
     },
     "2026-06-29": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-07-01": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-07-02": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-07-03": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-07-06": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-07-07": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-07-08": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-07-09": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-07-13": {
       "people": [
         1
       ],
