@@ -410,7 +410,12 @@
       "notes": {
         "1": "Injured"
       },
-      "padel": null
+      "padel": {
+        "location": "Cupra Arena, D5",
+        "start": "17:30",
+        "duration": 90,
+        "doorcode": ""
+      }
     },
     "2026-06-23": {
       "people": [
