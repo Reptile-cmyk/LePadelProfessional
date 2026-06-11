@@ -348,14 +348,13 @@
       "padel": null
     },
     "2026-06-22": {
-      "people": [],
-      "notes": {},
-      "padel": {
-        "location": "Reffen, court 06",
-        "start": "18:00",
-        "duration": 90,
-        "doorcode": "0595"
-      }
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
     },
     "2026-08-05": {
       "people": [
@@ -403,14 +402,58 @@
       "padel": null
     },
     "2026-06-30": {
-      "people": [],
-      "notes": {},
-      "padel": {
-        "location": "Cupra arena, D5",
-        "start": "17:30",
-        "duration": 90,
-        "doorcode": "261965"
-      }
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-06-23": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-06-24": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-06-25": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-06-26": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
+    },
+    "2026-06-29": {
+      "people": [
+        1
+      ],
+      "notes": {
+        "1": "Injured"
+      },
+      "padel": null
     }
   }
 }
