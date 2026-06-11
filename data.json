@@ -356,7 +356,12 @@
       "notes": {
         "1": "Injured"
       },
-      "padel": null
+      "padel": {
+        "location": "Reffen, court C6",
+        "start": "18:00",
+        "duration": 90,
+        "doorcode": "0595"
+      }
     },
     "2026-08-05": {
       "people": [
