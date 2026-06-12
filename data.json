@@ -315,12 +315,7 @@
       "notes": {
         "1": "Tennis"
       },
-      "padel": {
-        "location": "Taastrup, court 11",
-        "start": "17:30",
-        "duration": 90,
-        "doorcode": "7739#"
-      }
+      "padel": null
     },
     "2026-06-02": {
       "people": [
